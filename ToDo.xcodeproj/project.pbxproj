@@ -8,13 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
-		CE7D60E21E857E8D008CA26E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60E11E857E8D008CA26E /* ViewController.swift */; };
 		CE7D60E51E857E8D008CA26E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60E31E857E8D008CA26E /* Main.storyboard */; };
 		CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60E61E857E8D008CA26E /* ToDo.xcdatamodeld */; };
 		CE7D60EA1E857E8D008CA26E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60E91E857E8D008CA26E /* Assets.xcassets */; };
 		CE7D60ED1E857E8D008CA26E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60EB1E857E8D008CA26E /* LaunchScreen.storyboard */; };
 		CE7D60F81E857E8E008CA26E /* ToDoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60F71E857E8E008CA26E /* ToDoTests.swift */; };
 		CE7D61031E857E8E008CA26E /* ToDoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61021E857E8E008CA26E /* ToDoUITests.swift */; };
+		CE7D61111E858610008CA26E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61101E858610008CA26E /* TableViewController.swift */; };
+		CE7D61131E85862A008CA26E /* AddTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61121E85862A008CA26E /* AddTaskViewController.swift */; };
+		CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +39,6 @@
 /* Begin PBXFileReference section */
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		CE7D60E11E857E8D008CA26E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CE7D60E41E857E8D008CA26E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CE7D60E71E857E8D008CA26E /* ToDo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ToDo.xcdatamodel; sourceTree = "<group>"; };
 		CE7D60E91E857E8D008CA26E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +50,9 @@
 		CE7D60FE1E857E8E008CA26E /* ToDoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7D61021E857E8E008CA26E /* ToDoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITests.swift; sourceTree = "<group>"; };
 		CE7D61041E857E8E008CA26E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CE7D61101E858610008CA26E /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewController.swift; path = ../TableViewController.swift; sourceTree = "<group>"; };
+		CE7D61121E85862A008CA26E /* AddTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTaskViewController.swift; path = ../AddTaskViewController.swift; sourceTree = "<group>"; };
+		CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,8 +103,10 @@
 		CE7D60DE1E857E8D008CA26E /* ToDo */ = {
 			isa = PBXGroup;
 			children = (
+				CE7D61121E85862A008CA26E /* AddTaskViewController.swift */,
+				CE7D61101E858610008CA26E /* TableViewController.swift */,
+				CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */,
 				CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */,
-				CE7D60E11E857E8D008CA26E /* ViewController.swift */,
 				CE7D60E31E857E8D008CA26E /* Main.storyboard */,
 				CE7D60E91E857E8D008CA26E /* Assets.xcassets */,
 				CE7D60EB1E857E8D008CA26E /* LaunchScreen.storyboard */,
@@ -265,8 +271,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE7D60E21E857E8D008CA26E /* ViewController.swift in Sources */,
 				CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */,
+				CE7D61131E85862A008CA26E /* AddTaskViewController.swift in Sources */,
+				CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */,
+				CE7D61111E858610008CA26E /* TableViewController.swift in Sources */,
 				CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -518,6 +526,7 @@
 				CE7D61091E857E8E008CA26E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CE7D610A1E857E8E008CA26E /* Build configuration list for PBXNativeTarget "ToDoTests" */ = {
 			isa = XCConfigurationList;
@@ -526,6 +535,7 @@
 				CE7D610C1E857E8E008CA26E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CE7D610D1E857E8E008CA26E /* Build configuration list for PBXNativeTarget "ToDoUITests" */ = {
 			isa = XCConfigurationList;
@@ -534,6 +544,7 @@
 				CE7D610F1E857E8E008CA26E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
