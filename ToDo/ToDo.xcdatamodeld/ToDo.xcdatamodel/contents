@@ -6,10 +6,11 @@
         <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="uniqueID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userCompleted" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userCreated" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Task" positionX="-63" positionY="-18" width="128" height="150"/>
+        <element name="Task" positionX="-63" positionY="-18" width="128" height="165"/>
     </elements>
 </model>

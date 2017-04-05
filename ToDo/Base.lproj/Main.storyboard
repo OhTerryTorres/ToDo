@@ -19,13 +19,42 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="nh3-2N-X2l">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="nh3-2N-X2l" customClass="TaskTableViewCell" customModule="ToDo" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nh3-2N-X2l" id="msE-Ym-RlV">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="hxO-GS-Soh">
+                                            <rect key="frame" x="44" y="6" width="323" height="30"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vrg-b3-TLc">
+                                            <rect key="frame" x="8" y="6" width="35" height="30"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="35" id="eFK-Go-skW"/>
+                                            </constraints>
+                                            <connections>
+                                                <action selector="completedButtonAction:" destination="nh3-2N-X2l" eventType="touchUpInside" id="o2A-Jw-OlY"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Vrg-b3-TLc" firstAttribute="bottom" secondItem="hxO-GS-Soh" secondAttribute="bottom" id="A61-Qi-gHW"/>
+                                        <constraint firstItem="hxO-GS-Soh" firstAttribute="trailing" secondItem="msE-Ym-RlV" secondAttribute="trailingMargin" id="Avb-9p-eQY"/>
+                                        <constraint firstItem="Vrg-b3-TLc" firstAttribute="top" secondItem="hxO-GS-Soh" secondAttribute="top" id="JLt-0J-8NF"/>
+                                        <constraint firstItem="Vrg-b3-TLc" firstAttribute="leading" secondItem="msE-Ym-RlV" secondAttribute="leadingMargin" id="Xdm-oT-P8t"/>
+                                        <constraint firstItem="Vrg-b3-TLc" firstAttribute="centerY" secondItem="msE-Ym-RlV" secondAttribute="centerY" id="eaz-Yg-m5V"/>
+                                        <constraint firstItem="hxO-GS-Soh" firstAttribute="leading" secondItem="Vrg-b3-TLc" secondAttribute="trailing" constant="1" id="sUV-Dv-Pzx"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="completedButton" destination="Vrg-b3-TLc" id="s9L-IW-oah"/>
+                                    <outlet property="textField" destination="hxO-GS-Soh" id="ksU-5L-9Ij"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

@@ -17,6 +17,8 @@
 		CE7D61111E858610008CA26E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61101E858610008CA26E /* TableViewController.swift */; };
 		CE7D61131E85862A008CA26E /* AddTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61121E85862A008CA26E /* AddTaskViewController.swift */; };
 		CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */; };
+		CEEBADE21E93E4E8000E586D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE11E93E4E8000E586D /* Task.swift */; };
+		CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE31E93E9CB000E586D /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,8 @@
 		CE7D61101E858610008CA26E /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewController.swift; path = ../TableViewController.swift; sourceTree = "<group>"; };
 		CE7D61121E85862A008CA26E /* AddTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTaskViewController.swift; path = ../AddTaskViewController.swift; sourceTree = "<group>"; };
 		CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
+		CEEBADE11E93E4E8000E586D /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		CEEBADE31E93E9CB000E586D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +107,8 @@
 		CE7D60DE1E857E8D008CA26E /* ToDo */ = {
 			isa = PBXGroup;
 			children = (
+				CEEBADE31E93E9CB000E586D /* Constants.swift */,
+				CEEBADE11E93E4E8000E586D /* Task.swift */,
 				CE7D61121E85862A008CA26E /* AddTaskViewController.swift */,
 				CE7D61101E858610008CA26E /* TableViewController.swift */,
 				CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */,
@@ -275,6 +281,8 @@
 				CE7D61131E85862A008CA26E /* AddTaskViewController.swift in Sources */,
 				CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */,
 				CE7D61111E858610008CA26E /* TableViewController.swift in Sources */,
+				CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */,
+				CEEBADE21E93E4E8000E586D /* Task.swift in Sources */,
 				CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
