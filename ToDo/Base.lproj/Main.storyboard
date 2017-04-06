@@ -30,7 +30,7 @@
                                             <rect key="frame" x="44" y="6" width="323" height="30"/>
                                             <nil key="textColor"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <textInputTraits key="textInputTraits"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vrg-b3-TLc">
                                             <rect key="frame" x="8" y="6" width="35" height="30"/>
@@ -62,56 +62,11 @@
                             <outlet property="delegate" destination="ytJ-hB-oFe" id="WSt-64-lKr"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="To Do" id="T6r-UU-SgB">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Lil-Vm-rH7">
-                            <connections>
-                                <segue destination="RNj-nU-Ub8" kind="show" id="MqN-Sh-CXR"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="To Do" id="T6r-UU-SgB"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n1o-w0-PdW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1832.8" y="129.98500749625188"/>
-        </scene>
-        <!--Add Task View Controller-->
-        <scene sceneID="GbR-VR-FEv">
-            <objects>
-                <viewController id="RNj-nU-Ub8" customClass="AddTaskViewController" customModule="ToDo" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="VD7-6S-vcF"/>
-                        <viewControllerLayoutGuide type="bottom" id="QYH-zi-RQh"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="WJC-eG-JKO">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your task 👈 " textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="43q-ct-xw4">
-                                <rect key="frame" x="16" y="146" width="343" height="30"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                <connections>
-                                    <outlet property="delegate" destination="RNj-nU-Ub8" id="Jtz-er-0MU"/>
-                                </connections>
-                            </textField>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="43q-ct-xw4" firstAttribute="trailing" secondItem="WJC-eG-JKO" secondAttribute="trailingMargin" id="OTS-V1-KRF"/>
-                            <constraint firstItem="43q-ct-xw4" firstAttribute="leading" secondItem="WJC-eG-JKO" secondAttribute="leadingMargin" id="vjh-AU-OGz"/>
-                            <constraint firstItem="43q-ct-xw4" firstAttribute="top" secondItem="VD7-6S-vcF" secondAttribute="bottom" constant="82" id="z7y-Ws-QnE"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="taskTextField" destination="43q-ct-xw4" id="T6D-V6-XSZ"/>
-                        <segue destination="J1T-eI-HqB" kind="unwind" identifier="segue" unwindAction="unwindToListWithSeuge:" id="Prc-hU-D36"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="TMD-ZU-VC9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="J1T-eI-HqB" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="2709.5999999999999" y="133.5832083958021"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ll4-8L-K3f">
