@@ -28,47 +28,44 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.activeTextField = textField
+        print("text field is active")
     }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.activeTextField = nil
+        print("active text field is now nil")
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let oldTaskCount = controller.tasks.count
         commitChangesInTextField(textField: textField)
         // If a new task is properly added,
         // this text field should now be in the second to last row.
         // We want to make the the new text field active on hitting return.
-        print("textField.tag is \(textField.tag)")
-        print("controller.lastRow! is \(controller.lastRow!)")
         if textField.tag == controller.lastRow!-1 {
             if let cell = controller.tableView.cellForRow(at: IndexPath(row: controller.lastRow!, section: 0)) as? TaskTableViewCell {
+                print("switching first responder to new text field")
                 cell.textField.becomeFirstResponder()
             }
         } else {
             textField.resignFirstResponder()
+            print("resigning first responder")
         }
         return true
     }
     
     // Modify current tasks, and update tableview controller
     func commitChangesInTextField(textField: UITextField) {
-
-        var paths : [IndexPath]? = nil
+        var add = false
         if let _ = resolveTaskForTextField(textField: textField) {
-            if let row = controller.lastRow {
-                if textField.tag == row {
-                    paths = [IndexPath(row: row, section: 0), IndexPath(row: row+1, section: 0)]
-                }
-            }
+            add = true
         }
         
-        controller.update(indexPaths: paths)
+        controller.update(addingNewTask: add)
         
     }
     
     // Add or update Task
-    // A task is only returned if it's new
+    // Return nil unless adding new task
     func resolveTaskForTextField(textField : UITextField) -> Task? {
         // The tag should be set properly in cellForRow
         let tag = textField.tag
@@ -76,17 +73,27 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         
         // New task
         guard tag != self.controller.lastRow else {
-            print("3A textField is in the last row")
+            print("3 textField is in the last row")
             guard let text = textField.text  else { return nil }
             guard let task = dataService.addNewTask(withName: text) else { return nil }
+            
+            // Send task to database
+            let requestService = APIRequestService(withController: self.controller)
+            requestService.insert(task: task)
+            
             return task
         }
         
         // Update task
         let task = controller.tasks[tag]
-        print("3B textField is in row \(tag)")
+        print("3 textField is in row \(tag)")
         guard task.name != textField.text else { return nil }
         dataService.updateTask(task: task, withName: textField.text!)
+        
+        // Update task to database
+        let requestService = APIRequestService(withController: self.controller)
+        requestService.set(task: task)
+        
         return nil
         
     }
@@ -125,38 +132,14 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         
         // Move active text field to a visible area
         guard let activeField = self.activeTextField else { return }
-        print (activeField.frame)
         
         guard let activePoint = activeField.superview?.superview?.convert(activeField.frame.origin, to: controller.view) else { return }
-        print(activePoint)
         
         let keyRect = CGRect(x: controller.view.frame.origin.x, y: (controller.view.frame.size.height - keyboardSize.height), width: controller.view.frame.size.width, height: keyboardSize.height)
-        print(keyRect)
         if (keyRect.contains(activePoint)){
             controller.tableView.scrollRectToVisible(activeField.frame, animated: true)
         }
-        
-        
-        /*
-        Create a hypothetical rect representing where the keyboard WOULD be onscreen.
-        Create a BOOL, screenShunted.
-        If the text field is covered by the keyboard, screenShunted is TRUE
-        screenShunted will have a getter:
-        true: tableview frame shrinks to make room for keyboard, scrools text field to visible
-        fals: tableview returns to default dimenions (that is, the size of the screen)
-         
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0)
-        controller.tableView.contentInset = contentInsets
-        controller.tableView.scrollIndicatorInsets = contentInsets
-        
-        var aRect : CGRect = controller.tableView.frame
-        aRect.size.height -= keyboardSize.height
-        if let activeField = self.activeTextField {
-            if (!aRect.contains(activeField.frame.origin)){
-                controller.tableView.scrollRectToVisible(activeField.frame, animated: true)
-            }
-        }
-        */
+
     }
     
     func keyboardWillBeHidden(notification: NSNotification){

@@ -10,10 +10,17 @@ import XCTest
 @testable import ToDo
 
 class ToDoTests: XCTestCase {
+    var textFieldDelegate : TaskTextFieldDelegate!
+    var tableViewController : TableViewController!
+    
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        tableViewController = TableViewController()
+        tableViewController.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
+        textFieldDelegate = TaskTextFieldDelegate(forController: tableViewController)
+        
     }
     
     override func tearDown() {
@@ -32,5 +39,7 @@ class ToDoTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    
+    
     
 }

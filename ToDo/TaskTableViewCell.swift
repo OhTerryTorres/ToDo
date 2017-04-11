@@ -28,9 +28,13 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         guard let t = task else { return }
         t.completed = t.completed ? false : true // Toggle completed status
         t.userCompleted = t.completed ? USER_ID : nil  // Add your ID if you completed it
-        print("is task completed? \(t.completed)")
-        print("userCompleted is \(t.userCompleted)")
+        t.dateCompleted = t.completed ? Date() as NSDate? : nil // Add current date if completed
+        print("dateCompleted on button press is \(t.dateCompleted)")
         drawButtonForCompletionStatus()
+        
+        // Update task's completed status in database
+        let requestService = APIRequestService(withController: nil)
+        requestService.set(task: t)
     }
     
     func drawButtonForCompletionStatus() {

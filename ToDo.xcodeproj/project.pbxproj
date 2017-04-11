@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE39F5D41E97E02900876ED7 /* APIRequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIRequestService.swift */; };
+		CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */; };
+		CE5B4DEA1E96EC64005B87A5 /* TableViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */; };
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
 		CE7D60E51E857E8D008CA26E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60E31E857E8D008CA26E /* Main.storyboard */; };
 		CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60E61E857E8D008CA26E /* ToDo.xcdatamodeld */; };
@@ -20,6 +23,7 @@
 		CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */; };
 		CEEBADE21E93E4E8000E586D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE11E93E4E8000E586D /* Task.swift */; };
 		CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE31E93E9CB000E586D /* Constants.swift */; };
+		CEFE57331E9D1C2900539A49 /* TaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57321E9D1C2900539A49 /* TaskTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +44,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE39F5D31E97E02900876ED7 /* APIRequestService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIRequestService.swift; sourceTree = "<group>"; };
+		CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponseHandler.swift; sourceTree = "<group>"; };
+		CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewControllerTests.swift; sourceTree = "<group>"; };
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE7D60E41E857E8D008CA26E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -59,6 +66,7 @@
 		CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		CEEBADE11E93E4E8000E586D /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		CEEBADE31E93E9CB000E586D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		CEFE57321E9D1C2900539A49 /* TaskTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +123,8 @@
 				CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */,
 				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
 				CECC4BC61E95373600A4585C /* TaskCoreDataService.swift */,
+				CE39F5D31E97E02900876ED7 /* APIRequestService.swift */,
+				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
 				CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */,
 				CE7D60E31E857E8D008CA26E /* Main.storyboard */,
 				CE7D60E91E857E8D008CA26E /* Assets.xcassets */,
@@ -128,8 +138,10 @@
 		CE7D60F61E857E8E008CA26E /* ToDoTests */ = {
 			isa = PBXGroup;
 			children = (
+				CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */,
 				CE7D60F71E857E8E008CA26E /* ToDoTests.swift */,
 				CE7D60F91E857E8E008CA26E /* Info.plist */,
+				CEFE57321E9D1C2900539A49 /* TaskTests.swift */,
 			);
 			path = ToDoTests;
 			sourceTree = "<group>";
@@ -280,8 +292,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */,
 				CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */,
 				CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */,
+				CE39F5D41E97E02900876ED7 /* APIRequestService.swift in Sources */,
 				CE7D61111E858610008CA26E /* TableViewController.swift in Sources */,
 				CECC4BC71E95373600A4585C /* TaskCoreDataService.swift in Sources */,
 				CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */,
@@ -296,6 +310,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE7D60F81E857E8E008CA26E /* ToDoTests.swift in Sources */,
+				CE5B4DEA1E96EC64005B87A5 /* TableViewControllerTests.swift in Sources */,
+				CEFE57331E9D1C2900539A49 /* TaskTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +455,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 4Q996R58Y9;
 				INFOPLIST_FILE = ToDo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -452,6 +469,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 4Q996R58Y9;
 				INFOPLIST_FILE = ToDo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
