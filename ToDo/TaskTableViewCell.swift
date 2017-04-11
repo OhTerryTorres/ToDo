@@ -26,9 +26,9 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
 
     @IBAction func completedButtonAction(_ sender: Any) {
         guard let t = task else { return }
-        t.completed = t.completed ? false : true // Toggle completed status
-        t.userCompleted = t.completed ? USER_ID : nil  // Add your ID if you completed it
-        t.dateCompleted = t.completed ? Date() as NSDate? : nil // Add current date if completed
+        t.userCompleted = t.userCompleted == nil ? USER_ID : nil  // Add your ID if you completed it
+        print("userCompleted is \(t.userCompleted)")
+        t.dateCompleted = t.userCompleted == nil ? Date() as NSDate? : nil // Add current date if completed
         print("dateCompleted on button press is \(t.dateCompleted)")
         drawButtonForCompletionStatus()
         

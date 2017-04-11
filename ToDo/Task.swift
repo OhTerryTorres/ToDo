@@ -25,7 +25,6 @@ extension Task {
         self.init(context: context)
         
         self.name = name
-        self.completed = false
         self.dateCreated = Date() as NSDate?
         self.userCreated = USER_ID
         
@@ -43,32 +42,26 @@ extension Task {
     
     func updateProperties(withJSONitem item: [String:Any]) {
         
-        if let uniqueID = item["uniqeID"] as? String {
+        if let uniqueID = item[TaskPropertyKeys.uniqueID.rawValue] as? String {
             self.uniqueID = uniqueID
         }
-        if let name = item["name"] as? String {
+        if let name = item[TaskPropertyKeys.name.rawValue] as? String {
             self.name = name
         }
-        
-        self.completed = (item["completed"] != nil)
-        
-        if let userCreated = item["userCreated"] as? String {
+        if let userCreated = item[TaskPropertyKeys.userCreated.rawValue] as? String {
             self.userCreated = userCreated
         }
-        if let userCompleted = item["userCompleted"] as? String {
+        if let userCompleted = item[TaskPropertyKeys.userCompleted.rawValue] as? String {
             // Do not assign an empty string to the property.
             self.userCompleted = userCompleted == "" ? nil : userCompleted
         }
-        if let dateCreated = item["dateCreated"] as? String {
+        if let dateCreated = item[TaskPropertyKeys.dateCreated.rawValue] as? String {
             self.dateCreated = MySQLDateFormatter.date(from: dateCreated) as NSDate?
             print(dateCreated)
         }
-        if let dateCompleted = item["dateCompleted"] as? String {
+        if let dateCompleted = item[TaskPropertyKeys.dateCompleted.rawValue] as? String {
             self.dateCompleted = MySQLDateFormatter.date(from: dateCompleted) as NSDate?
         }
-        
-        print("\(name) completed? \(completed)")
-        
     }
     
 }

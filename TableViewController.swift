@@ -137,8 +137,21 @@ class TableViewController: UITableViewController, APIResponseHandler {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete  && indexPath.row != lastRow {
             let task = self.tasks[indexPath.row]
+
+            // Need to delete the remote version before the local version
+            // or else the reference to the local version will be gone
+            // and thus cannot be used to delete the remote version
+            // ******
+            // This assumes that both can be done easily,
+            // but there should be someway to keep the local list
+            // consistent with the database in case something goes
+            // wrong and the task CANNOT be deleted
+            let requestService = APIRequestService(withController: nil)
+            requestService.delete(task: task)
+            
             let dataService = TaskCoreDataService()
             dataService.delete(task: task)
+            
             self.update()
         }
     }

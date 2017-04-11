@@ -20,3 +20,12 @@ var MySQLDateFormatter : DateFormatter = {
     formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     return formatter
 }()
+
+enum TaskPropertyKeys : String {
+    case uniqueID = "uniqueID"
+    case name = "name"
+    case userCreated = "userCreated"
+    case userCompleted = "userCompleted"
+    case dateCreated = "dateCreated"
+    case dateCompleted = "dateCompleted"
+}
