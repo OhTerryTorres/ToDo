@@ -27,9 +27,8 @@ class TableViewController: UITableViewController, APIResponseHandler {
     override func viewDidLoad() {
         taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
         
-        // Look for new tasks in database
-        let requestService = APIRequestService(withController: self)
-        requestService.getTasks()
+        // Pull to refresh from remote store
+        self.refreshControl?.addTarget(self, action: #selector(getDataFromRemoteServer), for: UIControlEvents.valueChanged )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,15 +39,16 @@ class TableViewController: UITableViewController, APIResponseHandler {
     // MARK: - Tableview Data Source
     
     func update(addingNewTask : Bool = false) {
-        self.getData()
+        self.getDataFromLocalStore()
         
+        // Reload entire table
         guard addingNewTask else {
             self.tableView.reloadData()
             return
         }
-        //tableView.reloadData()
+
+        // Reload only the last two rows
         guard let row = self.lastRow else { return }
-        
         self.tableView.beginUpdates()
         let reloadPath = [IndexPath(row: row-1, section: 0)]
         let insertPath = [IndexPath(row: row, section: 0)]
@@ -59,16 +59,25 @@ class TableViewController: UITableViewController, APIResponseHandler {
         self.tableView.scrollToRow(at: insertPath[0], at: .bottom, animated: false)
     }
     
-    func getData() {
-        let dataService = TaskCoreDataService()
+    func getDataFromLocalStore() {
+        // Load stored tasks from Core Data store
+        let dataService = CoreService()
         tasks = dataService.getAllTasksSortedByDate()
     }
     
-    func handleResponse(json: [[String : Any]]) {
+    func getDataFromRemoteServer() {
+        // Look for new tasks in database
+        let apiService = APIService(withController: self)
+        apiService.getTasks()
+        print("refresh completed")
+        refreshControl?.endRefreshing()
+    }
+    
+    func handleResponse(jsonArray: [[String : Any]]) {
         print("begin nearby search json parsing")
         let fetch = NSFetchRequest<Task>(entityName: "Task")
-        for item in json {
-            guard let uniqueID = item["uniqueID"] as? String else { return }
+        for json in jsonArray {
+            guard let uniqueID = json["uniqueID"] as? String else { return }
             // Check for alreay stored Starbucks location
             fetch.predicate = NSPredicate(format: "uniqueID == %@", uniqueID)
             do {
@@ -76,11 +85,11 @@ class TableViewController: UITableViewController, APIResponseHandler {
                 if fetchedTasks.count > 0 {
                     // Update task
                     print("updating existing record")
-                    fetchedTasks[0].updateProperties(withJSONitem: item)
+                    fetchedTasks[0].updateProperties(withJSON: json)
                 } else {
                     // Add new task
                     print("adding new record")
-                    let task = Task(withJSONitem: item, intoContext: context)
+                    let task = Task(withJSON: json, intoContext: context)
                     self.tasks += [task]
                 }
             } catch {
@@ -146,10 +155,10 @@ class TableViewController: UITableViewController, APIResponseHandler {
             // but there should be someway to keep the local list
             // consistent with the database in case something goes
             // wrong and the task CANNOT be deleted
-            let requestService = APIRequestService(withController: nil)
-            requestService.delete(task: task)
+            let apiService = APIService(withController: nil)
+            apiService.delete(task: task)
             
-            let dataService = TaskCoreDataService()
+            let dataService = CoreService()
             dataService.delete(task: task)
             
             self.update()

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE39F5D41E97E02900876ED7 /* APIRequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIRequestService.swift */; };
+		CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIService.swift */; };
 		CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */; };
 		CE5B4DEA1E96EC64005B87A5 /* TableViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */; };
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
@@ -19,7 +19,7 @@
 		CE7D61031E857E8E008CA26E /* ToDoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61021E857E8E008CA26E /* ToDoUITests.swift */; };
 		CE7D61111E858610008CA26E /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61101E858610008CA26E /* TableViewController.swift */; };
 		CECC4BC51E9532CB00A4585C /* TaskTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */; };
-		CECC4BC71E95373600A4585C /* TaskCoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC4BC61E95373600A4585C /* TaskCoreDataService.swift */; };
+		CECC4BC71E95373600A4585C /* CoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC4BC61E95373600A4585C /* CoreService.swift */; };
 		CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */; };
 		CEEBADE21E93E4E8000E586D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE11E93E4E8000E586D /* Task.swift */; };
 		CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE31E93E9CB000E586D /* Constants.swift */; };
@@ -44,7 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CE39F5D31E97E02900876ED7 /* APIRequestService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIRequestService.swift; sourceTree = "<group>"; };
+		CE39F5D31E97E02900876ED7 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponseHandler.swift; sourceTree = "<group>"; };
 		CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewControllerTests.swift; sourceTree = "<group>"; };
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,7 +62,7 @@
 		CE7D61041E857E8E008CA26E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE7D61101E858610008CA26E /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewController.swift; path = ../TableViewController.swift; sourceTree = "<group>"; };
 		CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTextFieldDelegate.swift; sourceTree = "<group>"; };
-		CECC4BC61E95373600A4585C /* TaskCoreDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCoreDataService.swift; sourceTree = "<group>"; };
+		CECC4BC61E95373600A4585C /* CoreService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreService.swift; sourceTree = "<group>"; };
 		CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		CEEBADE11E93E4E8000E586D /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		CEEBADE31E93E9CB000E586D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -117,15 +117,13 @@
 		CE7D60DE1E857E8D008CA26E /* ToDo */ = {
 			isa = PBXGroup;
 			children = (
-				CEEBADE31E93E9CB000E586D /* Constants.swift */,
-				CEEBADE11E93E4E8000E586D /* Task.swift */,
-				CE7D61101E858610008CA26E /* TableViewController.swift */,
-				CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */,
-				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
-				CECC4BC61E95373600A4585C /* TaskCoreDataService.swift */,
-				CE39F5D31E97E02900876ED7 /* APIRequestService.swift */,
-				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
 				CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */,
+				CEEBADE31E93E9CB000E586D /* Constants.swift */,
+				CEFE57351E9E869D00539A49 /* Controllers */,
+				CEFE57381E9E86DF00539A49 /* Services */,
+				CEFE57371E9E86C600539A49 /* Protocols */,
+				CEFE57361E9E86AC00539A49 /* Views */,
+				CEFE57341E9E868600539A49 /* Models */,
 				CE7D60E31E857E8D008CA26E /* Main.storyboard */,
 				CE7D60E91E857E8D008CA26E /* Assets.xcassets */,
 				CE7D60EB1E857E8D008CA26E /* LaunchScreen.storyboard */,
@@ -153,6 +151,48 @@
 				CE7D61041E857E8E008CA26E /* Info.plist */,
 			);
 			path = ToDoUITests;
+			sourceTree = "<group>";
+		};
+		CEFE57341E9E868600539A49 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CEEBADE11E93E4E8000E586D /* Task.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		CEFE57351E9E869D00539A49 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CE7D61101E858610008CA26E /* TableViewController.swift */,
+				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		CEFE57361E9E86AC00539A49 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		CEFE57371E9E86C600539A49 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		CEFE57381E9E86DF00539A49 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				CECC4BC61E95373600A4585C /* CoreService.swift */,
+				CE39F5D31E97E02900876ED7 /* APIService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -295,9 +335,9 @@
 				CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */,
 				CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */,
 				CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */,
-				CE39F5D41E97E02900876ED7 /* APIRequestService.swift in Sources */,
+				CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */,
 				CE7D61111E858610008CA26E /* TableViewController.swift in Sources */,
-				CECC4BC71E95373600A4585C /* TaskCoreDataService.swift in Sources */,
+				CECC4BC71E95373600A4585C /* CoreService.swift in Sources */,
 				CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */,
 				CECC4BC51E9532CB00A4585C /* TaskTextFieldDelegate.swift in Sources */,
 				CEEBADE21E93E4E8000E586D /* Task.swift in Sources */,

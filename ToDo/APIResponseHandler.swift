@@ -8,5 +8,5 @@
 
 protocol APIResponseHandler {
     // Handle JSON dict from APIRequestService
-    func handleResponse(json : [[String:Any]])
+    func handleResponse(jsonArray : [[String:Any]])
 }

@@ -12,7 +12,7 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
 
     @IBOutlet var completedButton: UIButton!
     @IBOutlet var textField: UITextField!
-    var task : Task? {
+    weak var task : Task? {
         didSet {
             drawButtonForCompletionStatus()
         }
@@ -33,11 +33,12 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         drawButtonForCompletionStatus()
         
         // Update task's completed status in database
-        let requestService = APIRequestService(withController: nil)
-        requestService.set(task: t)
+        let apiService = APIService(withController: nil)
+        apiService.set(task: t)
     }
     
     func drawButtonForCompletionStatus() {
+        // Color
         var strokeColor : UIColor = .lightGray
         var fillColor : UIColor = .clear
         if let t = task {
@@ -49,6 +50,7 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
             }
         }
         
+        // Shape
         let circlePath = UIBezierPath(arcCenter: CGPoint(x: completedButton.frame.width/2,y: completedButton.frame.height/2),
                                       radius: CGFloat(completedButton.frame.width/4),
                                       startAngle: CGFloat(0),
@@ -60,15 +62,11 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         shapeLayer.strokeColor = strokeColor.cgColor
         shapeLayer.lineWidth = 2.0
         
+        // Replace old shape layer
         if let sl = self.shapeLayer { sl.removeFromSuperlayer() }
         self.shapeLayer = shapeLayer
         completedButton.layer.addSublayer(self.shapeLayer!)
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
-    }
     
 }

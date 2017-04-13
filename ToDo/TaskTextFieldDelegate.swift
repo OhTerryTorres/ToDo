@@ -69,7 +69,8 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     func resolveTaskForTextField(textField : UITextField) -> Task? {
         // The tag should be set properly in cellForRow
         let tag = textField.tag
-        let dataService = TaskCoreDataService()
+        let dataService = CoreService()
+        let apiService = APIService(withController: self.controller)
         
         // New task
         guard tag != self.controller.lastRow else {
@@ -78,8 +79,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
             guard let task = dataService.addNewTask(withName: text) else { return nil }
             
             // Send task to database
-            let requestService = APIRequestService(withController: self.controller)
-            requestService.insert(task: task)
+            apiService.insert(task: task)
             
             return task
         }
@@ -91,8 +91,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         dataService.updateTask(task: task, withName: textField.text!)
         
         // Update task to database
-        let requestService = APIRequestService(withController: self.controller)
-        requestService.set(task: task)
+        apiService.set(task: task)
         
         return nil
         

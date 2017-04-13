@@ -11,14 +11,14 @@ import XCTest
 
 class TaskTests: XCTestCase {
     
-    let requestService = APIRequestService(withController: nil)
+    let apiService = APIRequestService(withController: nil)
     let controller = TableViewController()
     
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        requestService.responseHandler = controller
+        apiService.responseHandler = controller
         
     }
     
@@ -29,7 +29,7 @@ class TaskTests: XCTestCase {
     
     // Test for a successful request from MySQL
     func testTaskRetrieval() {
-        requestService.getTasks()
+        apiService.getTasks()
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4), execute: {
             XCTAssertNotNil(self.controller.tasks.first(where: { $0.name == "Awesome!" }))
         })

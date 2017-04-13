@@ -35,31 +35,31 @@ extension Task {
         UserDefaults.standard.set(numberOfTasksCreated, forKey: "numberOfTasksCreated")
     }
     
-    convenience init(withJSONitem item: [String:Any], intoContext context: NSManagedObjectContext) {
+    convenience init(withJSON json: [String:Any], intoContext context: NSManagedObjectContext) {
         self.init(context: context)
-        updateProperties(withJSONitem: item)
+        updateProperties(withJSON: json)
     }
     
-    func updateProperties(withJSONitem item: [String:Any]) {
+    func updateProperties(withJSON json: [String:Any]) {
         
-        if let uniqueID = item[TaskPropertyKeys.uniqueID.rawValue] as? String {
+        if let uniqueID = json[TaskPropertyKeys.uniqueID.rawValue] as? String {
             self.uniqueID = uniqueID
         }
-        if let name = item[TaskPropertyKeys.name.rawValue] as? String {
+        if let name = json[TaskPropertyKeys.name.rawValue] as? String {
             self.name = name
         }
-        if let userCreated = item[TaskPropertyKeys.userCreated.rawValue] as? String {
+        if let userCreated = json[TaskPropertyKeys.userCreated.rawValue] as? String {
             self.userCreated = userCreated
         }
-        if let userCompleted = item[TaskPropertyKeys.userCompleted.rawValue] as? String {
+        if let userCompleted = json[TaskPropertyKeys.userCompleted.rawValue] as? String {
             // Do not assign an empty string to the property.
             self.userCompleted = userCompleted == "" ? nil : userCompleted
         }
-        if let dateCreated = item[TaskPropertyKeys.dateCreated.rawValue] as? String {
+        if let dateCreated = json[TaskPropertyKeys.dateCreated.rawValue] as? String {
             self.dateCreated = MySQLDateFormatter.date(from: dateCreated) as NSDate?
             print(dateCreated)
         }
-        if let dateCompleted = item[TaskPropertyKeys.dateCompleted.rawValue] as? String {
+        if let dateCompleted = json[TaskPropertyKeys.dateCompleted.rawValue] as? String {
             self.dateCompleted = MySQLDateFormatter.date(from: dateCompleted) as NSDate?
         }
     }

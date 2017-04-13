@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-struct TaskCoreDataService {
+struct CoreService {
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -60,6 +60,12 @@ struct TaskCoreDataService {
     func delete(task: Task) {
         self.context.delete(task)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        
+    }
+    
+    func saveContextAndDoStuff(stuff: ()->() ) {
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        stuff()
     }
     
 }
