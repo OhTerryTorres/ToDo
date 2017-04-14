@@ -7,18 +7,13 @@
 //
 
 import UIKit
-import CoreData
 
 class TableViewController: UITableViewController, APIResponseHandler {
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var taskTextFieldDelegate : TaskTextFieldDelegate!
-    var lastRow : Int?
-    var tasks: [Task] = [] {
-        didSet {
-            lastRow = tasks.count
-            print("lastRow is now \(lastRow)")
-        }
+    var tasks: [Task] = []
+    var lastRow : Int {
+        return self.tasks.count
     }
     
     
@@ -48,10 +43,9 @@ class TableViewController: UITableViewController, APIResponseHandler {
         }
 
         // Reload only the last two rows
-        guard let row = self.lastRow else { return }
         self.tableView.beginUpdates()
-        let reloadPath = [IndexPath(row: row-1, section: 0)]
-        let insertPath = [IndexPath(row: row, section: 0)]
+        let reloadPath = [IndexPath(row: lastRow-1, section: 0)]
+        let insertPath = [IndexPath(row: lastRow, section: 0)]
         self.tableView.reloadRows(at: reloadPath, with: .automatic)
         self.tableView.insertRows(at: insertPath, with: .automatic)
         self.tableView.endUpdates()
@@ -61,8 +55,8 @@ class TableViewController: UITableViewController, APIResponseHandler {
     
     func getDataFromLocalStore() {
         // Load stored tasks from Core Data store
-        let dataService = CoreService()
-        tasks = dataService.getAllTasksSortedByDate()
+        let coreService = CoreService()
+        tasks = coreService.getAllTasksSortedByDate()
     }
     
     func getDataFromRemoteServer() {
@@ -74,33 +68,8 @@ class TableViewController: UITableViewController, APIResponseHandler {
     }
     
     func handleResponse(jsonArray: [[String : Any]]) {
-        print("begin nearby search json parsing")
-        let fetch = NSFetchRequest<Task>(entityName: "Task")
-        for json in jsonArray {
-            guard let uniqueID = json["uniqueID"] as? String else { return }
-            // Check for alreay stored Starbucks location
-            fetch.predicate = NSPredicate(format: "uniqueID == %@", uniqueID)
-            do {
-                let fetchedTasks = try context.fetch(fetch)
-                if fetchedTasks.count > 0 {
-                    // Update task
-                    print("updating existing record")
-                    fetchedTasks[0].updateProperties(withJSON: json)
-                } else {
-                    // Add new task
-                    print("adding new record")
-                    let task = Task(withJSON: json, intoContext: context)
-                    self.tasks += [task]
-                }
-            } catch {
-                print ("Filtered fetch failed")
-            }
-        }
-        print("end nearby search json parsing")
-
-        // Sort tasks by date created
-        // A task should never be initialized without this property
-        tasks.sort(by: {$0.dateCreated!.timeIntervalSince1970 < $1.dateCreated!.timeIntervalSince1970 } )
+        let coreService = CoreService()
+        tasks = coreService.integrateTasks(tasks: tasks, withJSONArray: jsonArray)
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -121,7 +90,7 @@ class TableViewController: UITableViewController, APIResponseHandler {
         
         // Make blank task in last rows
         guard cell.textField.tag != lastRow else {
-            // Clear dequeed cell
+            // Clear dequeed cell's properties
             cell.textField.text = nil
             cell.task = nil
             return cell
@@ -151,15 +120,30 @@ class TableViewController: UITableViewController, APIResponseHandler {
             // or else the reference to the local version will be gone
             // and thus cannot be used to delete the remote version
             // ******
-            // This assumes that both can be done easily,
-            // but there should be someway to keep the local list
+            // There shoul be a way to keep the local list
             // consistent with the database in case something goes
             // wrong and the task CANNOT be deleted
+            // *****
+            // For example:
+            // Delete action removes the task from the array at the
+            // SAME TIME api.delete method executes.
+            // This shouldn't be a problem, because the original
+            // reference to the task is still in its context.
+            // The .delete method could return an error.
+            // A callback checks for an error. If there is one,
+            // the core.delete task does NOT execute.
+            // The next time the user launches the app, the task
+            // will return, which may be confusing, but lets
+            // the player know that the delete request did not
+            // go through last time.
+            
+            // This setup could work for .set method, too.
+            
             let apiService = APIService(withController: nil)
             apiService.delete(task: task)
             
-            let dataService = CoreService()
-            dataService.delete(task: task)
+            let coreService = CoreService()
+            coreService.delete(task: task)
             
             self.update()
         }

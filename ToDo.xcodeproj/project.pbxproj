@@ -138,8 +138,8 @@
 			children = (
 				CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */,
 				CE7D60F71E857E8E008CA26E /* ToDoTests.swift */,
-				CE7D60F91E857E8E008CA26E /* Info.plist */,
 				CEFE57321E9D1C2900539A49 /* TaskTests.swift */,
+				CE7D60F91E857E8E008CA26E /* Info.plist */,
 			);
 			path = ToDoTests;
 			sourceTree = "<group>";

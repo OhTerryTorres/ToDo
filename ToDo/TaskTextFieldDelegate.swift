@@ -19,8 +19,10 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         self.controller = controller
         super.init()
         if let nc = self.controller.navigationController {
+            // Touching anyhwere but a textfield will dismiss the keyboard
             nc.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         }
+        // Know when to move the tableview out from behind the keyboard
         registerForKeyboardNotifications()
     }
     
@@ -41,8 +43,8 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         // If a new task is properly added,
         // this text field should now be in the second to last row.
         // We want to make the the new text field active on hitting return.
-        if textField.tag == controller.lastRow!-1 {
-            if let cell = controller.tableView.cellForRow(at: IndexPath(row: controller.lastRow!, section: 0)) as? TaskTableViewCell {
+        if textField.tag == controller.lastRow-1 {
+            if let cell = controller.tableView.cellForRow(at: IndexPath(row: controller.lastRow, section: 0)) as? TaskTableViewCell {
                 print("switching first responder to new text field")
                 cell.textField.becomeFirstResponder()
             }
@@ -69,14 +71,13 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     func resolveTaskForTextField(textField : UITextField) -> Task? {
         // The tag should be set properly in cellForRow
         let tag = textField.tag
-        let dataService = CoreService()
+        let coreService = CoreService()
         let apiService = APIService(withController: self.controller)
         
         // New task
         guard tag != self.controller.lastRow else {
-            print("3 textField is in the last row")
             guard let text = textField.text  else { return nil }
-            guard let task = dataService.addNewTask(withName: text) else { return nil }
+            guard let task = coreService.insert(taskWithName: text) else { return nil }
             
             // Send task to database
             apiService.insert(task: task)
@@ -86,9 +87,9 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         
         // Update task
         let task = controller.tasks[tag]
-        print("3 textField is in row \(tag)")
+        // If task is given a new name
         guard task.name != textField.text else { return nil }
-        dataService.updateTask(task: task, withName: textField.text!)
+        coreService.set(task: task, withName: textField.text!)
         
         // Update task to database
         apiService.set(task: task)

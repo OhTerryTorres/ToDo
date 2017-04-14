@@ -1,5 +1,5 @@
 //
-//  TaskCoreDataService.swift
+//  sCoreService.swift
 //  ToDo
 //
 //  Created by TerryTorres on 4/5/17.
@@ -13,6 +13,8 @@ struct CoreService {
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    // Fetch all tasks for local store and sort them by data
+    // When app is first launched.
     func getAllTasksSortedByDate() -> [Task] {
         var tasks : [Task] = []
         let fetchRequest : NSFetchRequest<Task> = Task.fetchRequest()
@@ -26,8 +28,9 @@ struct CoreService {
         return tasks
     }
     
-    
-    func addNewTask(withName name: String) -> Task? {
+    // Add a new task
+    // When user hits return after writing the name of a new task
+    func insert(taskWithName name: String) -> Task? {
         do {
             // Create Task in context
             let task = try Task(name: name, context: context)
@@ -43,7 +46,9 @@ struct CoreService {
         return nil
     }
     
-    func updateTask(task: Task, withName name: String) {
+    // Change name of task
+    // When user hits return after changing string in the associated cell's text field
+    func set(task: Task, withName name: String) {
         guard let id = task.uniqueID else { return }
         let fetch = NSFetchRequest<Task>(entityName: "Task")
         fetch.predicate = NSPredicate(format: "uniqueID == %@", id)
@@ -57,15 +62,44 @@ struct CoreService {
         }
     }
     
+    // Remove task from local store
+    // When the delete edit action is taken on the tableview
     func delete(task: Task) {
         self.context.delete(task)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        
     }
     
-    func saveContextAndDoStuff(stuff: ()->() ) {
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        stuff()
+    // Integrates remote data with local data, updating existing records and adding new ones
+    // When the tableview's responsehandler receives json data from the remote store
+    func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) -> [Task] {
+        var newTasks = tasks
+        print("begin nearby search json parsing")
+        let fetch = NSFetchRequest<Task>(entityName: "Task")
+        for json in jsonArray {
+            guard let uniqueID = json["uniqueID"] as? String else { return [] }
+            // Check for alreay stored Starbucks location
+            fetch.predicate = NSPredicate(format: "uniqueID == %@", uniqueID)
+            do {
+                let fetchedTasks = try context.fetch(fetch)
+                if fetchedTasks.count > 0 {
+                    // Update task
+                    print("updating existing record")
+                    fetchedTasks[0].updateProperties(withJSON: json)
+                } else {
+                    // Add new task
+                    print("adding new record")
+                    let task = Task(withJSON: json, intoContext: context)
+                    newTasks += [task]
+                }
+            } catch {
+                print ("Filtered fetch failed")
+            }
+        }
+        print("end nearby search json parsing")
+        
+        // Sort tasks by date created
+        // A task should never be initialized without this property
+        return newTasks.sorted(by: {$0.dateCreated!.timeIntervalSince1970 < $1.dateCreated!.timeIntervalSince1970 } )
     }
     
 }
