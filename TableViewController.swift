@@ -67,6 +67,8 @@ class TableViewController: UITableViewController, APIResponseHandler {
         refreshControl?.endRefreshing()
     }
     
+    // Called from a URL Session data task, so can be assume to
+    // alway run on a background thread.
     func handleResponse(jsonArray: [[String : Any]]) {
         let coreService = CoreService()
         tasks = coreService.integrateTasks(tasks: tasks, withJSONArray: jsonArray)

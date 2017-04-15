@@ -63,13 +63,12 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         }
         
         controller.update(addingNewTask: add)
-        
     }
     
     // Add or update Task
     // Return nil unless adding new task
     func resolveTaskForTextField(textField : UITextField) -> Task? {
-        // The tag should be set properly in cellForRow
+        // The tag should be set properly in the controller's cellForRow %%
         let tag = textField.tag
         let coreService = CoreService()
         let apiService = APIService(withController: self.controller)
@@ -98,7 +97,8 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         
     }
     
-    
+    // Keyboard dismissal works like hitting Return:
+    // whatever is in the text field at the time will be saved.
     func dismissKeyboard() {
         if let textField = self.activeTextField {
             commitChangesInTextField(textField: textField)
@@ -120,21 +120,21 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         var info = notification.userInfo!
         guard let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size else { return }
         
-        // Change tableview insets
+        // Change tableview insets for the first time
         if oldInsets == nil {
             // Save default insets on first change
             oldInsets = (controller.tableView.contentInset, controller.tableView.scrollIndicatorInsets)
         }
+        
+        // Move tableview's insets to make froom for the keyboard
         var contentInsets = controller.tableView.contentInset
         contentInsets.bottom = keyboardSize.height
         controller.tableView.contentInset = contentInsets
         controller.tableView.scrollIndicatorInsets = contentInsets
         
-        // Move active text field to a visible area
+        // Move active text field to a visible area if its blocked by the kyboard
         guard let activeField = self.activeTextField else { return }
-        
         guard let activePoint = activeField.superview?.superview?.convert(activeField.frame.origin, to: controller.view) else { return }
-        
         let keyRect = CGRect(x: controller.view.frame.origin.x, y: (controller.view.frame.size.height - keyboardSize.height), width: controller.view.frame.size.width, height: keyboardSize.height)
         if (keyRect.contains(activePoint)){
             controller.tableView.scrollRectToVisible(activeField.frame, animated: true)
