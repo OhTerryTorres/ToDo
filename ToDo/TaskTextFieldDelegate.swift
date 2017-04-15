@@ -132,7 +132,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         controller.tableView.contentInset = contentInsets
         controller.tableView.scrollIndicatorInsets = contentInsets
         
-        // Move active text field to a visible area if its blocked by the kyboard
+        // Move active text field to a visible area if its blocked by the keyboard
         guard let activeField = self.activeTextField else { return }
         guard let activePoint = activeField.superview?.superview?.convert(activeField.frame.origin, to: controller.view) else { return }
         let keyRect = CGRect(x: controller.view.frame.origin.x, y: (controller.view.frame.size.height - keyboardSize.height), width: controller.view.frame.size.width, height: keyboardSize.height)
