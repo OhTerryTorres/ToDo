@@ -25,7 +25,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         // Know when to move the tableview out from behind the keyboard
         registerForKeyboardNotifications()
     }
-    
+        
     // MARK: - Textfield delegate
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

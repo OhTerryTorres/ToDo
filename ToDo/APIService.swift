@@ -8,7 +8,7 @@
 
 import Foundation
 
-class APIService {
+struct APIService {
     
     enum PostMethod : String {
         case insert = "insert"
