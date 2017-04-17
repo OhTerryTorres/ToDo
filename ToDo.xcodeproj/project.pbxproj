@@ -27,6 +27,7 @@
 		CEFE573A1EA27AC100539A49 /* AuthenticationAlertDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57391EA27AC100539A49 /* AuthenticationAlertDelegate.swift */; };
 		CEFE573D1EA28E0C00539A49 /* AuthenticationResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */; };
 		CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */; };
+		CEFE57411EA501C600539A49 /* AuthenticationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57401EA501C600539A49 /* AuthenticationDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		CEFE57391EA27AC100539A49 /* AuthenticationAlertDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationAlertDelegate.swift; sourceTree = "<group>"; };
 		CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationResponseHandler.swift; path = ../AuthenticationResponseHandler.swift; sourceTree = "<group>"; };
 		CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		CEFE57401EA501C600539A49 /* AuthenticationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +175,7 @@
 				CE7D61101E858610008CA26E /* TableViewController.swift */,
 				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
 				CEFE57391EA27AC100539A49 /* AuthenticationAlertDelegate.swift */,
+				CEFE57401EA501C600539A49 /* AuthenticationDelegate.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 				CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */,
 				CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */,
 				CEFE573A1EA27AC100539A49 /* AuthenticationAlertDelegate.swift in Sources */,
+				CEFE57411EA501C600539A49 /* AuthenticationDelegate.swift in Sources */,
 				CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */,
 				CE7D61111E858610008CA26E /* TableViewController.swift in Sources */,
 				CECC4BC71E95373600A4585C /* CoreService.swift in Sources */,

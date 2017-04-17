@@ -8,9 +8,10 @@
 
 import UIKit
 
-class TableViewController: UITableViewController, APIResponseHandler {
+class TableViewController: UITableViewController, APIResponseHandler, AuthenticationResponseHandler {
     
     var taskTextFieldDelegate : TaskTextFieldDelegate!
+    var authenticationDelegate : AuthenticationDelegate!
     var tasks: [Task] = []
     var lastRow : Int {
         return self.tasks.count
@@ -20,13 +21,14 @@ class TableViewController: UITableViewController, APIResponseHandler {
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
-        taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
-        
         // Pull to refresh from remote store
         self.refreshControl?.addTarget(self, action: #selector(getDataFromRemoteServer), for: UIControlEvents.valueChanged )
+        taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
+        authenticationDelegate = AuthenticationDelegate(forController: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        authenticationDelegate.checkSession()
         update()
     }
     
@@ -69,9 +71,17 @@ class TableViewController: UITableViewController, APIResponseHandler {
     
     // Called from a URL Session data task, so can be assume to
     // alway run on a background thread.
-    func handleResponse(jsonArray: [[String : Any]]) {
+    func handleAPIResponse(jsonArray: [[String : Any]]) {
         let coreService = CoreService()
         tasks = coreService.integrateTasks(tasks: tasks, withJSONArray: jsonArray)
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    func handleAuthenticationResponse(status: String) {
+        // DUHHH *****
         
         DispatchQueue.main.async {
             self.tableView.reloadData()

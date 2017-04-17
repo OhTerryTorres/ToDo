@@ -50,7 +50,6 @@ struct APIService {
         print("constructing post request data task")
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard error == nil else { print("error \(error.debugDescription)"); return }
-            print("no error")
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
                 print("dataString is\n\(dataString)")
@@ -79,7 +78,7 @@ struct APIService {
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]] {
                     print("sending returned JSON to handler")
-                    self.responseHandler.handleResponse(jsonArray: json)
+                    self.responseHandler.handleAPIResponse(jsonArray: json)
                 }
             } catch {
                 print("JSONSerialization error")

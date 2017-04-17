@@ -29,3 +29,7 @@ enum TaskPropertyKeys : String {
     case dateCreated = "dateCreated"
     case dateCompleted = "dateCompleted"
 }
+
+enum UserKeys : String {
+    case login = "login"
+}

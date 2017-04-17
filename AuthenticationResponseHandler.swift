@@ -11,5 +11,5 @@ import Foundation
 
 protocol AuthenticationResponseHandler {
     // Handle JSON dict from AuthenticationService
-    func handleResponse(jsonArray : [[String:Any]])
+    func handleAuthenticationResponse(status : String)
 }

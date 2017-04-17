@@ -10,7 +10,7 @@ import UIKit
 
 class AuthenticationAlertDelegate {
     
-    var controller : TableViewController!
+    var controller : AuthenticationDelegate!
     
     lazy var loginAlertController : UIAlertController = {
         let alertController = UIAlertController(title: nil, message: "", preferredStyle: .alert)
@@ -25,15 +25,16 @@ class AuthenticationAlertDelegate {
         let loginAction = UIAlertAction(title: "Log In", style: .default, handler: {
             alert -> Void in
             
-            let emailField = alertController.textFields![0] as UITextField
-            let passwordField = alertController.textFields![1] as UITextField
+            guard let email = alertController.textFields?[0].text else { return }
+            guard let password = alertController.textFields?[1].text else { return }
             
-            print("email \(emailField.text), password \(passwordField.text)")
+            let authenticator = AuthenticationService(withController: self.controller)
+            authenticator.login(email: email, password: password)
         })
         
         let registerAlertAction = UIAlertAction(title: "Register", style: .default, handler: {
             (action : UIAlertAction!) -> Void in
-            self.controller.present(self.registerAlertController, animated: true, completion: nil)
+            self.controller.presentRegisterAlert()
         })
         
         alertController.addAction(loginAction)
@@ -66,7 +67,7 @@ class AuthenticationAlertDelegate {
         
         let loginAlertAction = UIAlertAction(title: "Log In", style: .default, handler: {
             (action : UIAlertAction!) -> Void in
-            self.controller.present(self.loginAlertController, animated: true, completion: nil)
+            self.controller.presentLoginAlert()
         })
         
         alertController.addAction(registerAction)
@@ -75,8 +76,15 @@ class AuthenticationAlertDelegate {
     }()
     
     
-    init(forController controller: TableViewController) {
+    init(forController controller: AuthenticationDelegate) {
         self.controller = controller
+        // Check for previous login information
+        guard let _ = UserDefaults.standard.object(forKey: UserKeys.login.rawValue) else {
+            controller.presentLoginAlert()
+            return
+        }
     }
+    
+
     
 }
