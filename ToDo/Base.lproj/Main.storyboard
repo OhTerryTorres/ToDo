@@ -13,7 +13,7 @@
         <!--To Do-->
         <scene sceneID="KNt-5c-NUs">
             <objects>
-                <tableViewController id="ytJ-hB-oFe" customClass="TableViewController" customModule="ToDo" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="ytJ-hB-oFe" customClass="TaskViewController" customModule="ToDo" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Kso-vh-rEU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -64,6 +64,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="To Do" id="T6r-UU-SgB"/>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="Shd-hi-aN5">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <attributedString key="attributedTitle"/>
                     </refreshControl>

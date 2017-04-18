@@ -24,20 +24,48 @@ struct AuthenticationService {
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let postString = "email=\(email)&password=\(password)"
+        let postString = "email=\(email.safeEmail())&password=\(password)"
         request.httpBody = postString.data(using: .utf8)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard error == nil else { print("error \(error.debugDescription)"); return }
             guard let data = data else { print("no data"); return }
             do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] {
+                if let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any] {
                     guard let status = json["status"] as? String, let message = json["message"] as? String else { return }
                     print(message)
-                    self.responseHandler.handleAuthenticationResponse(status: status)
+                    self.responseHandler.handleLoginResponse(status: status, message: message)
                 }
+                // ******
+                // if something goes wrong in the PHP that is neithr an explicit success or error, nothin will happen
             } catch {
-                print("JSONSerialization error")
+                print("login JSONSerialization error")
+            }
+        }
+        dataTask.resume()
+    }
+    
+    func register(email: String, password: String) {
+        let urlString = "http://www.terry-torres.com/todo/api/userRegister.php"
+        guard let url = URL(string: urlString) else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let postString = "email=\(email.safeEmail())&password=\(password)"
+        request.httpBody = postString.data(using: .utf8)
+        
+        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard error == nil else { print("error \(error.debugDescription)"); return }
+            guard let data = data else { print("no data"); return }
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any] {
+                    guard let status = json["status"] as? String, let message = json["message"] as? String else { return }
+                    print(message)
+                    self.responseHandler.handleRegisterResponse(status: status, message: message)
+                }
+                // ******
+                // if something goes wrong in the PHP that is neithr an explicit success or error, nothin will happen
+            } catch {
+                print("register JSONSerialization error")
             }
         }
         dataTask.resume()

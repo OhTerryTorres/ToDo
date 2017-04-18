@@ -17,15 +17,16 @@ struct APIService {
     
     var responseHandler : APIResponseHandler!
     
-    init(withController controller: APIResponseHandler?) {
+    init(withController controller: APIResponseHandler? = nil) {
         self.responseHandler = controller
     }
     
     // MARK: - API request
     
     func postRequest(task: Task, method: PostMethod) {
+        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
         print("post request with method: \(method.rawValue)")
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?method=\(method.rawValue)"
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=\(method.rawValue)"
         
         var json : [String : Any] = [:]
         
@@ -52,7 +53,7 @@ struct APIService {
             guard error == nil else { print("error \(error.debugDescription)"); return }
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
-                print("dataString is\n\(dataString)")
+                print("data from post request is\n\(dataString)")
             }
         }
         dataTask.resume()
@@ -68,7 +69,8 @@ struct APIService {
     func getTasks() {
         // Cannot be performed without a response handler
         guard responseHandler != nil else { print("error: no response handler"); return }
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?method=get"
+        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=get"
         guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)
         
@@ -81,14 +83,15 @@ struct APIService {
                     self.responseHandler.handleAPIResponse(jsonArray: json)
                 }
             } catch {
-                print("JSONSerialization error")
+                print("get tasks JSONSerialization error")
             }
         }
         dataTask.resume()
     }
     
     func delete(task: Task) {
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?method=delete"
+        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=delete"
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
         
@@ -102,7 +105,7 @@ struct APIService {
             print("no error")
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
-                print("dataString is\n\(dataString)")
+                print("data from delete request is\n\(dataString)")
             }
         }
         dataTask.resume()

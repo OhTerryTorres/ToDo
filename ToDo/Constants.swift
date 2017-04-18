@@ -31,5 +31,15 @@ enum TaskPropertyKeys : String {
 }
 
 enum UserKeys : String {
-    case login = "login"
+    case user = "user"
+}
+
+extension String {
+    
+    func safeEmail() -> String {
+        let noAt = self.replacingOccurrences(of: "@", with: "at")
+        let noDot = noAt.replacingOccurrences(of: ".", with: "dot")
+        return noDot
+    }
+    
 }

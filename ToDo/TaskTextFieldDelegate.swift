@@ -11,11 +11,11 @@ import UIKit
 class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
 
     
-    let controller : TableViewController
+    let controller : TaskTableViewController
     var activeTextField : UITextField?
     var oldInsets : (contentInset: UIEdgeInsets, scrollIndicatorInsets: UIEdgeInsets)? = nil
     
-    init(forController controller: TableViewController) {
+    init(forController controller: TaskTableViewController) {
         self.controller = controller
         super.init()
         if let nc = self.controller.navigationController {
@@ -30,12 +30,10 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.activeTextField = textField
-        print("text field is active")
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.activeTextField = nil
-        print("active text field is now nil")
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -45,12 +43,10 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         // We want to make the the new text field active on hitting return.
         if textField.tag == controller.lastRow-1 {
             if let cell = controller.tableView.cellForRow(at: IndexPath(row: controller.lastRow, section: 0)) as? TaskTableViewCell {
-                print("switching first responder to new text field")
                 cell.textField.becomeFirstResponder()
             }
         } else {
             textField.resignFirstResponder()
-            print("resigning first responder")
         }
         return true
     }
@@ -71,7 +67,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         // The tag should be set properly in the controller's cellForRow %%
         let tag = textField.tag
         let coreService = CoreService()
-        let apiService = APIService(withController: self.controller)
+        let apiService = APIService()
         
         // New task
         guard tag != self.controller.lastRow else {
@@ -85,7 +81,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         }
         
         // Update task
-        let task = controller.tasks[tag]
+        let task = controller.dataSource.tasks[tag]
         // If task is given a new name
         guard task.name != textField.text else { return nil }
         coreService.set(task: task, withName: textField.text!)

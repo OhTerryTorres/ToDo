@@ -1,5 +1,5 @@
 //
-//  LoginAlertDelegate.swift
+//  AuthenticationAlertDelegate.swift
 //  ToDo
 //
 //  Created by TerryTorres on 4/15/17.
@@ -13,7 +13,7 @@ class AuthenticationAlertDelegate {
     var controller : AuthenticationDelegate!
     
     lazy var loginAlertController : UIAlertController = {
-        let alertController = UIAlertController(title: nil, message: "", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Log In", message: "", preferredStyle: .alert)
         
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Email"
@@ -22,14 +22,18 @@ class AuthenticationAlertDelegate {
             textField.placeholder = "Password"
         }
         
-        let loginAction = UIAlertAction(title: "Log In", style: .default, handler: {
+        let loginAction = UIAlertAction(title: "Log In", style: .cancel, handler: {
             alert -> Void in
             
-            guard let email = alertController.textFields?[0].text else { return }
-            guard let password = alertController.textFields?[1].text else { return }
+            if let email = alertController.textFields?[0].text, let password = alertController.textFields?[1].text {
+                if email == "" || password == "" {
+                    self.loginAlertController.message = "Fields are missing!"
+                    self.controller.presentLoginAlert()
+                } else {
+                    self.controller.login(email: email, password: password)
+                }
+            }
             
-            let authenticator = AuthenticationService(withController: self.controller)
-            authenticator.login(email: email, password: password)
         })
         
         let registerAlertAction = UIAlertAction(title: "Register", style: .default, handler: {
@@ -47,22 +51,31 @@ class AuthenticationAlertDelegate {
         
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Email"
+            textField.text = "kefkajr@gmail.com"
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Password"
+            textField.text = "ultima"
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Confirm Password"
+            textField.text = "ultima"
         }
         
-        let registerAction = UIAlertAction(title: "Register", style: .default, handler: {
+        let registerAction = UIAlertAction(title: "Register", style: .cancel, handler: {
             alert -> Void in
             
-            let emailField = alertController.textFields![0] as UITextField
-            let passwordField = alertController.textFields![1] as UITextField
-            let confirmPasswordField = alertController.textFields![2] as UITextField
+            guard let email = alertController.textFields?[0].text else { return }
+            guard let password = alertController.textFields?[1].text else { return }
+            guard let confirmPassword = alertController.textFields?[2].text else { return }
             
-            print("email \(emailField.text), password \(passwordField.text), confirmed password \(confirmPasswordField.text)")
+            if password == confirmPassword {
+                self.controller.register(email: email, password: password)
+            } else {
+                self.registerAlertController.message = "Passwords don't match!"
+                self.controller.presentRegisterAlert()
+            }
+
         })
         
         let loginAlertAction = UIAlertAction(title: "Log In", style: .default, handler: {
@@ -78,11 +91,6 @@ class AuthenticationAlertDelegate {
     
     init(forController controller: AuthenticationDelegate) {
         self.controller = controller
-        // Check for previous login information
-        guard let _ = UserDefaults.standard.object(forKey: UserKeys.login.rawValue) else {
-            controller.presentLoginAlert()
-            return
-        }
     }
     
 

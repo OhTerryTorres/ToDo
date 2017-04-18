@@ -19,22 +19,29 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     var shapeLayer : CAShapeLayer?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    func configure(task: Task?, tag: Int, delegate: TaskTextFieldDelegate) {
+        textField.delegate = delegate
+        
+        if let t = task {
+            self.task = t
+            textField.text = t.name
+            textField.tag = tag
+        }
+
         drawButtonForCompletionStatus()
     }
 
     @IBAction func completedButtonAction(_ sender: Any) {
-        guard let t = task else { return }
-        t.userCompleted = t.userCompleted == nil ? USER_ID : nil  // Add your ID if you completed it
-        print("userCompleted is \(t.userCompleted)")
-        t.dateCompleted = t.userCompleted == nil ? Date() as NSDate? : nil // Add current date if completed
-        print("dateCompleted on button press is \(t.dateCompleted)")
+        guard let task = self.task else { return }
+        task.userCompleted = task.userCompleted == nil ? USER_ID : nil  // Add your ID if you completed it
+        print("userCompleted is \(task.userCompleted)")
+        task.dateCompleted = task.userCompleted == nil ? Date() as NSDate? : nil // Add current date if completed
+        print("dateCompleted on button press is \(task.dateCompleted)")
         drawButtonForCompletionStatus()
         
         // Update task's completed status in database
         let apiService = APIService(withController: nil)
-        apiService.set(task: t)
+        apiService.set(task: task)
     }
     
     func drawButtonForCompletionStatus() {
