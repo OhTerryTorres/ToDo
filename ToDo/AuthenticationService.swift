@@ -19,12 +19,12 @@ struct AuthenticationService {
         self.responseHandler = controller
     }
     
-    func login(email: String, password: String) {
+    func login(user: String, password: String) {
         let urlString = "http://www.terry-torres.com/todo/api/userLogin.php"
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let postString = "email=\(email.safeEmail())&password=\(password)"
+        let postString = "email=\(user.safeEmail())&password=\(password)"
         request.httpBody = postString.data(using: .utf8)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -45,12 +45,12 @@ struct AuthenticationService {
         dataTask.resume()
     }
     
-    func register(email: String, password: String) {
+    func register(user: String, password: String) {
         let urlString = "http://www.terry-torres.com/todo/api/userRegister.php"
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        let postString = "email=\(email.safeEmail())&password=\(password)"
+        let postString = "email=\(user.safeEmail())&password=\(password)"
         request.httpBody = postString.data(using: .utf8)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in

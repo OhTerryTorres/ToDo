@@ -24,11 +24,12 @@
 		CEEBADE21E93E4E8000E586D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE11E93E4E8000E586D /* Task.swift */; };
 		CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE31E93E9CB000E586D /* Constants.swift */; };
 		CEFE57331E9D1C2900539A49 /* TaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57321E9D1C2900539A49 /* TaskTests.swift */; };
-		CEFE573A1EA27AC100539A49 /* AuthenticationAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57391EA27AC100539A49 /* AuthenticationAlert.swift */; };
+		CEFE573A1EA27AC100539A49 /* AuthenticationAlertHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */; };
 		CEFE573D1EA28E0C00539A49 /* AuthenticationResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */; };
 		CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */; };
-		CEFE57411EA501C600539A49 /* AuthenticationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57401EA501C600539A49 /* AuthenticationDelegate.swift */; };
+		CEFE57411EA501C600539A49 /* NetworkCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57401EA501C600539A49 /* NetworkCoordinator.swift */; };
 		CEFE57431EA6752100539A49 /* TaskTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57421EA6752100539A49 /* TaskTableViewDataSource.swift */; };
+		CEFE57451EA7B35600539A49 /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57441EA7B35600539A49 /* KeyboardManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,11 +73,12 @@
 		CEEBADE11E93E4E8000E586D /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		CEEBADE31E93E9CB000E586D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CEFE57321E9D1C2900539A49 /* TaskTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTests.swift; sourceTree = "<group>"; };
-		CEFE57391EA27AC100539A49 /* AuthenticationAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationAlert.swift; sourceTree = "<group>"; };
+		CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationAlertHandler.swift; sourceTree = "<group>"; };
 		CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationResponseHandler.swift; path = ../AuthenticationResponseHandler.swift; sourceTree = "<group>"; };
 		CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
-		CEFE57401EA501C600539A49 /* AuthenticationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationDelegate.swift; sourceTree = "<group>"; };
+		CEFE57401EA501C600539A49 /* NetworkCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCoordinator.swift; sourceTree = "<group>"; };
 		CEFE57421EA6752100539A49 /* TaskTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewDataSource.swift; sourceTree = "<group>"; };
+		CEFE57441EA7B35600539A49 /* KeyboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,8 +179,9 @@
 				CE7D61101E858610008CA26E /* TaskTableViewController.swift */,
 				CEFE57421EA6752100539A49 /* TaskTableViewDataSource.swift */,
 				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
-				CEFE57401EA501C600539A49 /* AuthenticationDelegate.swift */,
-				CEFE57391EA27AC100539A49 /* AuthenticationAlert.swift */,
+				CEFE57441EA7B35600539A49 /* KeyboardManager.swift */,
+				CEFE57401EA501C600539A49 /* NetworkCoordinator.swift */,
+				CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -350,8 +353,8 @@
 				CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */,
 				CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */,
 				CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */,
-				CEFE573A1EA27AC100539A49 /* AuthenticationAlert.swift in Sources */,
-				CEFE57411EA501C600539A49 /* AuthenticationDelegate.swift in Sources */,
+				CEFE573A1EA27AC100539A49 /* AuthenticationAlertHandler.swift in Sources */,
+				CEFE57411EA501C600539A49 /* NetworkCoordinator.swift in Sources */,
 				CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */,
 				CE7D61111E858610008CA26E /* TaskTableViewController.swift in Sources */,
 				CECC4BC71E95373600A4585C /* CoreService.swift in Sources */,
@@ -359,6 +362,7 @@
 				CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */,
 				CEFE57431EA6752100539A49 /* TaskTableViewDataSource.swift in Sources */,
 				CECC4BC51E9532CB00A4585C /* TaskTextFieldDelegate.swift in Sources */,
+				CEFE57451EA7B35600539A49 /* KeyboardManager.swift in Sources */,
 				CEEBADE21E93E4E8000E586D /* Task.swift in Sources */,
 				CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */,
 				CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */,

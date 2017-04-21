@@ -21,11 +21,12 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     func configure(task: Task?, tag: Int, delegate: TaskTextFieldDelegate) {
         textField.delegate = delegate
-        
+        textField.tag = tag
         if let t = task {
             self.task = t
             textField.text = t.name
-            textField.tag = tag
+        } else {
+            textField.text = nil // zero out reused cells
         }
 
         drawButtonForCompletionStatus()
@@ -40,7 +41,7 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         drawButtonForCompletionStatus()
         
         // Update task's completed status in database
-        let apiService = APIService(withController: nil)
+        let apiService = APIService()
         apiService.set(task: task)
     }
     

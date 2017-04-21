@@ -71,12 +71,12 @@ struct CoreService {
     
     // Integrates remote data with local data, updating existing records and adding new ones
     // When the tableview's responsehandler receives json data from the remote store
-    func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) -> [Task] {
+    func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) {
         var newTasks = tasks
         print("begin nearby search json parsing")
         let fetch = NSFetchRequest<Task>(entityName: "Task")
         for json in jsonArray {
-            guard let uniqueID = json["uniqueID"] as? String else { return [] }
+            guard let uniqueID = json["uniqueID"] as? String else { return }
             // Check for alreay stored Starbucks location
             fetch.predicate = NSPredicate(format: "uniqueID == %@", uniqueID)
             do {
@@ -97,9 +97,6 @@ struct CoreService {
         }
         print("end nearby search json parsing")
         
-        // Sort tasks by date created
-        // A task should never be initialized without this property
-        return newTasks.sorted(by: {$0.dateCreated!.timeIntervalSince1970 < $1.dateCreated!.timeIntervalSince1970 } )
     }
     
 }

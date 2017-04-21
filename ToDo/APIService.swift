@@ -17,8 +17,8 @@ struct APIService {
     
     var responseHandler : APIResponseHandler!
     
-    init(withController controller: APIResponseHandler? = nil) {
-        self.responseHandler = controller
+    init(responseHandler: APIResponseHandler? = nil) {
+        self.responseHandler = responseHandler
     }
     
     // MARK: - API request

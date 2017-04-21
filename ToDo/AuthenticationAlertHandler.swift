@@ -1,5 +1,5 @@
 //
-//  AuthenticationAlertDelegate.swift
+//  AuthenticationAlertHandler.swift
 //  ToDo
 //
 //  Created by TerryTorres on 4/15/17.
@@ -8,29 +8,36 @@
 
 import UIKit
 
-class AuthenticationAlertDelegate {
+class AuthenticationAlertHandler {
     
-    var controller : AuthenticationDelegate!
+    var coordinator : NetworkCoordinator!
+    var currentAlertController : UIAlertController!
+
     
     lazy var loginAlertController : UIAlertController = {
         let alertController = UIAlertController(title: "Log In", message: "", preferredStyle: .alert)
         
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Email"
+            textField.clearButtonMode = .whileEditing
+            textField.keyboardType = .emailAddress
+            
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Password"
+            textField.clearButtonMode = .whileEditing
+            textField.isSecureTextEntry = true
         }
         
         let loginAction = UIAlertAction(title: "Log In", style: .cancel, handler: {
             alert -> Void in
             
-            if let email = alertController.textFields?[0].text, let password = alertController.textFields?[1].text {
-                if email == "" || password == "" {
+            if let user = alertController.textFields?[0].text, let password = alertController.textFields?[1].text {
+                if user == "" || password == "" {
                     self.loginAlertController.message = "Fields are missing!"
-                    self.controller.presentLoginAlert()
+                    self.present(alertController: alertController)
                 } else {
-                    self.controller.login(email: email, password: password)
+                    self.coordinator.login(user: user, password: password)
                 }
             }
             
@@ -38,7 +45,7 @@ class AuthenticationAlertDelegate {
         
         let registerAlertAction = UIAlertAction(title: "Register", style: .default, handler: {
             (action : UIAlertAction!) -> Void in
-            self.controller.presentRegisterAlert()
+            self.present(alertController: self.registerAlertController)
         })
         
         alertController.addAction(loginAction)
@@ -50,37 +57,45 @@ class AuthenticationAlertDelegate {
         let alertController = UIAlertController(title: "Register", message: "", preferredStyle: .alert)
         
         alertController.addTextField { (textField : UITextField!) -> Void in
+            textField.text = alertController.textFields?[0].text// Default with any text that was already typed in
             textField.placeholder = "Email"
-            textField.text = "kefkajr@gmail.com"
+            textField.clearButtonMode = .whileEditing
+            textField.keyboardType = .emailAddress
+            //textField.text = "kefkajr@gmail.com"
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
+            textField.text = alertController.textFields?[1].text // Default with any text that was already typed in
             textField.placeholder = "Password"
-            textField.text = "ultima"
+            textField.clearButtonMode = .whileEditing
+            textField.isSecureTextEntry = true
+            //textField.text = "ultima"
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Confirm Password"
-            textField.text = "ultima"
+            textField.clearButtonMode = .whileEditing
+            textField.isSecureTextEntry = true
+            //textField.text = "ultima"
         }
         
         let registerAction = UIAlertAction(title: "Register", style: .cancel, handler: {
             alert -> Void in
             
-            guard let email = alertController.textFields?[0].text else { return }
+            guard let user = alertController.textFields?[0].text else { return }
             guard let password = alertController.textFields?[1].text else { return }
             guard let confirmPassword = alertController.textFields?[2].text else { return }
             
             if password == confirmPassword {
-                self.controller.register(email: email, password: password)
+                self.coordinator.register(user: user, password: password)
             } else {
                 self.registerAlertController.message = "Passwords don't match!"
-                self.controller.presentRegisterAlert()
+                self.present(alertController: alertController)
             }
 
         })
         
         let loginAlertAction = UIAlertAction(title: "Log In", style: .default, handler: {
             (action : UIAlertAction!) -> Void in
-            self.controller.presentLoginAlert()
+            self.present(alertController: self.loginAlertController)
         })
         
         alertController.addAction(registerAction)
@@ -89,10 +104,23 @@ class AuthenticationAlertDelegate {
     }()
     
     
-    init(forController controller: AuthenticationDelegate) {
-        self.controller = controller
+    init(coordinator: NetworkCoordinator) {
+        self.coordinator = coordinator
+        self.currentAlertController = loginAlertController
     }
     
+    
+    func present(alertController: UIAlertController? = nil ) {
+        let alert = alertController ?? self.currentAlertController
+        if let presentedViewController = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.presentedViewController {
+            if presentedViewController != alert {
+                self.currentAlertController = alert
+            }
+        } else {
+            self.currentAlertController = alert
+            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.present(self.currentAlertController, animated: true, completion: nil)
+        }
+    }
 
     
 }

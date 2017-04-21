@@ -11,38 +11,40 @@ import UIKit
 class TaskTableViewDataSource {
     
     let controller : TaskTableViewController
-    let coreService : CoreService
-    var authenticationDelegate : AuthenticationDelegate
-    var tasks : [Task] = [] {
-        didSet {
-            controller.tableView.reloadData()
-        }
-    }
+    var networkCoordinator : NetworkCoordinator!
+    var tasks : [Task] = []
     
-    init(controller: TaskTableViewController, coreService: CoreService, authenticationDelegate: AuthenticationDelegate) {
+    init(controller: TaskTableViewController) {
         self.controller = controller
-        self.coreService = coreService
+        let coreService = CoreService()
         self.tasks = coreService.getAllTasksSortedByDate()
+        self.networkCoordinator = NetworkCoordinator(dataSource: self)
         
-        self.authenticationDelegate = authenticationDelegate
+        // Pull down tableview to refresh from remote store
         controller.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged )
+        // Add observer, notified in App Delegate's applicationDidBecomeActive 
+        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
     }
     
-    func getTasksFromCoreData() {
+    func update(method: ReloadMethod = .full) {
+        let coreService = CoreService()
         tasks = coreService.getAllTasksSortedByDate()
+        controller.reload(method: method)
     }
     
-    func deleteTask(task: Task) {
-        let apiService = APIService(withController: nil)
+    func delete(task: Task) {
+        let apiService = APIService()
         apiService.delete(task: task)
         
         let coreService = CoreService()
         coreService.delete(task: task)
         
-        controller.update()
+        update()
     }
     
     @objc func refresh() {
-        authenticationDelegate.getDataFromRemoteServer()
+        networkCoordinator.getDataFromRemoteServer() {
+            self.controller.refreshControl?.endRefreshing()
+        }
     }
 }

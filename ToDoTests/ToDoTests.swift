@@ -11,15 +11,15 @@ import XCTest
 
 class ToDoTests: XCTestCase {
     var textFieldDelegate : TaskTextFieldDelegate!
-    var tableViewController : TableViewController!
+    var taskTableViewController : TaskTableViewController!
     
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        tableViewController = TableViewController()
-        tableViewController.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
-        textFieldDelegate = TaskTextFieldDelegate(forController: tableViewController)
+        taskTableViewController = TaskTableViewController()
+        taskTableViewController.dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
+        textFieldDelegate = TaskTextFieldDelegate(forController: taskTableViewController)
         
     }
     

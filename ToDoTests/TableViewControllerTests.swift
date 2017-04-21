@@ -10,23 +10,22 @@ import XCTest
 @testable import ToDo
 
 class TableViewControllerTests: XCTestCase {
-    var tableViewController : TableViewController!
+    var dataSource : TaskTableViewDataSource!
     
     override func setUp() {
         super.setUp()
-        tableViewController = TableViewController()
-        tableViewController.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
+        dataSource = TaskTableViewDataSource(controller: TaskTableViewController())
+        dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
-        tableViewController = nil
     }
     
     func testLastRowShouldBeEqualToNumberOfTasks() {
-        tableViewController.tasks += [Task(name: "Eat eggs")]
-        XCTAssert(tableViewController.lastRow == 4)
+        dataSource.tasks += [Task(name: "Eat eggs")]
+        XCTAssert(dataSource.controller.lastRow == 4)
     }
     
     func testExample() {

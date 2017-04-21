@@ -7,18 +7,27 @@
 //
 
 import XCTest
-@testable import ToDo
 
+@testable import ToDo
+import CoreData
 class TaskTests: XCTestCase {
     
-    let apiService = APIRequestService(withController: nil)
-    let controller = TableViewController()
+    let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
     
+    var mockTaskJSON : [String : Any] {
+        var json : [String : Any] = [:]
+        json[TaskPropertyKeys.uniqueID.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C640000"
+        json[TaskPropertyKeys.name.rawValue] = "DO DISHES"
+        json[TaskPropertyKeys.userCreated.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C64"
+        json[TaskPropertyKeys.userCompleted.rawValue] = nil
+        json[TaskPropertyKeys.dateCreated.rawValue] = "2017-04-17 20:45:21"
+        json[TaskPropertyKeys.dateCompleted.rawValue] = ""
+        return json
+    }
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        apiService.responseHandler = controller
         
     }
     
@@ -27,12 +36,12 @@ class TaskTests: XCTestCase {
         super.tearDown()
     }
     
-    // Test for a successful request from MySQL
-    func testTaskRetrieval() {
-        apiService.getTasks()
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4), execute: {
-            XCTAssertNotNil(self.controller.tasks.first(where: { $0.name == "Awesome!" }))
-        })
+    func testTaskJSONIntegration() {
+        //create JSON
+        let task = Task(withJSON: mockTaskJSON, intoContext: context)
+        XCTAssertEqual(task.name, "DO DISHES")
+        XCTAssertNil(task.userCompleted)
+        XCTAssertNil(task.dateCompleted)
     }
     
 }

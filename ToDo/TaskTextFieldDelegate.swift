@@ -12,18 +12,18 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
 
     
     let controller : TaskTableViewController
+    var keyboardManager : KeyboardManager!
     var activeTextField : UITextField?
-    var oldInsets : (contentInset: UIEdgeInsets, scrollIndicatorInsets: UIEdgeInsets)? = nil
     
     init(forController controller: TaskTableViewController) {
         self.controller = controller
         super.init()
+        self.keyboardManager = KeyboardManager(controller: controller, textFieldDelegate: self)
+        
+        // Touching anywhere but a textfield will dismiss the keyboard
         if let nc = self.controller.navigationController {
-            // Touching anyhwere but a textfield will dismiss the keyboard
             nc.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         }
-        // Know when to move the tableview out from behind the keyboard
-        registerForKeyboardNotifications()
     }
         
     // MARK: - Textfield delegate
@@ -53,12 +53,11 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     
     // Modify current tasks, and update tableview controller
     func commitChangesInTextField(textField: UITextField) {
-        var add = false
         if let _ = resolveTaskForTextField(textField: textField) {
-            add = true
+            controller.dataSource.update(method: .partial)
+        } else {
+            controller.dataSource.update(method: .full)
         }
-        
-        controller.update(addingNewTask: add)
     }
     
     // Add or update Task
@@ -100,48 +99,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
             commitChangesInTextField(textField: textField)
         }
     }
-    
-    func registerForKeyboardNotifications(){
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func deregisterFromKeyboardNotifications(){
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    func keyboardWasShown(notification: NSNotification) {
-        // Get keyboard size
-        var info = notification.userInfo!
-        guard let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size else { return }
-        
-        // Change tableview insets for the first time
-        if oldInsets == nil {
-            // Save default insets on first change
-            oldInsets = (controller.tableView.contentInset, controller.tableView.scrollIndicatorInsets)
-        }
-        
-        // Move tableview's insets to make froom for the keyboard
-        var contentInsets = controller.tableView.contentInset
-        contentInsets.bottom = keyboardSize.height
-        controller.tableView.contentInset = contentInsets
-        controller.tableView.scrollIndicatorInsets = contentInsets
-        
-        // Move active text field to a visible area if its blocked by the keyboard
-        guard let activeField = self.activeTextField else { return }
-        guard let activePoint = activeField.superview?.superview?.convert(activeField.frame.origin, to: controller.view) else { return }
-        let keyRect = CGRect(x: controller.view.frame.origin.x, y: (controller.view.frame.size.height - keyboardSize.height), width: controller.view.frame.size.width, height: keyboardSize.height)
-        if (keyRect.contains(activePoint)){
-            controller.tableView.scrollRectToVisible(activeField.frame, animated: true)
-        }
 
-    }
-    
-    func keyboardWillBeHidden(notification: NSNotification){
-        guard let insets = oldInsets else { return }
-        (controller.tableView.contentInset, controller.tableView.scrollIndicatorInsets) = insets
-    }
     
     
 }
