@@ -13,12 +13,17 @@ struct CoreService {
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    init() {
+        context.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
+    }
+    
     // Fetch all tasks for local store and sort them by data
     // When app is first launched.
-    func getAllTasksSortedByDate() -> [Task] {
+    func getTasksSortedByDate(withPredicate predicate: NSPredicate? = nil) -> [Task] {
         var tasks : [Task] = []
         let fetchRequest : NSFetchRequest<Task> = Task.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
+        if let p = predicate { fetchRequest.predicate = p }
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: TaskPropertyKeys.dateCreated.rawValue, ascending: true)]
         do {
             tasks = try context.fetch(fetchRequest)
         }
@@ -34,7 +39,6 @@ struct CoreService {
         do {
             // Create Task in context
             let task = try Task(name: name, context: context)
-            (UIApplication.shared.delegate as! AppDelegate).saveContext()
             return task
             
         } catch Task.TaskError.noName {
@@ -66,14 +70,37 @@ struct CoreService {
     // When the delete edit action is taken on the tableview
     func delete(task: Task) {
         self.context.delete(task)
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
+    func deleteAllTasks() {
+        /*
+         Batch deletes react directly with the persistent store, bypassing the context.
+         If every item in the data source's array is a reference to a manged object in
+         context, but that managed object's record in the persistent store will not match
+         up. This results in a merge conflict down the line.
+         Since the task list is designed to be shared, the remote store, which sees
+         intereaction from all potential users, can be considered More Canon than the local.
+         TL;DR, when switching to a new list of tasks, the context can just say "Fuck it."
+        */
+        context.reset()
+        
+        let fetchRequest : NSFetchRequest<Task> = Task.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+        batchDeleteRequest.resultType = .resultTypeCount
+        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
+        let batchDelete = NSBatchDeleteRequest(fetchRequest: fetch)
+        do {
+            try context.execute(batchDelete)
+            
+        } catch {
+            print("batch delete failed")
+        }
+        
+        
     }
     
     // Integrates remote data with local data, updating existing records and adding new ones
     // When the tableview's responsehandler receives json data from the remote store
-    func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) {
-        var newTasks = tasks
-        print("begin nearby search json parsing")
+    func integrateTasks(withJSONArray jsonArray: [[String : Any]]) {
         let fetch = NSFetchRequest<Task>(entityName: "Task")
         for json in jsonArray {
             guard let uniqueID = json["uniqueID"] as? String else { return }
@@ -83,20 +110,16 @@ struct CoreService {
                 let fetchedTasks = try context.fetch(fetch)
                 if fetchedTasks.count > 0 {
                     // Update task
-                    print("updating existing record")
                     fetchedTasks[0].updateProperties(withJSON: json)
                 } else {
                     // Add new task
-                    print("adding new record")
                     let task = Task(withJSON: json, intoContext: context)
-                    newTasks += [task]
+                    print("adding \(task.name ?? "")")
                 }
             } catch {
                 print ("Filtered fetch failed")
             }
         }
-        print("end nearby search json parsing")
-        
     }
     
 }

@@ -36,6 +36,10 @@ class TaskTableViewController: UITableViewController {
         case .full:
             tableView.reloadData()
         case .partial:
+            print(lastRow)
+            for task in dataSource.tasks {
+                print(task.name!)
+            }
             tableView.reloadLastTwoRows(lastRow: lastRow)
         }
     }
@@ -65,10 +69,20 @@ class TaskTableViewController: UITableViewController {
         return true
     }
     
+    override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete  && indexPath.row != lastRow {
             dataSource.delete(task: dataSource.tasks[indexPath.row])
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = dataSource.tasks[sourceIndexPath.row]
+        dataSource.tasks.remove(at: sourceIndexPath.row)
+        dataSource.tasks.insert(movedObject, at: destinationIndexPath.row)
     }
 
     

@@ -39,49 +39,32 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
             authenticationAlertHandler.present()
         }
     }
-
     
-    func login(user: String, password: String) {
+    func authenticate(user: String, password: String, method: AuthenticationMethod) {
+        if currentUser != nil && currentUser != user {
+            // If logging in as new user, erase records in local store
+            let coreService = CoreService()
+            coreService.deleteAllTasks()
+        }
         currentUser = user
         let authenticator = AuthenticationService(withController: self)
-        authenticator.login(user: user, password: password)
+        authenticator.authenticate(user: user, password: password, method: method)
     }
     
-    func register(user: String, password: String) {
-        currentUser = user
-        let authenticator = AuthenticationService(withController: self)
-        authenticator.register(user: user, password: password)
-    }
-    
-    func handleLoginResponse(status : String, message: String) {
+    func handleAuthenticationResponse(status : String, message: String) {
         switch status {
             case "success":
                 UserDefaults.standard.set(currentUser, forKey: UserKeys.user.rawValue)
                 getDataFromRemoteServer()
             case "error":
                 DispatchQueue.main.async {
-                    self.authenticationAlertHandler.loginAlertController.message = message
-                    self.authenticationAlertHandler.present()
+                    self.authenticationAlertHandler.present(message: message)
                 }
             default:
                 return
         }
     }
-    
-    func handleRegisterResponse(status : String, message: String) {
-        switch status {
-        case "success":
-            UserDefaults.standard.set(currentUser, forKey: UserKeys.user.rawValue)
-            getDataFromRemoteServer()
-        case "error":
-            DispatchQueue.main.async {
-                self.authenticationAlertHandler.registerAlertController.message = message
-                self.authenticationAlertHandler.present()
-            }
-        default:
-            return
-        }
-    }
+
     
     func getDataFromRemoteServer(completion:(()->())? = nil) {
         guard let _ = currentUser else { return }
@@ -97,7 +80,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
     // alway run on a background thread.
     func handleAPIResponse(jsonArray: [[String : Any]]) {
         let coreService = CoreService()
-        coreService.integrateTasks(tasks: dataSource.tasks, withJSONArray: jsonArray)
+        coreService.integrateTasks(withJSONArray: jsonArray)
         
         DispatchQueue.main.async {
             self.dataSource.update()

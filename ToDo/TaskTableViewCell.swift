@@ -26,10 +26,9 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
             self.task = t
             textField.text = t.name
         } else {
+            self.task = nil
             textField.text = nil // zero out reused cells
         }
-
-        drawButtonForCompletionStatus()
     }
 
     @IBAction func completedButtonAction(_ sender: Any) {
@@ -55,6 +54,9 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
             }
             if let userCompleted = t.userCompleted {
                 fillColor = userCompleted == USER_ID ? USER_COLOR : GUEST_COLOR
+                 print("complete")
+            } else {
+                print("incomplete")
             }
         }
         
@@ -62,7 +64,7 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         let circlePath = UIBezierPath(arcCenter: CGPoint(x: completedButton.frame.width/2,y: completedButton.frame.height/2),
                                       radius: CGFloat(completedButton.frame.width/4),
                                       startAngle: CGFloat(0),
-                                      endAngle:CGFloat(M_PI * 2),
+                                      endAngle:CGFloat(Double.pi * 2),
                                       clockwise: true)
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = circlePath.cgPath

@@ -17,6 +17,10 @@ enum ReloadMethod {
     case full // Reloads entire tableview
     case partial // Reloads last two rows, if a new task is added by the user.
 }
+enum AuthenticationMethod {
+    case login
+    case register
+}
 
 var MySQLDateFormatter : DateFormatter = {
     let formatter = DateFormatter()

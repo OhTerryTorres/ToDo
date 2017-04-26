@@ -13,22 +13,27 @@ class TaskTableViewDataSource {
     let controller : TaskTableViewController
     var networkCoordinator : NetworkCoordinator!
     var tasks : [Task] = []
+    var hideTasks = false
     
     init(controller: TaskTableViewController) {
         self.controller = controller
         let coreService = CoreService()
-        self.tasks = coreService.getAllTasksSortedByDate()
+        self.tasks = coreService.getTasksSortedByDate()
         self.networkCoordinator = NetworkCoordinator(dataSource: self)
         
         // Pull down tableview to refresh from remote store
         controller.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged )
         // Add observer, notified in App Delegate's applicationDidBecomeActive 
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
+        // Add login bar button to cotroller
+        setUpLoginBarButton()
+        setUpHideCompletedBarButton()
     }
     
     func update(method: ReloadMethod = .full) {
         let coreService = CoreService()
-        tasks = coreService.getAllTasksSortedByDate()
+        let predicate : NSPredicate? = hideTasks ? NSPredicate(format: "userCompleted == nil") : nil
+        tasks = coreService.getTasksSortedByDate(withPredicate: predicate)
         controller.reload(method: method)
     }
     
@@ -46,5 +51,24 @@ class TaskTableViewDataSource {
         networkCoordinator.getDataFromRemoteServer() {
             self.controller.refreshControl?.endRefreshing()
         }
+    }
+    
+    func setUpLoginBarButton() {
+        let loginButton = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(showLoginAlert))
+        controller.navigationItem.leftBarButtonItem = loginButton
+    }
+    
+    func setUpHideCompletedBarButton() {
+        let hideCompletedButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(hideCompletedTasks))
+        controller.navigationItem.rightBarButtonItem = hideCompletedButton
+    }
+    
+    @objc func showLoginAlert() {
+        networkCoordinator.authenticationAlertHandler.present(alertController: networkCoordinator.authenticationAlertHandler.loginAlertController)
+    }
+    
+    @objc func hideCompletedTasks() {
+        hideTasks = hideTasks ? false : true
+        update()
     }
 }
