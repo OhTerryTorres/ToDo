@@ -22,27 +22,25 @@ class TaskTableViewController: UITableViewController {
     
     // MARK: - View Lifecycle
     
+    
     override func viewWillAppear(_ animated: Bool) {
         taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
         dataSource = TaskTableViewDataSource(controller: self)
         dataSource.update()
+
     }
-    
-    
-    // MARK: - Tableview Delegate
     
     func reload(method : ReloadMethod = .full) {
         switch method {
         case .full:
             tableView.reloadData()
         case .partial:
-            print(lastRow)
-            for task in dataSource.tasks {
-                print(task.name!)
-            }
             tableView.reloadLastTwoRows(lastRow: lastRow)
         }
     }
+    
+    // Tableview Delegate
+    // MARK: - Displaying data
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.tasks.count+1 // +1 for new task row
@@ -62,6 +60,9 @@ class TaskTableViewController: UITableViewController {
         return cell
     }
     
+    
+    // MARK: - Editing
+    
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if indexPath.row == lastRow {
             return false
@@ -69,6 +70,13 @@ class TaskTableViewController: UITableViewController {
         return true
     }
     
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        if tableView.isEditing {
+            return .none
+        } else {
+            return .delete
+        }
+    }
     override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
     }
@@ -80,9 +88,12 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let movedObject = dataSource.tasks[sourceIndexPath.row]
+        guard destinationIndexPath.row != lastRow else { reload(); return }
+        let movedTask = dataSource.tasks[sourceIndexPath.row]
         dataSource.tasks.remove(at: sourceIndexPath.row)
-        dataSource.tasks.insert(movedObject, at: destinationIndexPath.row)
+        dataSource.tasks.insert(movedTask, at: destinationIndexPath.row)
+        dataSource.tasks.maintainOrder()
+        reload()
     }
 
     

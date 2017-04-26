@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 var USER_ID = UIDevice.current.identifierForVendor!.uuidString
-let USER_COLOR = UIColor(colorLiteralRed: 255.0/255.0, green: 102.0/255.0, blue: 204.0/255.0, alpha: 1.0)
-let GUEST_COLOR = UIColor(colorLiteralRed: 0.0/255.0, green: 128.0/255.0, blue: 128.0/255.0, alpha: 1.0)
+let USER_COLOR = UIColor(colorLiteralRed: 208.0/255.0, green: 135.0/255.0, blue: 154.0/255.0, alpha: 1.0)
+let GUEST_COLOR = UIColor(colorLiteralRed: 98.0/255.0, green: 146.0/255.0, blue: 150.0/255.0, alpha: 1.0)
 
 enum ReloadMethod {
     case full // Reloads entire tableview
@@ -36,6 +36,7 @@ enum TaskPropertyKeys : String {
     case userCompleted = "userCompleted"
     case dateCreated = "dateCreated"
     case dateCompleted = "dateCompleted"
+    case order = "order"
 }
 
 enum UserKeys : String {
@@ -50,4 +51,14 @@ extension String {
         return noDot
     }
     
+}
+
+extension Array where Element:Task {
+    func maintainOrder() {
+        var currentIndex = 0
+        for element in self {
+            element.order = Int16(currentIndex)
+            currentIndex += 1
+        }
+    }
 }

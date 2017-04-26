@@ -29,7 +29,6 @@ extension Task {
         self.userCreated = USER_ID
         
         var numberOfTasksCreated = UserDefaults.standard.integer(forKey: "numberOfTasksCreated")
-        self.order = Int16(numberOfTasksCreated)
         self.uniqueID = "\(USER_ID)\(numberOfTasksCreated)"
         numberOfTasksCreated += 1
         UserDefaults.standard.set(numberOfTasksCreated, forKey: "numberOfTasksCreated")
@@ -43,6 +42,8 @@ extension Task {
     func updateProperties(withJSON json: [String:Any]) {
         
         if let uniqueID = json[TaskPropertyKeys.uniqueID.rawValue] as? String {
+            print("uniqueID was \(String(describing: self.uniqueID))")
+            print("uniqueID will be \(uniqueID)")
             self.uniqueID = uniqueID
         }
         if let name = json[TaskPropertyKeys.name.rawValue] as? String {
@@ -57,7 +58,6 @@ extension Task {
         }
         if let dateCreated = json[TaskPropertyKeys.dateCreated.rawValue] as? String {
             self.dateCreated = MySQLDateFormatter.date(from: dateCreated) as NSDate?
-            print(dateCreated)
         }
         if let dateCompleted = json[TaskPropertyKeys.dateCompleted.rawValue] as? String {
             self.dateCompleted = MySQLDateFormatter.date(from: dateCompleted) as NSDate?

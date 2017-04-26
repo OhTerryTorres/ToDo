@@ -19,6 +19,12 @@ class TaskTableViewDataSource {
         self.controller = controller
         let coreService = CoreService()
         self.tasks = coreService.getTasksSortedByDate()
+        
+        for task in tasks {
+            print(task.name ?? "")
+            print(task.order)
+        }
+        
         self.networkCoordinator = NetworkCoordinator(dataSource: self)
         
         // Pull down tableview to refresh from remote store
@@ -27,7 +33,7 @@ class TaskTableViewDataSource {
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
         // Add login bar button to cotroller
         setUpLoginBarButton()
-        setUpHideCompletedBarButton()
+        setUpRightBarButtons()
     }
     
     func update(method: ReloadMethod = .full) {
@@ -58,9 +64,17 @@ class TaskTableViewDataSource {
         controller.navigationItem.leftBarButtonItem = loginButton
     }
     
-    func setUpHideCompletedBarButton() {
+    func setUpRightBarButtons() {
+        controller.navigationItem.rightBarButtonItems = [editBarButton, hideCompletedBarButton]
+    }
+    
+    var hideCompletedBarButton : UIBarButtonItem {
         let hideCompletedButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(hideCompletedTasks))
-        controller.navigationItem.rightBarButtonItem = hideCompletedButton
+        return hideCompletedButton
+    }
+    var editBarButton : UIBarButtonItem {
+        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(setEditing))
+        return editButton
     }
     
     @objc func showLoginAlert() {
@@ -70,5 +84,10 @@ class TaskTableViewDataSource {
     @objc func hideCompletedTasks() {
         hideTasks = hideTasks ? false : true
         update()
+    }
+    
+    @objc func setEditing() {
+        let editing = controller.tableView.isEditing ? false : true
+        controller.tableView.setEditing(editing, animated: true)
     }
 }

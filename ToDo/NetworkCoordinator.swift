@@ -80,7 +80,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
     // alway run on a background thread.
     func handleAPIResponse(jsonArray: [[String : Any]]) {
         let coreService = CoreService()
-        coreService.integrateTasks(withJSONArray: jsonArray)
+        coreService.integrateTasks(tasks: dataSource.tasks, withJSONArray: jsonArray)
         
         DispatchQueue.main.async {
             self.dataSource.update()

@@ -23,7 +23,7 @@ struct CoreService {
         var tasks : [Task] = []
         let fetchRequest : NSFetchRequest<Task> = Task.fetchRequest()
         if let p = predicate { fetchRequest.predicate = p }
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: TaskPropertyKeys.dateCreated.rawValue, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: TaskPropertyKeys.order.rawValue, ascending: true)]
         do {
             tasks = try context.fetch(fetchRequest)
         }
@@ -35,10 +35,11 @@ struct CoreService {
     
     // Add a new task
     // When user hits return after writing the name of a new task
-    func insert(taskWithName name: String) -> Task? {
+    func insert(taskWithName name: String, atIndex index: Int) -> Task? {
         do {
             // Create Task in context
             let task = try Task(name: name, context: context)
+            task.order = Int16(index)
             return task
             
         } catch Task.TaskError.noName {
@@ -100,7 +101,9 @@ struct CoreService {
     
     // Integrates remote data with local data, updating existing records and adding new ones
     // When the tableview's responsehandler receives json data from the remote store
-    func integrateTasks(withJSONArray jsonArray: [[String : Any]]) {
+    func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) {
+        save()
+        var newTasks : [Task] = []
         let fetch = NSFetchRequest<Task>(entityName: "Task")
         for json in jsonArray {
             guard let uniqueID = json["uniqueID"] as? String else { return }
@@ -114,12 +117,24 @@ struct CoreService {
                 } else {
                     // Add new task
                     let task = Task(withJSON: json, intoContext: context)
+                    newTasks += [task]
                     print("adding \(task.name ?? "")")
                 }
             } catch {
                 print ("Filtered fetch failed")
             }
         }
+        
+        let newSortedTasks = newTasks.sorted(by: {$1.dateCreated! as Date > $0.dateCreated! as Date})
+        var currentIndex = tasks.count
+        for task in newSortedTasks {
+            task.order = Int16(currentIndex)
+            currentIndex += 1
+        }
+    }
+    
+    func save() {
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
     }
     
 }

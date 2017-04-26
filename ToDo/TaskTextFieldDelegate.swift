@@ -35,7 +35,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.activeTextField = nil
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         commitChangesInTextField(textField: textField)
         // If a new task is properly added,
@@ -71,7 +71,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         // New task
         guard tag != self.controller.lastRow else {
             guard let text = textField.text  else { return nil }
-            guard let task = coreService.insert(taskWithName: text) else { return nil }
+            guard let task = coreService.insert(taskWithName: text, atIndex: tag) else { return nil }
             
             // Send task to database
             apiService.insert(task: task)
