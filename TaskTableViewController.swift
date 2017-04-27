@@ -27,6 +27,7 @@ class TaskTableViewController: UITableViewController {
         taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
         dataSource = TaskTableViewDataSource(controller: self)
         dataSource.update()
+        navigationController?.navigationBar.tintColor = GUEST_COLOR
 
     }
     

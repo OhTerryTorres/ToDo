@@ -32,8 +32,8 @@ class TaskTableViewDataSource {
         // Add observer, notified in App Delegate's applicationDidBecomeActive 
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
         // Add login bar button to cotroller
-        setUpLoginBarButton()
-        setUpRightBarButtons()
+        setUpTitleButton()
+        setUpBarButtons()
     }
     
     func update(method: ReloadMethod = .full) {
@@ -59,21 +59,32 @@ class TaskTableViewDataSource {
         }
     }
     
-    func setUpLoginBarButton() {
-        let loginButton = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(showLoginAlert))
-        controller.navigationItem.leftBarButtonItem = loginButton
+    
+    // Buttons - these should probably be refactored eslewhere
+    
+    func setUpTitleButton() {
+        let loginButton = UIButton(type: .custom)
+        loginButton.setTitleColor(GUEST_COLOR, for: .normal)
+        loginButton.setTitleColor(.clear, for: .highlighted)
+        let userName = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String ?? "To Do"
+        loginButton.setTitle(userName, for: .normal)
+        loginButton.showsTouchWhenHighlighted = true
+        loginButton.frame = controller.navigationItem.titleView?.frame ?? CGRect(x: 0, y: 0, width: 100, height: 40)
+        loginButton.addTarget(self, action: #selector(showLoginAlert), for: .touchUpInside)
+        controller.navigationItem.titleView = loginButton
     }
     
-    func setUpRightBarButtons() {
-        controller.navigationItem.rightBarButtonItems = [editBarButton, hideCompletedBarButton]
+    func setUpBarButtons() {
+        controller.navigationItem.rightBarButtonItem = editBarButton
+        controller.navigationItem.leftBarButtonItem = hideCompletedBarButton
     }
     
     var hideCompletedBarButton : UIBarButtonItem {
-        let hideCompletedButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(hideCompletedTasks))
+        let hideCompletedButton = UIBarButtonItem(image: #imageLiteral(resourceName: "completionTrue"), style: .plain, target: self, action: #selector(hideCompletedTasks))
         return hideCompletedButton
     }
     var editBarButton : UIBarButtonItem {
-        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(setEditing))
+        let editButton = UIBarButtonItem(image: #imageLiteral(resourceName: "editFalse"), style: .plain, target: self, action: #selector(setEditing))
         return editButton
     }
     
@@ -83,11 +94,15 @@ class TaskTableViewDataSource {
     
     @objc func hideCompletedTasks() {
         hideTasks = hideTasks ? false : true
+        let image : UIImage = hideTasks ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
+        controller.navigationItem.leftBarButtonItem?.image = image
         update()
     }
     
     @objc func setEditing() {
         let editing = controller.tableView.isEditing ? false : true
+        let image : UIImage = controller.tableView.isEditing ? #imageLiteral(resourceName: "editFalse") : #imageLiteral(resourceName: "editTrue")
+        controller.navigationItem.rightBarButtonItem?.image = image
         controller.tableView.setEditing(editing, animated: true)
     }
 }
