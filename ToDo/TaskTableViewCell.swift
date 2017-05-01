@@ -12,7 +12,7 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
 
     @IBOutlet var completedButton: UIButton!
     @IBOutlet var textField: UITextField!
-    weak var task : Task? {
+    var task : Task? {
         didSet {
             drawButtonForCompletionStatus()
         }
@@ -32,12 +32,12 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
 
     @IBAction func completedButtonAction(_ sender: Any) {
-        guard let task = self.task else { return }
+        guard var task = self.task else { return }
+
         task.userCompleted = task.userCompleted == nil ? USER_ID : nil  // Add your ID if you completed it
-        print("userCompleted is \(task.userCompleted)")
-        task.dateCompleted = task.userCompleted == nil ? Date() as NSDate? : nil // Add current date if completed
-        print("dateCompleted on button press is \(task.dateCompleted)")
-        drawButtonForCompletionStatus()
+        task.dateCompleted = task.userCompleted == nil ? nil : Date() // Add current date if completed
+
+        self.task = task
         
         // Update task's completed status in database
         let apiService = APIService()
@@ -45,22 +45,22 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func drawButtonForCompletionStatus() {
-        // Color
+        // Set default colors for a blank task
         var strokeColor : UIColor = .lightGray
         var fillColor : UIColor = .clear
-        if let t = task {
-            if let userCreated = t.userCreated {
-                strokeColor = userCreated == USER_ID ? USER_COLOR : GUEST_COLOR
-            }
-            if let userCompleted = t.userCompleted {
+        
+        // Change colors based on task completion status
+        if let task = self.task {
+            strokeColor = task.userCreated == USER_ID ? USER_COLOR : GUEST_COLOR
+            if let userCompleted = task.userCompleted {
                 fillColor = userCompleted == USER_ID ? USER_COLOR : GUEST_COLOR
-                 print("complete")
+                print("complete")
             } else {
                 print("incomplete")
             }
         }
         
-        // Shape
+        // Shape with colors
         let circlePath = UIBezierPath(arcCenter: CGPoint(x: completedButton.frame.width/2,y: completedButton.frame.height/2),
                                       radius: CGFloat(completedButton.frame.width/4),
                                       startAngle: CGFloat(0),

@@ -53,12 +53,10 @@ extension String {
     
 }
 
-extension Array where Element:Task {
-    func maintainOrder() {
-        var currentIndex = 0
-        for element in self {
-            element.order = Int16(currentIndex)
-            currentIndex += 1
+extension Array where Element:Ordered {
+    mutating func maintainOrder() {
+        for index in 0..<self.count {
+            self[index].order = index
         }
     }
 }

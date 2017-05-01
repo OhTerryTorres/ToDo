@@ -19,44 +19,39 @@ struct CoreService {
     
     // Fetch all tasks for local store and sort them by data
     // When app is first launched.
-    func getTasksSortedByDate(withPredicate predicate: NSPredicate? = nil) -> [Task] {
+    func getTasks(withPredicate predicate: NSPredicate? = nil) -> [Task] {
+        var taskModels : [TaskModel] = []
         var tasks : [Task] = []
-        let fetchRequest : NSFetchRequest<Task> = Task.fetchRequest()
+        let fetchRequest : NSFetchRequest<TaskModel> = TaskModel.fetchRequest()
         if let p = predicate { fetchRequest.predicate = p }
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: TaskPropertyKeys.order.rawValue, ascending: true)]
         do {
-            tasks = try context.fetch(fetchRequest)
+            taskModels = try context.fetch(fetchRequest)
         }
         catch {
             print("Fetch Failed")
         }
+        
+        for taskModel in taskModels {
+            tasks += [Task(withTaskModel: taskModel)]
+        }
+        
         return tasks
     }
     
     // Add a new task
     // When user hits return after writing the name of a new task
     func insert(taskWithName name: String, atIndex index: Int) -> Task? {
-        do {
-            // Create Task in context
-            let task = try Task(name: name, context: context)
-            task.order = Int16(index)
-            return task
-            
-        } catch Task.TaskError.noName {
-            print("Task has no name, was not created")
-        } catch let error {
-            print(error.localizedDescription)
-        }
-        
-        return nil
+        // Create Task in context
+        let task = Task(name: name, order: index)
+        return task
     }
     
     // Change name of task
     // When user hits return after changing string in the associated cell's text field
     func set(task: Task, withName name: String) {
-        guard let id = task.uniqueID else { return }
-        let fetch = NSFetchRequest<Task>(entityName: "Task")
-        fetch.predicate = NSPredicate(format: "uniqueID == %@", id)
+        let fetch = NSFetchRequest<TaskModel>(entityName: "Task")
+        fetch.predicate = NSPredicate(format: "uniqueID == %@", task.uniqueID)
         do {
             let fetchedStarbuckses = try context.fetch(fetch)
             if fetchedStarbuckses.count > 0 {
@@ -69,8 +64,8 @@ struct CoreService {
     
     // Remove task from local store
     // When the delete edit action is taken on the tableview
-    func delete(task: Task) {
-        self.context.delete(task)
+    func delete(taskModel: TaskModel) {
+        self.context.delete(taskModel)
     }
     func deleteAllTasks() {
         /*
@@ -83,11 +78,8 @@ struct CoreService {
          TL;DR, when switching to a new list of tasks, the context can just say "Fuck it."
         */
         context.reset()
-        
-        let fetchRequest : NSFetchRequest<Task> = Task.fetchRequest()
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
-        batchDeleteRequest.resultType = .resultTypeCount
-        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
+
+        let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "TaskModel")
         let batchDelete = NSBatchDeleteRequest(fetchRequest: fetch)
         do {
             try context.execute(batchDelete)
@@ -103,8 +95,8 @@ struct CoreService {
     // When the tableview's responsehandler receives json data from the remote store
     func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) {
         save()
-        var newTasks : [Task] = []
-        let fetch = NSFetchRequest<Task>(entityName: "Task")
+        var newTasks : [TaskModel] = []
+        let fetch = NSFetchRequest<TaskModel>(entityName: "TaskModel")
         for json in jsonArray {
             guard let uniqueID = json["uniqueID"] as? String else { return }
             // Check for alreay stored Starbucks location
@@ -116,7 +108,7 @@ struct CoreService {
                     fetchedTasks[0].updateProperties(withJSON: json)
                 } else {
                     // Add new task
-                    let task = Task(withJSON: json, intoContext: context)
+                    let task = TaskModel(withJSON: json, intoContext: context)
                     newTasks += [task]
                     print("adding \(task.name ?? "")")
                 }
@@ -130,6 +122,20 @@ struct CoreService {
         for task in newSortedTasks {
             task.order = Int16(currentIndex)
             currentIndex += 1
+        }
+    }
+    
+    func save(context: NSManagedObjectContext) {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                // *****
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
         }
     }
     

@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE0B47B91EB7778100763DC7 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B47B81EB7778100763DC7 /* Mocks.swift */; };
 		CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIService.swift */; };
 		CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */; };
-		CE5B4DEA1E96EC64005B87A5 /* TableViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */; };
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
 		CE7D60E51E857E8D008CA26E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60E31E857E8D008CA26E /* Main.storyboard */; };
 		CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60E61E857E8D008CA26E /* ToDo.xcdatamodeld */; };
@@ -50,9 +50,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE0B47B81EB7778100763DC7 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		CE39F5D31E97E02900876ED7 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponseHandler.swift; sourceTree = "<group>"; };
-		CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewControllerTests.swift; sourceTree = "<group>"; };
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE7D60E41E857E8D008CA26E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -148,9 +148,9 @@
 		CE7D60F61E857E8E008CA26E /* ToDoTests */ = {
 			isa = PBXGroup;
 			children = (
-				CE5B4DE91E96EC64005B87A5 /* TableViewControllerTests.swift */,
-				CE7D60F71E857E8E008CA26E /* ToDoTests.swift */,
+				CE0B47B81EB7778100763DC7 /* Mocks.swift */,
 				CEFE57321E9D1C2900539A49 /* TaskTests.swift */,
+				CE7D60F71E857E8E008CA26E /* ToDoTests.swift */,
 				CE7D60F91E857E8E008CA26E /* Info.plist */,
 			);
 			path = ToDoTests;
@@ -374,8 +374,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE7D60F81E857E8E008CA26E /* ToDoTests.swift in Sources */,
-				CE5B4DEA1E96EC64005B87A5 /* TableViewControllerTests.swift in Sources */,
 				CEFE57331E9D1C2900539A49 /* TaskTests.swift in Sources */,
+				CE0B47B91EB7778100763DC7 /* Mocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,7 +522,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 4Q996R58Y9;
 				INFOPLIST_FILE = ToDo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Frameworks @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.terry-torres.ToDo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -536,7 +536,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 4Q996R58Y9;
 				INFOPLIST_FILE = ToDo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Frameworks @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.terry-torres.ToDo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;

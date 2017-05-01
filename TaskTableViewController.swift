@@ -84,7 +84,7 @@ class TaskTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete  && indexPath.row != lastRow {
-            dataSource.delete(task: dataSource.tasks[indexPath.row])
+            dataSource.delete(taskAtIndex: indexPath.row)
         }
     }
     
@@ -95,6 +95,13 @@ class TaskTableViewController: UITableViewController {
         dataSource.tasks.insert(movedTask, at: destinationIndexPath.row)
         dataSource.tasks.maintainOrder()
         reload()
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard dataSource.completedTasksHidden && indexPath.row != lastRow else { return UITableViewAutomaticDimension }
+        let task = dataSource.tasks[indexPath.row]
+        guard let _ = task.userCompleted else { return UITableViewAutomaticDimension }
+        return 0
     }
 
     

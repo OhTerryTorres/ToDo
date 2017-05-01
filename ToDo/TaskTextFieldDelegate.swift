@@ -37,6 +37,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard textField.text != "" else { textField.resignFirstResponder(); return true }
         commitChangesInTextField(textField: textField)
         // If a new task is properly added,
         // this text field should now be in the second to last row.
@@ -65,13 +66,14 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     func resolveTaskForTextField(textField : UITextField) -> Task? {
         // The tag should be set properly in the controller's cellForRow %%
         let tag = textField.tag
-        let coreService = CoreService()
         let apiService = APIService()
+        
+        guard let text = textField.text  else { return nil }
         
         // New task
         guard tag != self.controller.lastRow else {
-            guard let text = textField.text  else { return nil }
-            guard let task = coreService.insert(taskWithName: text, atIndex: tag) else { return nil }
+            let task = Task(name: text, order: tag)
+            controller.dataSource.tasks += [task]
             
             // Send task to database
             apiService.insert(task: task)
@@ -80,13 +82,11 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         }
         
         // Update task
-        let task = controller.dataSource.tasks[tag]
-        // If task is given a new name
-        guard task.name != textField.text else { return nil }
-        coreService.set(task: task, withName: textField.text!)
+        guard controller.dataSource.tasks[tag].name != textField.text else { return nil }
+        controller.dataSource.tasks[tag].name = text
         
         // Update task to database
-        apiService.set(task: task)
+        apiService.set(task: controller.dataSource.tasks[tag])
         
         return nil
         

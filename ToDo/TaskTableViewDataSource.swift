@@ -13,15 +13,15 @@ class TaskTableViewDataSource {
     let controller : TaskTableViewController
     var networkCoordinator : NetworkCoordinator!
     var tasks : [Task] = []
-    var hideTasks = false
+    var completedTasksHidden = false
     
     init(controller: TaskTableViewController) {
         self.controller = controller
         let coreService = CoreService()
-        self.tasks = coreService.getTasksSortedByDate()
+        self.tasks = coreService.getTasks()
         
         for task in tasks {
-            print(task.name ?? "")
+            print(task.name)
             print(task.order)
         }
         
@@ -37,24 +37,27 @@ class TaskTableViewDataSource {
     }
     
     func update(method: ReloadMethod = .full) {
+        /* ----
         let coreService = CoreService()
-        let predicate : NSPredicate? = hideTasks ? NSPredicate(format: "userCompleted == nil") : nil
+        let predicate : NSPredicate? = completedTasksHidden ? NSPredicate(format: "userCompleted == nil") : nil
         tasks = coreService.getTasksSortedByDate(withPredicate: predicate)
+        */
         controller.reload(method: method)
     }
     
-    func delete(task: Task) {
+    func delete(taskAtIndex index: Int) {
+        let task = tasks.remove(at: index)
         let apiService = APIService()
         apiService.delete(task: task)
-        
+        /* ----
         let coreService = CoreService()
         coreService.delete(task: task)
-        
+        */
         update()
     }
     
     @objc func refresh() {
-        networkCoordinator.getDataFromRemoteServer() {
+        networkCoordinator.getDataFromAPI() {
             self.controller.refreshControl?.endRefreshing()
         }
     }
@@ -93,8 +96,8 @@ class TaskTableViewDataSource {
     }
     
     @objc func hideCompletedTasks() {
-        hideTasks = hideTasks ? false : true
-        let image : UIImage = hideTasks ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
+        completedTasksHidden = completedTasksHidden ? false : true
+        let image : UIImage = completedTasksHidden ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
         controller.navigationItem.leftBarButtonItem?.image = image
         update()
     }

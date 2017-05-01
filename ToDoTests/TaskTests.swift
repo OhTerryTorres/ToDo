@@ -14,17 +14,6 @@ class TaskTests: XCTestCase {
     
     let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
     
-    var mockTaskJSON : [String : Any] {
-        var json : [String : Any] = [:]
-        json[TaskPropertyKeys.uniqueID.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C640000"
-        json[TaskPropertyKeys.name.rawValue] = "DO DISHES"
-        json[TaskPropertyKeys.userCreated.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C64"
-        json[TaskPropertyKeys.userCompleted.rawValue] = nil
-        json[TaskPropertyKeys.dateCreated.rawValue] = "2017-04-17 20:45:21"
-        json[TaskPropertyKeys.dateCompleted.rawValue] = ""
-        return json
-    }
-    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -36,12 +25,47 @@ class TaskTests: XCTestCase {
         super.tearDown()
     }
     
-    func testTaskJSONIntegration() {
+    func testTaskModelJSONIntegration() {
         //create JSON
-        let task = Task(withJSON: mockTaskJSON, intoContext: context)
+        let task = TaskModel(withJSON: MockTaskJSON, intoContext: context)
         XCTAssertEqual(task.name, "DO DISHES")
         XCTAssertNil(task.userCompleted)
         XCTAssertNil(task.dateCompleted)
+    }
+    
+}
+
+class DatSourceTests: XCTestCase {
+    var dataSource : TaskTableViewDataSource!
+    
+    override func setUp() {
+        super.setUp()
+        dataSource = TaskTableViewDataSource(controller: TaskTableViewController())
+        dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
+    }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+    
+    func testLastRowShouldBeEqualToNumberOfTasks() {
+        dataSource.tasks += [Task(name: "Eat eggs")]
+        XCTAssert(dataSource.controller.lastRow == 4)
+    }
+    
+    func testLastTaskOrderShouldEqualItsIndexInArray() {
+        dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
+        dataSource.networkCoordinator.handleAPIResponse(jsonArray: [MockTaskJSON])
+        print("order is \(dataSource.tasks[3].order)")
+        XCTAssert(dataSource.tasks[3].order < 3)
+    }
+    
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+        }
     }
     
 }

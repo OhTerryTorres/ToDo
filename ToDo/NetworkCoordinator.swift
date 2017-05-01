@@ -34,39 +34,13 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
     func checkSession() {
         if let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String {
             currentUser = user
-            getDataFromRemoteServer()
+            getDataFromAPI()
         } else {
             authenticationAlertHandler.present()
         }
     }
     
-    func authenticate(user: String, password: String, method: AuthenticationMethod) {
-        if currentUser != nil && currentUser != user {
-            // If logging in as new user, erase records in local store
-            let coreService = CoreService()
-            coreService.deleteAllTasks()
-        }
-        currentUser = user
-        let authenticator = AuthenticationService(withController: self)
-        authenticator.authenticate(user: user, password: password, method: method)
-    }
-    
-    func handleAuthenticationResponse(status : String, message: String) {
-        switch status {
-            case "success":
-                UserDefaults.standard.set(currentUser, forKey: UserKeys.user.rawValue)
-                getDataFromRemoteServer()
-            case "error":
-                DispatchQueue.main.async {
-                    self.authenticationAlertHandler.present(message: message)
-                }
-            default:
-                return
-        }
-    }
-
-    
-    func getDataFromRemoteServer(completion:(()->())? = nil) {
+    func getDataFromAPI(completion:(()->())? = nil) {
         guard let _ = currentUser else { return }
         
         // Look for new tasks in database
@@ -75,18 +49,6 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
         
         completion?()
     }
-    
-    // Called from a URL Session data task, so can be assumed to
-    // alway run on a background thread.
-    func handleAPIResponse(jsonArray: [[String : Any]]) {
-        let coreService = CoreService()
-        coreService.integrateTasks(tasks: dataSource.tasks, withJSONArray: jsonArray)
-        
-        DispatchQueue.main.async {
-            self.dataSource.update()
-        }
-    }
-    
     
     
 }
