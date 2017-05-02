@@ -33,14 +33,7 @@ extension APIResponseHandler {
         }
         
         if newTasks.count > 0 {
-            var newSortedTasks = newTasks.sorted(by: {$1.dateCreated > $0.dateCreated})
-            var currentIndex = newSortedTasks.count - 1
-            print("currentIndex was \(currentIndex)")
-            for index in 0..<newSortedTasks.count {
-                newSortedTasks[index].order = currentIndex
-                currentIndex += 1
-            }
-            print("currentIndex is \(currentIndex)")
+            let newSortedTasks = newTasks.sorted(by: {$1.dateCreated > $0.dateCreated})
             
             dataSource.tasks += newSortedTasks
             dataSource.tasks.maintainOrder()

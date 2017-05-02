@@ -28,16 +28,7 @@ struct APIService {
         guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
         let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=\(method.rawValue)"
         
-        var json : [String : Any] = [:]
-        
-        json[TaskPropertyKeys.uniqueID.rawValue] = task.uniqueID
-        json[TaskPropertyKeys.name.rawValue] = task.name
-        json[TaskPropertyKeys.userCreated.rawValue] = task.userCreated
-        json[TaskPropertyKeys.dateCreated.rawValue] = MySQLDateFormatter.string(from: task.dateCreated)
-        if let userCompleted = task.userCompleted { json[TaskPropertyKeys.userCompleted.rawValue] = userCompleted }
-        if let dateCompleted = task.dateCompleted { json[TaskPropertyKeys.dateCompleted.rawValue] = MySQLDateFormatter.string(from: dateCompleted as Date) }
-        
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: json) else {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: task.json()) else {
             print("outgoing JSONSerialization error")
             return
         }

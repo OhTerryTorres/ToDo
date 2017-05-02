@@ -50,6 +50,10 @@ extension String {
         let noDot = noAt.replacingOccurrences(of: ".", with: "dot")
         return noDot
     }
+    func withoutEmailSuffix() -> String {
+        guard let atIndex = self.range(of: "@")?.upperBound else { return self }
+        return self.substring(with: self.startIndex..<atIndex)
+    }
     
 }
 

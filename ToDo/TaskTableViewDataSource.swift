@@ -19,12 +19,7 @@ class TaskTableViewDataSource {
         self.controller = controller
         let coreService = CoreService()
         self.tasks = coreService.getTasks()
-        
-        for task in tasks {
-            print(task.name)
-            print(task.order)
-        }
-        
+
         self.networkCoordinator = NetworkCoordinator(dataSource: self)
         
         // Pull down tableview to refresh from remote store
@@ -33,7 +28,7 @@ class TaskTableViewDataSource {
         // Add observer, notified in App Delegate's applicationDidBecomeActive
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
         // Add observer, notified in App Delegate's applicationDidEnterBackground
-        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "saveData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveData), name: NSNotification.Name(rawValue: "saveData"), object: nil)
         
         // Add login bar button to cotroller
         setUpTitleButton()
@@ -64,6 +59,11 @@ class TaskTableViewDataSource {
         networkCoordinator.getDataFromAPI() {
             self.controller.refreshControl?.endRefreshing()
         }
+    }
+    
+    @objc func saveData() {
+        let coreService = CoreService()
+        coreService.syncTasksToCoreData(tasks: tasks)
     }
     
     

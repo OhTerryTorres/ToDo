@@ -28,6 +28,7 @@ struct Task: Ordered {
         self.dateCompleted = dateCompleted
     }
     
+    // Called when tasks are created manually by user
     init(name: String) {
         var numberOfTasksCreated = UserDefaults.standard.integer(forKey: "numberOfTasksCreated")
         self.init(uniqueID: "\(USER_ID)\(numberOfTasksCreated)", name: name, userCreated: USER_ID, dateCreated: Date())
@@ -40,11 +41,14 @@ struct Task: Ordered {
         self.order = order
     }
     
+    // Called when app launches and initializes tasks from local store
     init(withTaskModel taskModel: TaskModel) {
         self.init(uniqueID: "", name: "", userCreated: "", dateCreated: Date(timeIntervalSince1970: 0) )
         setPropertiesFromTaskModel(taskModel: taskModel)
     }
     
+    
+    // Called pulling new tasks from the API
     init(withJSON json: [String:Any]) {
         self.init(uniqueID: "", name: "", userCreated: "", dateCreated: Date(timeIntervalSince1970: 0) )
         if let uniqueID = json[TaskPropertyKeys.uniqueID.rawValue] as? String {
@@ -70,85 +74,47 @@ struct Task: Ordered {
         }
     }
     
+    // Called when sending updated tasks through the API
+    func json() -> [String : Any] {
+        var json : [String : Any] = [:]
+        
+        json[TaskPropertyKeys.uniqueID.rawValue] = uniqueID
+        json[TaskPropertyKeys.name.rawValue] = name
+        json[TaskPropertyKeys.userCreated.rawValue] = userCreated
+        json[TaskPropertyKeys.dateCreated.rawValue] = MySQLDateFormatter.string(from: dateCreated)
+        if let userCompleted = userCompleted { json[TaskPropertyKeys.userCompleted.rawValue] = userCompleted }
+        if let dateCompleted = dateCompleted { json[TaskPropertyKeys.dateCompleted.rawValue] = MySQLDateFormatter.string(from: dateCompleted as Date) }
+        
+        return json
+    }
+    
+    // Called when app launches and initializes tasks from local store
     mutating func setPropertiesFromTaskModel(taskModel: TaskModel) {
         self.uniqueID = taskModel.uniqueID ?? ""
         self.name = taskModel.name ?? ""
         self.userCreated = taskModel.userCreated ?? ""
-        self.userCompleted = taskModel.userCompleted ?? ""
+        self.userCompleted = taskModel.userCompleted
         self.dateCreated = taskModel.dateCreated! as Date
-        self.dateCompleted = taskModel.dateCompleted! as Date
+        self.dateCompleted = taskModel.dateCompleted as Date?
         self.order = Int(taskModel.order)
     }
 }
 
 extension TaskModel {
     
-    enum TaskError : Error {
-        case noName
-    }
-    
-    convenience init(name: String)  {
-        self.init()
-    }
-    
-    convenience init(name: String, context: NSManagedObjectContext) throws {
-        // Vital to check for errors before the context makes an empty entry
-        if name == "" { throw TaskError.noName }
-        
-        self.init(context: context)
-        
-        self.name = name
-        self.dateCreated = Date() as NSDate?
-        self.userCreated = USER_ID
-        
-        var numberOfTasksCreated = UserDefaults.standard.integer(forKey: "numberOfTasksCreated")
-        self.uniqueID = "\(USER_ID)\(numberOfTasksCreated)"
-        numberOfTasksCreated += 1
-        UserDefaults.standard.set(numberOfTasksCreated, forKey: "numberOfTasksCreated")
-    }
-    
-    convenience init(withJSON json: [String:Any], intoContext context: NSManagedObjectContext) {
-        self.init(context: context)
-        updateProperties(withJSON: json)
-    }
-    
+    // Called when new tasks are integrated into core data
     convenience init(withTask task: Task, intoContext context: NSManagedObjectContext) {
         self.init(context: context)
-        setPropertiesFromTask(task: task)
+        updateProperties(withTask: task)
     }
     
-    func updateProperties(withJSON json: [String:Any]) {
-        
-        if let uniqueID = json[TaskPropertyKeys.uniqueID.rawValue] as? String {
-            print("uniqueID was \(String(describing: self.uniqueID))")
-            print("uniqueID will be \(uniqueID)")
-            self.uniqueID = uniqueID
-        }
-        if let name = json[TaskPropertyKeys.name.rawValue] as? String {
-            self.name = name
-        }
-        if let userCreated = json[TaskPropertyKeys.userCreated.rawValue] as? String {
-            self.userCreated = userCreated
-        }
-        if let userCompleted = json[TaskPropertyKeys.userCompleted.rawValue] as? String {
-            // Do not assign an empty string to the property.
-            self.userCompleted = userCompleted == "" ? nil : userCompleted
-        }
-        if let dateCreated = json[TaskPropertyKeys.dateCreated.rawValue] as? String {
-            self.dateCreated = MySQLDateFormatter.date(from: dateCreated) as NSDate?
-        }
-        if let dateCompleted = json[TaskPropertyKeys.dateCompleted.rawValue] as? String {
-            self.dateCompleted = MySQLDateFormatter.date(from: dateCompleted) as NSDate?
-        }
-    }
-    
-    func setPropertiesFromTask(task: Task) {
+    func updateProperties(withTask task: Task) {
         self.uniqueID = task.uniqueID
         self.name = task.name
         self.userCreated = task.userCreated
         self.userCompleted = task.userCompleted
         self.dateCreated = task.dateCreated as NSDate
-        self.dateCompleted = task.dateCompleted! as NSDate
+        self.dateCompleted = task.dateCompleted as NSDate?
         self.order = Int16(task.order)
     }
     

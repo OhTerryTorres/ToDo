@@ -11,10 +11,10 @@ import CoreData
 
 struct CoreService {
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let persistentContainer = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
     
     init() {
-        context.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
+        persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
     }
     
     // Fetch all tasks for local store and sort them by data
@@ -26,7 +26,7 @@ struct CoreService {
         if let p = predicate { fetchRequest.predicate = p }
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: TaskPropertyKeys.order.rawValue, ascending: true)]
         do {
-            taskModels = try context.fetch(fetchRequest)
+            taskModels = try persistentContainer.viewContext.fetch(fetchRequest)
         }
         catch {
             print("Fetch Failed")
@@ -38,35 +38,7 @@ struct CoreService {
         
         return tasks
     }
-    
-    // Add a new task
-    // When user hits return after writing the name of a new task
-    func insert(taskWithName name: String, atIndex index: Int) -> Task? {
-        // Create Task in context
-        let task = Task(name: name, order: index)
-        return task
-    }
-    
-    // Change name of task
-    // When user hits return after changing string in the associated cell's text field
-    func set(task: Task, withName name: String) {
-        let fetch = NSFetchRequest<TaskModel>(entityName: "Task")
-        fetch.predicate = NSPredicate(format: "uniqueID == %@", task.uniqueID)
-        do {
-            let fetchedStarbuckses = try context.fetch(fetch)
-            if fetchedStarbuckses.count > 0 {
-                fetchedStarbuckses[0].name = name
-            }
-        } catch {
-            print("fetch with unique ID failed")
-        }
-    }
-    
-    // Remove task from local store
-    // When the delete edit action is taken on the tableview
-    func delete(taskModel: TaskModel) {
-        self.context.delete(taskModel)
-    }
+
     func deleteAllTasks() {
         /*
          Batch deletes react directly with the persistent store, bypassing the context.
@@ -77,78 +49,76 @@ struct CoreService {
          intereaction from all potential users, can be considered More Canon than the local.
          TL;DR, when switching to a new list of tasks, the context can just say "Fuck it."
         */
-        context.reset()
+        persistentContainer.viewContext.reset()
 
         let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "TaskModel")
         let batchDelete = NSBatchDeleteRequest(fetchRequest: fetch)
         do {
-            try context.execute(batchDelete)
-            
+            try persistentContainer.viewContext.execute(batchDelete)
         } catch {
             print("batch delete failed")
         }
-        
-        
     }
     
-    // Integrates remote data with local data, updating existing records and adding new ones
-    // When the tableview's responsehandler receives json data from the remote store
-    func integrateTasks(tasks: [Task], withJSONArray jsonArray: [[String : Any]]) {
-        save()
+    // Integrates displayed data with data in local store, updating existing records and adding new ones
+    func syncTasksToCoreData(tasks: [Task]) {
+        let backgroundContext = persistentContainer.newBackgroundContext()
+        backgroundContext.automaticallyMergesChangesFromParent = true
         var newTasks : [TaskModel] = []
         let fetch = NSFetchRequest<TaskModel>(entityName: "TaskModel")
-        for json in jsonArray {
-            guard let uniqueID = json["uniqueID"] as? String else { return }
-            // Check for alreay stored Starbucks location
-            fetch.predicate = NSPredicate(format: "uniqueID == %@", uniqueID)
+        for task in tasks {
+            // Check for alreay stored tasks
+            fetch.predicate = NSPredicate(format: "uniqueID == %@", task.uniqueID)
             do {
-                let fetchedTasks = try context.fetch(fetch)
+                let fetchedTasks = try backgroundContext.fetch(fetch)
                 if fetchedTasks.count > 0 {
                     // Update task
-                    fetchedTasks[0].updateProperties(withJSON: json)
+                    fetchedTasks[0].updateProperties(withTask: task)
                 } else {
                     // Add new task
-                    let task = TaskModel(withJSON: json, intoContext: context)
+                    print(task.name)
+                    print(task.uniqueID)
+                    let task = TaskModel(withTask: task, intoContext: backgroundContext)
                     newTasks += [task]
-                    print("adding \(task.name ?? "")")
+                    print("adding \(task.name ?? "") to core data")
                 }
             } catch {
                 print ("Filtered fetch failed")
             }
         }
         
-        let newSortedTasks = newTasks.sorted(by: {$1.dateCreated! as Date > $0.dateCreated! as Date})
-        var currentIndex = tasks.count
-        for task in newSortedTasks {
-            task.order = Int16(currentIndex)
-            currentIndex += 1
-        }
+        deleteExtraneousTasks(tasks: tasks, withContext: backgroundContext)
+        
     }
     
-    func syncTasksToCoreData(tasks: [Task]) {
-        let backgroundContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+    // If tasks have been deleted from list, delete them from the local store
+    func deleteExtraneousTasks(tasks: [Task], withContext context: NSManagedObjectContext) {
         var taskByIdDict : [String:Task] = [:]
+        
+        for task in tasks {
+            taskByIdDict[task.uniqueID] = task
+        }
 
         let fetch = NSFetchRequest<TaskModel>(entityName: "TaskModel")
         var storedTaskModels : [TaskModel] = []
         do {
-            storedTaskModels = try backgroundContext.fetch(fetch)
+            storedTaskModels = try context.fetch(fetch)
         } catch {
-            print("Sycn fetch failed")
+            print("Sync fetch failed")
         }
         guard storedTaskModels.count > 0 else { return }
         
         for index in 0..<storedTaskModels.count {
-            var storedTask = storedTaskModels[index]
+            let storedTask = storedTaskModels[index]
             guard let id = storedTask.uniqueID else { return }
-            if let displayedTask = taskByIdDict[id] {
-                storedTask = TaskModel(withTask: displayedTask, intoContext: backgroundContext)
-            } else {
-                delete(taskModel: storedTask)
+            if taskByIdDict[id] == nil {
+                print("deleting extraneous task")
+                context.delete(storedTask)
             }
         }
         
-        save(context: backgroundContext)
+        save(context: context)
+        print("background context saved")
         
     }
     
@@ -164,10 +134,6 @@ struct CoreService {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
-    }
-    
-    func save() {
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
     }
     
 }

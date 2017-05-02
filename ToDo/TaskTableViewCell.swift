@@ -54,9 +54,6 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
             strokeColor = task.userCreated == USER_ID ? USER_COLOR : GUEST_COLOR
             if let userCompleted = task.userCompleted {
                 fillColor = userCompleted == USER_ID ? USER_COLOR : GUEST_COLOR
-                print("complete")
-            } else {
-                print("incomplete")
             }
         }
         
