@@ -29,8 +29,12 @@ class TaskTableViewDataSource {
         
         // Pull down tableview to refresh from remote store
         controller.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged )
-        // Add observer, notified in App Delegate's applicationDidBecomeActive 
+        
+        // Add observer, notified in App Delegate's applicationDidBecomeActive
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
+        // Add observer, notified in App Delegate's applicationDidEnterBackground
+        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "saveData"), object: nil)
+        
         // Add login bar button to cotroller
         setUpTitleButton()
         setUpBarButtons()

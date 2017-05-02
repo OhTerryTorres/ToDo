@@ -125,6 +125,33 @@ struct CoreService {
         }
     }
     
+    func syncTasksToCoreData(tasks: [Task]) {
+        let backgroundContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        var taskByIdDict : [String:Task] = [:]
+
+        let fetch = NSFetchRequest<TaskModel>(entityName: "TaskModel")
+        var storedTaskModels : [TaskModel] = []
+        do {
+            storedTaskModels = try backgroundContext.fetch(fetch)
+        } catch {
+            print("Sycn fetch failed")
+        }
+        guard storedTaskModels.count > 0 else { return }
+        
+        for index in 0..<storedTaskModels.count {
+            var storedTask = storedTaskModels[index]
+            guard let id = storedTask.uniqueID else { return }
+            if let displayedTask = taskByIdDict[id] {
+                storedTask = TaskModel(withTask: displayedTask, intoContext: backgroundContext)
+            } else {
+                delete(taskModel: storedTask)
+            }
+        }
+        
+        save(context: backgroundContext)
+        
+    }
+    
     func save(context: NSManagedObjectContext) {
         if context.hasChanges {
             do {
