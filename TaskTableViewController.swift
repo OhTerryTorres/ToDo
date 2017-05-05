@@ -28,7 +28,6 @@ class TaskTableViewController: UITableViewController {
         dataSource = TaskTableViewDataSource(controller: self)
         dataSource.update()
         navigationController?.navigationBar.tintColor = GUEST_COLOR
-
     }
     
     func reload(method : ReloadMethod = .full) {
@@ -72,11 +71,7 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-        if tableView.isEditing {
-            return .none
-        } else {
-            return .delete
-        }
+        return .delete
     }
     override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false

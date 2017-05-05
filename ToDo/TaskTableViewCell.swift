@@ -72,6 +72,35 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         if let sl = self.shapeLayer { sl.removeFromSuperlayer() }
         self.shapeLayer = shapeLayer
         completedButton.layer.addSublayer(self.shapeLayer!)
+        self.sendSubview(toBack: completedButton)
+    }
+    
+    func drawDeleteButton() {
+        let circlePath = UIBezierPath(arcCenter: CGPoint(x: completedButton.frame.width/2,y: completedButton.frame.height/2),
+                                      radius: CGFloat(completedButton.frame.width/4),
+                                      startAngle: CGFloat(0),
+                                      endAngle:CGFloat(Double.pi * 2),
+                                      clockwise: true)
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = circlePath.cgPath
+        shapeLayer.fillColor = UIColor.red.cgColor
+        shapeLayer.strokeColor = UIColor.red.cgColor
+        shapeLayer.lineWidth = 2.0
+        
+        let linePath = UIBezierPath()
+        linePath.move(to: CGPoint(x: completedButton.frame.width / 4, y: completedButton.frame.height / 2))
+        linePath.addLine(to: CGPoint(x: completedButton.frame.width / 0.25, y: completedButton.frame.height / 2))
+        UIColor.white.setStroke()
+        linePath.stroke()
+        
+        let lineLayer = CAShapeLayer()
+        shapeLayer.path = linePath.cgPath
+        shapeLayer.addSublayer(lineLayer)
+        
+        // Replace old shape layer
+        if let sl = self.shapeLayer { sl.removeFromSuperlayer() }
+        self.shapeLayer = shapeLayer
+        completedButton.layer.addSublayer(self.shapeLayer!)
     }
     
     
