@@ -24,6 +24,7 @@ class TaskTableViewDataSource {
         
         // Pull down tableview to refresh from remote store
         controller.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged )
+        controller.refreshControl?.tintColor = GUEST_COLOR
         
         // Add observer, notified in App Delegate's applicationDidBecomeActive
         NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
@@ -87,23 +88,62 @@ class TaskTableViewDataSource {
     }
     
     var hideCompletedBarButton : UIBarButtonItem {
-        let hideCompletedButton = UIBarButtonItem(image: #imageLiteral(resourceName: "completionTrue"), style: .plain, target: self, action: #selector(hideCompletedTasks))
-        return hideCompletedButton
+        let button = UIBarButtonItem(customView: hideCompletedCustomView(image: #imageLiteral(resourceName: "completionTrue")))
+        return button
     }
+    func hideCompletedCustomView(image: UIImage) -> UIImageView {
+        let view = UIImageView(image: image)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideCompletedTasks))
+        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(deleteCompletedTasks))
+        tapGesture.numberOfTapsRequired = 1
+        view.addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(longGesture)
+        return view
+    }
+    
     var editBarButton : UIBarButtonItem {
-        let editButton = UIBarButtonItem(image: #imageLiteral(resourceName: "editFalse"), style: .plain, target: self, action: #selector(setEditing))
-        return editButton
+        let button = UIBarButtonItem(image: #imageLiteral(resourceName: "editFalse"), style: .plain, target: self, action: #selector(setEditing))
+        return button
     }
     
     @objc func showLoginAlert() {
-        networkCoordinator.authenticationAlertHandler.present(alertController: networkCoordinator.authenticationAlertHandler.loginAlertController)
+        networkCoordinator.authenticationAlertHandler.present(alertType: .login)
     }
     
     @objc func hideCompletedTasks() {
         completedTasksHidden = completedTasksHidden ? false : true
         let image : UIImage = completedTasksHidden ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
-        controller.navigationItem.leftBarButtonItem?.image = image
+        controller.navigationItem.leftBarButtonItem?.customView = hideCompletedCustomView(image: image)
         update()
+    }
+    
+    @objc func deleteCompletedTasks() {
+        controller.present(deleteAlert, animated: true)
+    }
+    
+    var deleteAlert: UIAlertController {
+        let alertController = UIAlertController(title: nil, message: "Delete all completed tasks?", preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "Delete", style: .default, handler: {
+            alert -> Void in
+            self.tasks = self.tasks.filter { $0.userCompleted == nil }
+            self.update()
+            DispatchQueue.global().async {
+                let predicate = NSPredicate(format: "userCompleted != nil")
+                let coreService = CoreService()
+                coreService.deleteAllTasks(withPredicate: predicate)
+                
+                let apiService = APIService()
+                apiService.deleteCompleted()
+            }            
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        
+        return alertController
     }
     
     @objc func setEditing() {

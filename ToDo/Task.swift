@@ -9,7 +9,8 @@
 import CoreData
 
 
-struct Task: Ordered {
+class
+Task: Ordered {
     var uniqueID: String
     var name: String
     var userCreated: String
@@ -29,27 +30,27 @@ struct Task: Ordered {
     }
     
     // Called when tasks are created manually by user
-    init(name: String) {
-        var numberOfTasksCreated = UserDefaults.standard.integer(forKey: "numberOfTasksCreated")
+    convenience init(name: String) {
+        var numberOfTasksCreated = UserDefaults.standard.integer(forKey: UserKeys.numberOfTasks.rawValue)
         self.init(uniqueID: "\(USER_ID)\(numberOfTasksCreated)", name: name, userCreated: USER_ID, dateCreated: Date())
         
         numberOfTasksCreated += 1
-        UserDefaults.standard.set(numberOfTasksCreated, forKey: "numberOfTasksCreated")
+        UserDefaults.standard.set(numberOfTasksCreated, forKey: UserKeys.numberOfTasks.rawValue)
     }
-    init(name: String, order: Int) {
+    convenience init(name: String, order: Int) {
         self.init(name: name)
         self.order = order
     }
     
     // Called when app launches and initializes tasks from local store
-    init(withTaskModel taskModel: TaskModel) {
+    convenience init(withTaskModel taskModel: TaskModel) {
         self.init(uniqueID: "", name: "", userCreated: "", dateCreated: Date(timeIntervalSince1970: 0) )
         setPropertiesFromTaskModel(taskModel: taskModel)
     }
     
     
     // Called pulling new tasks from the API
-    init(withJSON json: [String:Any]) {
+    convenience init(withJSON json: [String:Any]) {
         self.init(uniqueID: "", name: "", userCreated: "", dateCreated: Date(timeIntervalSince1970: 0) )
         if let uniqueID = json[TaskPropertyKeys.uniqueID.rawValue] as? String {
             self.uniqueID = uniqueID
@@ -89,7 +90,7 @@ struct Task: Ordered {
     }
     
     // Called when app launches and initializes tasks from local store
-    mutating func setPropertiesFromTaskModel(taskModel: TaskModel) {
+    func setPropertiesFromTaskModel(taskModel: TaskModel) {
         self.uniqueID = taskModel.uniqueID ?? ""
         self.name = taskModel.name ?? ""
         self.userCreated = taskModel.userCreated ?? ""

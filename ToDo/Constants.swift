@@ -41,6 +41,7 @@ enum TaskPropertyKeys : String {
 
 enum UserKeys : String {
     case user = "user"
+    case numberOfTasks = "numberOfTasks"
 }
 
 extension String {

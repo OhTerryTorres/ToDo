@@ -17,6 +17,10 @@ struct CoreService {
         persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
     }
     
+    enum StoreType {
+        case local, remote
+    }
+    
     // Fetch all tasks for local store and sort them by data
     // When app is first launched.
     func getTasks(withPredicate predicate: NSPredicate? = nil) -> [Task] {
@@ -39,7 +43,7 @@ struct CoreService {
         return tasks
     }
 
-    func deleteAllTasks() {
+    func deleteAllTasks(withPredicate predicate: NSPredicate? = nil) {
         /*
          Batch deletes react directly with the persistent store, bypassing the context.
          If every item in the data source's array is a reference to a manged object in
@@ -52,6 +56,10 @@ struct CoreService {
         persistentContainer.viewContext.reset()
 
         let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: "TaskModel")
+        if let p = predicate {
+            fetch.predicate = p
+            
+        }
         let batchDelete = NSBatchDeleteRequest(fetchRequest: fetch)
         do {
             try persistentContainer.viewContext.execute(batchDelete)

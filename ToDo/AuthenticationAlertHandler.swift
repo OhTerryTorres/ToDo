@@ -13,6 +13,9 @@ class AuthenticationAlertHandler {
     var coordinator : NetworkCoordinator!
     var currentAlertController : UIAlertController!
 
+    enum AlertType {
+        case login, register
+    }
     
     lazy var loginAlertController : UIAlertController = {
         let alertController = UIAlertController(title: "Log In", message: "", preferredStyle: .alert)
@@ -34,8 +37,7 @@ class AuthenticationAlertHandler {
             
             if let user = alertController.textFields?[0].text, let password = alertController.textFields?[1].text {
                 if user == "" || password == "" {
-                    self.loginAlertController.message = "Fields are missing!"
-                    self.present(alertController: alertController)
+                    self.present(alertType: .login, message: "Fields are missing!")
                 } else {
                     self.coordinator.authenticate(user: user, password: password, method: .login)
                 }
@@ -45,7 +47,7 @@ class AuthenticationAlertHandler {
         
         let registerAlertAction = UIAlertAction(title: "Register", style: .default, handler: {
             (action : UIAlertAction!) -> Void in
-            self.present(alertController: self.registerAlertController)
+            self.present(alertType: .register)
         })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
@@ -90,15 +92,14 @@ class AuthenticationAlertHandler {
             if password == confirmPassword {
                 self.coordinator.authenticate(user: user, password: password, method: .register)
             } else {
-                self.registerAlertController.message = "Passwords don't match!"
-                self.present(alertController: alertController)
+                self.present(alertType: .register, message: "Passwords don't match!")
             }
 
         })
         
         let loginAlertAction = UIAlertAction(title: "Log In", style: .default, handler: {
             (action : UIAlertAction!) -> Void in
-            self.present(alertController: self.loginAlertController)
+            self.present(alertType: .login)
         })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
@@ -116,17 +117,16 @@ class AuthenticationAlertHandler {
     }
     
     
-    func present(alertController: UIAlertController? = nil, message: String? = nil) {
-        let alert = alertController ?? self.currentAlertController
-        alert?.message = message
-        if let presentedViewController = (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.presentedViewController {
-            if presentedViewController != alert {
-                self.currentAlertController = alert
-            }
-        } else {
-            self.currentAlertController = alert
-            (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.present(self.currentAlertController, animated: true, completion: nil)
+    func present(alertType: AlertType = .login, message: String? = nil) {
+        var alertController : UIAlertController
+        switch alertType {
+        case .login:
+            alertController = loginAlertController
+        case .register:
+            alertController = registerAlertController
         }
+        coordinator.dataSource.controller.present(alertController, animated: true)
+        alertController.message = message
     }
 
     

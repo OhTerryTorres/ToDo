@@ -97,6 +97,23 @@ struct APIService {
         }
         dataTask.resume()
     }
+    
+    func deleteCompleted() {
+        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=deleteCompleted"
+        guard let url = URL(string: urlString) else { return }
+        let request = URLRequest(url: url)
+        
+        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard error == nil else { print("error \(error.debugDescription)"); return }
+            print("no error")
+            guard let data = data else { print("no data"); return }
+            if let dataString = String.init(data: data, encoding: .utf8)  {
+                print("data from delete request is\n\(dataString)")
+            }
+        }
+        dataTask.resume()
+    }
 
     
     
