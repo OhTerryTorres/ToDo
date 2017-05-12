@@ -25,8 +25,8 @@ struct APIService {
     // MARK: - API request
     
     func postRequest(task: Task, method: PostMethod) {
-        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=\(method.rawValue)"
+        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=\(method.rawValue)"
         
         guard let jsonData = try? JSONSerialization.data(withJSONObject: task.json()) else {
             print("outgoing JSONSerialization error")
@@ -58,13 +58,16 @@ struct APIService {
     func getTasks() {
         // Cannot be performed without a response handler
         guard responseHandler != nil else { print("error: no response handler"); return }
-        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=get"
+        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=get"
         guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print("error \(error.debugDescription)"); return }
+            guard error == nil else {
+                print("connection error \(error.debugDescription)")
+                return
+            }
             guard let data = data else { print("no data"); return }
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]] {
@@ -78,8 +81,8 @@ struct APIService {
     }
     
     func delete(task: Task) {
-        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=delete"
+        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=delete"
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
         
@@ -99,8 +102,8 @@ struct APIService {
     }
     
     func deleteCompleted() {
-        guard let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String else { return }
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?user=\(user.safeEmail())&method=deleteCompleted"
+        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=deleteCompleted"
         guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)
         

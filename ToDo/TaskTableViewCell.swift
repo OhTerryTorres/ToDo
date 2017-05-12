@@ -54,6 +54,8 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
             if let userCompleted = task.userCompleted {
                 fillColor = userCompleted == USER_ID ? USER_COLOR : GUEST_COLOR
             }
+            // Gray out textfield
+            textField.textColor = task.userCompleted == nil ? .black : .lightGray
         }
         
         // Shape with colors
@@ -102,6 +104,5 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         self.shapeLayer = shapeLayer
         completedButton.layer.addSublayer(self.shapeLayer!)
     }
-    
     
 }

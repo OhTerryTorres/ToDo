@@ -21,7 +21,7 @@ class AuthenticationAlertHandler {
         let alertController = UIAlertController(title: "Log In", message: "", preferredStyle: .alert)
         
         alertController.addTextField { (textField : UITextField!) -> Void in
-            textField.placeholder = "Email"
+            textField.placeholder = "Username"
             textField.clearButtonMode = .always
             textField.keyboardType = .emailAddress
             
@@ -35,11 +35,12 @@ class AuthenticationAlertHandler {
         let loginAction = UIAlertAction(title: "Log In", style: .default, handler: {
             alert -> Void in
             
-            if let user = alertController.textFields?[0].text, let password = alertController.textFields?[1].text {
-                if user == "" || password == "" {
+            if let username = alertController.textFields?[0].text, let password = alertController.textFields?[1].text {
+                if username == "" || password == "" {
                     self.present(alertType: .login, message: "Fields are missing!")
                 } else {
-                    self.coordinator.authenticate(user: user, password: password, method: .login)
+                    let authenticator = AuthenticationService(responseHandler: self.coordinator)
+                    authenticator.authenticate(username: username, password: password, method: .login)
                 }
             }
             
@@ -50,11 +51,12 @@ class AuthenticationAlertHandler {
             self.present(alertType: .register)
         })
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
         alertController.addAction(loginAction)
         alertController.addAction(registerAlertAction)
         alertController.addAction(cancelAction)
+        alertController.preferredAction = loginAction
         return alertController
     }()
     
@@ -62,37 +64,40 @@ class AuthenticationAlertHandler {
         let alertController = UIAlertController(title: "Register", message: "", preferredStyle: .alert)
         
         alertController.addTextField { (textField : UITextField!) -> Void in
-            textField.text = alertController.textFields?[0].text// Default with any text that was already typed in
+            textField.placeholder = "Username"
+            textField.clearButtonMode = .always
+        }
+        alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Email"
             textField.clearButtonMode = .always
             textField.keyboardType = .emailAddress
-            //textField.text = "kefkajr@gmail.com"
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
-            textField.text = alertController.textFields?[1].text // Default with any text that was already typed in
             textField.placeholder = "Password"
             textField.clearButtonMode = .always
             textField.isSecureTextEntry = true
-            //textField.text = "ultima"
         }
         alertController.addTextField { (textField : UITextField!) -> Void in
             textField.placeholder = "Confirm Password"
             textField.clearButtonMode = .always
             textField.isSecureTextEntry = true
-            //textField.text = "ultima"
         }
         
         let registerAction = UIAlertAction(title: "Register", style: .default, handler: {
             alert -> Void in
             
-            guard let user = alertController.textFields?[0].text else { return }
-            guard let password = alertController.textFields?[1].text else { return }
-            guard let confirmPassword = alertController.textFields?[2].text else { return }
+            guard let username = alertController.textFields?[0].text else { return }
+            guard let email = alertController.textFields?[1].text else { return }
+            guard let password = alertController.textFields?[2].text else { return }
+            guard let confirmPassword = alertController.textFields?[3].text else { return }
             
-            if password == confirmPassword {
-                self.coordinator.authenticate(user: user, password: password, method: .register)
-            } else {
+            if password == confirmPassword && username.isAlphanumeric {
+                let authenticator = AuthenticationService(responseHandler: self.coordinator)
+                authenticator.authenticate(username: username, email: email, password: password, method: .register)
+            } else if password != confirmPassword {
                 self.present(alertType: .register, message: "Passwords don't match!")
+            } else if !username.isAlphanumeric {
+                self.present(alertType: .register, message: "Please keep usernames alphanumeric!")
             }
 
         })
@@ -102,11 +107,12 @@ class AuthenticationAlertHandler {
             self.present(alertType: .login)
         })
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
         alertController.addAction(registerAction)
         alertController.addAction(loginAlertAction)
         alertController.addAction(cancelAction)
+        alertController.preferredAction = registerAction
         return alertController
     }()
     
@@ -116,14 +122,16 @@ class AuthenticationAlertHandler {
         self.currentAlertController = loginAlertController
     }
     
-    
-    func present(alertType: AlertType = .login, message: String? = nil) {
-        var alertController : UIAlertController
-        switch alertType {
-        case .login:
-            alertController = loginAlertController
-        case .register:
-            alertController = registerAlertController
+    func present(alertType: AlertType? = nil, message: String? = nil) {
+        var alertController : UIAlertController = self.currentAlertController
+        if let type = alertType {
+            switch type {
+            case .login:
+                alertController = loginAlertController
+            case .register:
+                alertController = registerAlertController
+            }
+            self.currentAlertController = alertController
         }
         coordinator.dataSource.controller.present(alertController, animated: true)
         alertController.message = message

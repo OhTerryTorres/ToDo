@@ -40,20 +40,23 @@ enum TaskPropertyKeys : String {
 }
 
 enum UserKeys : String {
-    case user = "user"
+    case username = "username"
     case numberOfTasks = "numberOfTasks"
 }
 
 extension String {
     
-    func safeEmail() -> String {
+    var safeEmail: String {
         let noAt = self.replacingOccurrences(of: "@", with: "at")
         let noDot = noAt.replacingOccurrences(of: ".", with: "dot")
         return noDot
     }
-    func withoutEmailSuffix() -> String {
+    var withoutEmailSuffix: String {
         guard let atIndex = self.range(of: "@")?.upperBound else { return self }
         return self.substring(with: self.startIndex..<atIndex)
+    }
+    var isAlphanumeric: Bool {
+        return !isEmpty && range(of: "[^a-zA-Z0-9]", options: .regularExpression) == nil
     }
     
 }

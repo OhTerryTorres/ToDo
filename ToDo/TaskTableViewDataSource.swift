@@ -14,6 +14,7 @@ class TaskTableViewDataSource {
     var networkCoordinator : NetworkCoordinator!
     var tasks : [Task] = []
     var completedTasksHidden = false
+    var deleteToolbar : UIToolbar?
     
     init(controller: TaskTableViewController) {
         self.controller = controller
@@ -34,6 +35,7 @@ class TaskTableViewDataSource {
         // Add login bar button to cotroller
         setUpTitleButton()
         setUpBarButtons()
+        setUpDeleteToolbar()
     }
     
     func update(method: ReloadMethod = .full) {
@@ -53,7 +55,6 @@ class TaskTableViewDataSource {
         let coreService = CoreService()
         coreService.delete(task: task)
         */
-        update()
     }
     
     @objc func refresh() {
@@ -74,8 +75,8 @@ class TaskTableViewDataSource {
         let loginButton = UIButton(type: .custom)
         loginButton.setTitleColor(GUEST_COLOR, for: .normal)
         loginButton.setTitleColor(.clear, for: .highlighted)
-        let userName = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String ?? "To Do"
-        loginButton.setTitle(userName, for: .normal)
+        let user = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String ?? "To Do"
+        loginButton.setTitle(user, for: .normal)
         loginButton.showsTouchWhenHighlighted = true
         loginButton.frame = controller.navigationItem.titleView?.frame ?? CGRect(x: 0, y: 0, width: 100, height: 40)
         loginButton.addTarget(self, action: #selector(showLoginAlert), for: .touchUpInside)
@@ -85,6 +86,15 @@ class TaskTableViewDataSource {
     func setUpBarButtons() {
         controller.navigationItem.rightBarButtonItem = editBarButton
         controller.navigationItem.leftBarButtonItem = hideCompletedBarButton
+    }
+    
+    func setUpDeleteToolbar() {
+        let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(deleteCompletedTasks))
+        self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height - 44, width: controller.view.frame.width, height: 44))
+        self.deleteToolbar?.items = [button]
+        self.deleteToolbar?.isHidden = true
+        self.deleteToolbar?.tintColor = USER_COLOR
+        self.controller.view.superview!.addSubview(deleteToolbar!)
     }
     
     var hideCompletedBarButton : UIBarButtonItem {
@@ -128,7 +138,7 @@ class TaskTableViewDataSource {
             alert -> Void in
             self.tasks = self.tasks.filter { $0.userCompleted == nil }
             self.update()
-            DispatchQueue.global().async {
+            DispatchQueue.global(qos: .background).async {
                 let predicate = NSPredicate(format: "userCompleted != nil")
                 let coreService = CoreService()
                 coreService.deleteAllTasks(withPredicate: predicate)
@@ -149,6 +159,9 @@ class TaskTableViewDataSource {
     @objc func setEditing() {
         let editing = controller.tableView.isEditing ? false : true
         let image : UIImage = controller.tableView.isEditing ? #imageLiteral(resourceName: "editFalse") : #imageLiteral(resourceName: "editTrue")
+        
+        self.deleteToolbar?.isHidden = controller.tableView.isEditing ? true : false
+        
         controller.navigationItem.rightBarButtonItem?.image = image
         controller.tableView.setEditing(editing, animated: true)
     }

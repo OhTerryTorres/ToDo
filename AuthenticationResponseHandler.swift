@@ -9,41 +9,48 @@
 import Foundation
 
 
-protocol AuthenticationResponseHandler {
+protocol AuthenticationResponseHandler: class {
+    var dataSource : TaskTableViewDataSource { get set }
     var currentUser : String? { get set }
     var authenticationAlertHandler : AuthenticationAlertHandler! { get set }
     
     // Handle JSON dict from AuthenticationService
-    mutating func authenticate(user: String, password: String, method: AuthenticationMethod)
-    func handleAuthenticationResponse(status: String, message: String)
+    func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())?)
+    func presentAlertOnMainQueue(message: String)
     func getDataFromAPI(completion:(()->())?)
+    
 }
 
 extension AuthenticationResponseHandler {
     
-    mutating func authenticate(user: String, password: String, method: AuthenticationMethod) {
-        if currentUser != nil && currentUser != user {
-            // If logging in as new user, erase records in local store
-            let coreService = CoreService()
-            coreService.deleteAllTasks()
-        }
-        currentUser = user
-        let authenticator = AuthenticationService(withController: self)
-        authenticator.authenticate(user: user, password: password, method: method)
-    }
     
-    func handleAuthenticationResponse(status : String, message: String) {
+     func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())? = nil) {
         switch status {
         case "success":
-            UserDefaults.standard.set(currentUser, forKey: UserKeys.user.rawValue)
+            if currentUser != nil && currentUser != username {
+                // If logging in as new user, erase records in local store
+                let coreService = CoreService()
+                coreService.deleteAllTasks()
+                
+                dataSource.tasks = []
+            }
+            currentUser = username
+            UserDefaults.standard.set(currentUser, forKey: UserKeys.username.rawValue)
+            
             getDataFromAPI(completion: nil)
         case "error":
-            DispatchQueue.main.async {
-                self.authenticationAlertHandler.present(message: message)
-            }
+            self.presentAlertOnMainQueue(message: message)
         default:
             return
         }
+        completion?()
+    }
+    
+    func presentAlertOnMainQueue(message: String) {
+        DispatchQueue.main.async {
+            self.authenticationAlertHandler.present(message: message)
+        }
+        
     }
     
 }

@@ -32,20 +32,25 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
     }
     
     func checkSession() {
-        if let user = UserDefaults.standard.object(forKey: UserKeys.user.rawValue) as? String {
-            currentUser = user
-            getDataFromAPI()
+        if let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String {
+            currentUser = username
+            getDataFromAPI() {
+            }
         } else {
             authenticationAlertHandler.present()
         }
     }
     
     func getDataFromAPI(completion:(()->())? = nil) {
-        guard let _ = currentUser else { return }
+        guard let _ = currentUser else { completion?(); return }
         
         // Look for new tasks in database
         let apiService = APIService(responseHandler: self)
         apiService.getTasks()
+        
+        DispatchQueue.main.async {
+            self.dataSource.setUpTitleButton()
+        }
         
         completion?()
     }

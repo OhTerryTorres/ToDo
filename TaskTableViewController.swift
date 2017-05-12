@@ -24,6 +24,7 @@ class TaskTableViewController: UITableViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
         taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
         dataSource = TaskTableViewDataSource(controller: self)
         dataSource.update()
@@ -71,7 +72,11 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-        return .delete
+        if tableView.isEditing {
+            return .none
+        } else {
+            return .delete
+        }
     }
     override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
@@ -80,6 +85,7 @@ class TaskTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete  && indexPath.row != lastRow {
             dataSource.delete(taskAtIndex: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
@@ -98,7 +104,6 @@ class TaskTableViewController: UITableViewController {
         guard let _ = task.userCompleted else { return UITableViewAutomaticDimension }
         return 0
     }
-
     
 }
 

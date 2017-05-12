@@ -283,6 +283,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 4Q996R58Y9;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.SafariKeychain = {
+								enabled = 0;
+							};
+						};
 					};
 					CE7D60F21E857E8E008CA26E = {
 						CreatedOnToolsVersion = 8.2.1;

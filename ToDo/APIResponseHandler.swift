@@ -9,14 +9,15 @@ import Foundation
 
 protocol APIResponseHandler {
     var dataSource : TaskTableViewDataSource { get set }
+    
     // Handle JSON dict from APIRequestService
-    func handleAPIResponse(jsonArray : [[String:Any]])
+    func handleAPIResponse(jsonArray : [[String:Any]], completion:(()->())?)
 }
 
 extension APIResponseHandler {
     // Called from a URL Session data task, so can be assumed to
     // alway run on a background thread.
-    func handleAPIResponse(jsonArray: [[String : Any]]) {
+    func handleAPIResponse(jsonArray: [[String : Any]], completion:(()->())? = nil) {
         /* -----
          let coreService = CoreService()
          coreService.integrateTasks(tasks: dataSource.tasks, withJSONArray: jsonArray)
@@ -45,6 +46,7 @@ extension APIResponseHandler {
         
         DispatchQueue.main.async {
             self.dataSource.update()
+            completion?()
         }
     }
     
