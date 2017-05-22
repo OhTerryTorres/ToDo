@@ -15,7 +15,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     var keyboardManager : KeyboardManager!
     var activeTextField : UITextField?
     
-    init(forController controller: TaskTableViewController) {
+    init(controller: TaskTableViewController) {
         self.controller = controller
         super.init()
         self.keyboardManager = KeyboardManager(controller: controller, textFieldDelegate: self)
@@ -64,6 +64,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     // Add or update Task
     // Return nil unless adding new task
     func resolveTaskForTextField(textField : UITextField) -> Task? {
+        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return nil}
         // The tag should be set properly in the controller's cellForRow %%
         let tag = textField.tag
         let apiService = APIService()
@@ -76,7 +77,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
             controller.dataSource.tasks += [task]
             
             // Send task to database
-            apiService.insert(task: task)
+            apiService.insert(task: task, forUser: username)
             
             return task
         }
@@ -86,7 +87,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         controller.dataSource.tasks[tag].name = text
         
         // Update task to database
-        apiService.set(task: controller.dataSource.tasks[tag])
+        apiService.set(task: controller.dataSource.tasks[tag], forUser: username)
         
         return nil
         

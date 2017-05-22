@@ -35,13 +35,31 @@ class TaskTests: XCTestCase {
     
 }
 
-class DatSourceTests: XCTestCase {
+class DataSourceTests: XCTestCase {
+    var controller : TaskTableViewController!
     var dataSource : TaskTableViewDataSource!
+    var textFieldDelegate : TaskTextFieldDelegate!
+    var keyboardManager : KeyboardManager!
+    var networkCoordinator : NetworkCoordinator!
+    var authenticationAlertHandler : AuthenticationAlertHandler!
     
     override func setUp() {
         super.setUp()
-        dataSource = TaskTableViewDataSource(controller: TaskTableViewController())
+        controller = TaskTableViewController()
+        
+        controller.dataSource = TaskTableViewDataSource(controller: controller)
+        dataSource = controller.dataSource
+        dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
+        networkCoordinator = dataSource.networkCoordinator
+        authenticationAlertHandler = networkCoordinator.authenticationAlertHandler
+        
+        controller.taskTextFieldDelegate = TaskTextFieldDelegate(controller: controller)
+        textFieldDelegate = controller.taskTextFieldDelegate
+        textFieldDelegate.keyboardManager = KeyboardManager(controller: controller, textFieldDelegate: textFieldDelegate)
+        keyboardManager = textFieldDelegate.keyboardManager
+        
         dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
+
     }
     
     override func tearDown() {
@@ -49,16 +67,57 @@ class DatSourceTests: XCTestCase {
         super.tearDown()
     }
     
+    // MANAGING TASKS
     func testLastRowShouldBeEqualToNumberOfTasks() {
         dataSource.tasks += [Task(name: "Eat eggs")]
         XCTAssert(dataSource.controller.lastRow == 4)
     }
     
-    func testLastTaskOrderShouldEqualItsIndexInArray() {
+    func testTaskOrderShouldEqualItsIndexInArray() {
         dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
         dataSource.networkCoordinator.handleAPIResponse(jsonArray: [MockTaskJSON])
-        print("order is \(dataSource.tasks[3].order)")
-        XCTAssert(dataSource.tasks[3].order < 3)
+        XCTAssert(dataSource.tasks[3].order == 3)
+    }
+    
+    // CORE DATA
+    
+    func testShouldDeleteAllCompletedTasks() {
+        let task = dataSource.tasks[0]
+        task.userCompleted = "billy"
+        let otherTask = dataSource.tasks[1]
+        
+        let predicate = NSPredicate(format: "userCompleted != nil")
+        let coreService = CoreService()
+        coreService.syncTasksToCoreData(tasks: dataSource.tasks)
+        coreService.deleteAllTasks(withPredicate: predicate)
+        
+        let fetch = NSFetchRequest<TaskModel>(entityName: "TaskModel")
+        fetch.predicate = NSPredicate(format: "uniqueID == %@", task.uniqueID)
+        let fetchedTaskModels = try! coreService.persistentContainer.viewContext.fetch(fetch)
+        
+        fetch.predicate = NSPredicate(format: "uniqueID == %@", otherTask.uniqueID)
+        let otherFetchedTaskModels = try! coreService.persistentContainer.viewContext.fetch(fetch)
+        
+        XCTAssert(fetchedTaskModels.count == 0 && otherFetchedTaskModels.count == 1)
+        
+    }
+    
+    
+    // NETWORKING
+    func testTaskShouldBeAccessibleFromAPI() {
+        // May need to build in a NAME paramete for the API functions.
+        let apiService = APIService(responseHandler: networkCoordinator)
+        apiService.insert(task: MockTask, forUser: "test")
+        
+        apiService.getTasks(forUser: "test")
+        for task in dataSource.tasks {
+            print(task.name)
+        }
+        XCTAssert(dataSource.tasks[0].name == "DO DISHES")
+    }
+    
+    func deletedTaskShouldBeMissingFromAPI() {
+        
     }
     
     func testPerformanceExample() {

@@ -40,7 +40,7 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
         
         // Update task's completed status in database
         let apiService = APIService()
-        apiService.set(task: task)
+        apiService.set(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
     }
     
     func drawButtonForCompletionStatus() {

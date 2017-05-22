@@ -39,11 +39,6 @@ class TaskTableViewDataSource {
     }
     
     func update(method: ReloadMethod = .full) {
-        /* ----
-        let coreService = CoreService()
-        let predicate : NSPredicate? = completedTasksHidden ? NSPredicate(format: "userCompleted == nil") : nil
-        tasks = coreService.getTasksSortedByDate(withPredicate: predicate)
-        */
         controller.reload(method: method)
     }
     
@@ -69,6 +64,7 @@ class TaskTableViewDataSource {
     }
     
     
+    
     // Buttons - these should probably be refactored eslewhere
     
     func setUpTitleButton() {
@@ -90,11 +86,15 @@ class TaskTableViewDataSource {
     
     func setUpDeleteToolbar() {
         let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(deleteCompletedTasks))
-        self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height - 44, width: controller.view.frame.width, height: 44))
+        self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height, width: controller.view.frame.width, height: 44))
         self.deleteToolbar?.items = [button]
         self.deleteToolbar?.isHidden = true
         self.deleteToolbar?.tintColor = USER_COLOR
-        self.controller.view.superview!.addSubview(deleteToolbar!)
+        if let superview = self.controller.view.superview {
+            superview.addSubview(deleteToolbar!)
+        } else {
+            self.controller.view.addSubview(deleteToolbar!)
+        }
     }
     
     var hideCompletedBarButton : UIBarButtonItem {
@@ -158,11 +158,22 @@ class TaskTableViewDataSource {
     
     @objc func setEditing() {
         let editing = controller.tableView.isEditing ? false : true
-        let image : UIImage = controller.tableView.isEditing ? #imageLiteral(resourceName: "editFalse") : #imageLiteral(resourceName: "editTrue")
-        
-        self.deleteToolbar?.isHidden = controller.tableView.isEditing ? true : false
+        let image : UIImage = editing ? #imageLiteral(resourceName: "editFalse") : #imageLiteral(resourceName: "editTrue")
         
         controller.navigationItem.rightBarButtonItem?.image = image
         controller.tableView.setEditing(editing, animated: true)
+        
+        if let delete = deleteToolbar {
+            let hidden = editing ? false : true
+            let yOffset = editing ? delete.frame.height : -1 * delete.frame.height
+            var frame = delete.frame
+            frame.origin.y -= yOffset
+            UIView.transition(with: delete, duration: 0.5, options: .curveEaseOut, animations: { _ in
+                delete.frame = frame
+            }, completion: nil)
+            delete.isHidden = hidden
+        }
+        
+        
     }
 }

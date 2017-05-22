@@ -24,11 +24,10 @@ struct APIService {
     
     // MARK: - API request
     
-    func postRequest(task: Task, method: PostMethod) {
-        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
+    func postRequest(task: Task, method: PostMethod, username: String) {
         let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=\(method.rawValue)"
         
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: task.json()) else {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: task.json) else {
             print("outgoing JSONSerialization error")
             return
         }
@@ -48,17 +47,16 @@ struct APIService {
         dataTask.resume()
     }
     
-    func insert(task: Task) {
-        postRequest(task: task, method: .insert)
+    func insert(task: Task, forUser username: String) {
+        postRequest(task: task, method: .insert, username: username)
         
     }
-    func set(task: Task) {
-        postRequest(task: task, method: .set)
+    func set(task: Task, forUser username: String) {
+        postRequest(task: task, method: .set, username: username)
     }
-    func getTasks() {
+    func getTasks(forUser username: String) {
         // Cannot be performed without a response handler
         guard responseHandler != nil else { print("error: no response handler"); return }
-        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
         let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=get"
         guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)

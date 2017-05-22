@@ -76,7 +76,7 @@ Task: Ordered {
     }
     
     // Called when sending updated tasks through the API
-    func json() -> [String : Any] {
+    var json : [String : Any] {
         var json : [String : Any] = [:]
         
         json[TaskPropertyKeys.uniqueID.rawValue] = uniqueID

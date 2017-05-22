@@ -42,11 +42,11 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
     }
     
     func getDataFromAPI(completion:(()->())? = nil) {
-        guard let _ = currentUser else { completion?(); return }
+        guard let username = currentUser else { completion?(); return }
         
         // Look for new tasks in database
         let apiService = APIService(responseHandler: self)
-        apiService.getTasks()
+        apiService.getTasks(forUser: username)
         
         DispatchQueue.main.async {
             self.dataSource.setUpTitleButton()

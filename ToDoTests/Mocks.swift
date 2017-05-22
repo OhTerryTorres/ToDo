@@ -9,6 +9,19 @@
 import Foundation
 @testable import ToDo
 
+
+var MockTask : Task {
+    let task = Task(name: "DO DISHES")
+    task.uniqueID = "BB7B4816-6AF0-48DC-96DF-7B1629C50C640001"
+    task.userCreated = "BB7B4816-6AF0-48DC-96DF-7B1629C50C64"
+    task.userCompleted = nil
+    task.dateCreated = Date()
+    task.dateCompleted = nil
+    task.order = 0
+    return task
+}
+
+
 var MockTaskJSON : [String : Any] {
     var json : [String : Any] = [:]
     json[TaskPropertyKeys.uniqueID.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C640000"

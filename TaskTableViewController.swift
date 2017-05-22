@@ -25,7 +25,7 @@ class TaskTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
-        taskTextFieldDelegate = TaskTextFieldDelegate(forController: self)
+        taskTextFieldDelegate = TaskTextFieldDelegate(controller: self)
         dataSource = TaskTableViewDataSource(controller: self)
         dataSource.update()
         navigationController?.navigationBar.tintColor = GUEST_COLOR
