@@ -46,10 +46,6 @@ class TaskTableViewDataSource {
         let task = tasks.remove(at: index)
         let apiService = APIService()
         apiService.delete(task: task)
-        /* ----
-        let coreService = CoreService()
-        coreService.delete(task: task)
-        */
     }
     
     @objc func refresh() {

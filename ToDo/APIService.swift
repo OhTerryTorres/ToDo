@@ -55,6 +55,7 @@ struct APIService {
         postRequest(task: task, method: .set, username: username)
     }
     func getTasks(forUser username: String) {
+        print("getTasks started")
         // Cannot be performed without a response handler
         guard responseHandler != nil else { print("error: no response handler"); return }
         let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=get"
@@ -62,6 +63,7 @@ struct APIService {
         let request = URLRequest(url: url)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            print("dataTask started")
             guard error == nil else {
                 print("connection error \(error.debugDescription)")
                 return
@@ -74,8 +76,10 @@ struct APIService {
             } catch {
                 print("get tasks JSONSerialization error")
             }
+            print("dataTask done")
         }
         dataTask.resume()
+        print("getTasks done")
     }
     
     func delete(task: Task) {

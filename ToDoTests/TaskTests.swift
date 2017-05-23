@@ -51,6 +51,7 @@ class DataSourceTests: XCTestCase {
         dataSource = controller.dataSource
         dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
         networkCoordinator = dataSource.networkCoordinator
+        networkCoordinator.currentUser = "test"
         authenticationAlertHandler = networkCoordinator.authenticationAlertHandler
         
         controller.taskTextFieldDelegate = TaskTextFieldDelegate(controller: controller)
@@ -64,6 +65,7 @@ class DataSourceTests: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        controller = nil
         super.tearDown()
     }
     
@@ -74,7 +76,6 @@ class DataSourceTests: XCTestCase {
     }
     
     func testTaskOrderShouldEqualItsIndexInArray() {
-        dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
         dataSource.networkCoordinator.handleAPIResponse(jsonArray: [MockTaskJSON])
         XCTAssert(dataSource.tasks[3].order == 3)
     }
@@ -102,22 +103,45 @@ class DataSourceTests: XCTestCase {
         
     }
     
-    
     // NETWORKING
     func testTaskShouldBeAccessibleFromAPI() {
-        // May need to build in a NAME paramete for the API functions.
-        let apiService = APIService(responseHandler: networkCoordinator)
-        apiService.insert(task: MockTask, forUser: "test")
-        
-        apiService.getTasks(forUser: "test")
+        print("FUCK!\r\n")
         for task in dataSource.tasks {
             print(task.name)
         }
-        XCTAssert(dataSource.tasks[0].name == "DO DISHES")
-    }
-    
-    func deletedTaskShouldBeMissingFromAPI() {
+        print("\r\nFUCK!")
         
+        // May need to build in a NAME paramete for the API functions.
+        let apiService = APIService(responseHandler: networkCoordinator)
+        apiService.insert(task: MockTask, forUser: "test")
+        apiService.getTasks(forUser: "test")
+        
+        print("SHIT!\r\n")
+        for task in dataSource.tasks {
+            print(task.name)
+        }
+        print("\r\nSHIT!")
+        
+        
+        
+        // IS multithreading causing a problem here?
+        // The test is being resolved before the API finishes working maybe?
+        // Let's delay the test.
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            XCTAssert(self.dataSource.tasks[0].name == "DO DISHES")
+        })
+        
+    }
+ 
+    
+    func testDeletedTaskByIndexShouldRemoveItFromArray() {
+        // GIVEN (arrange)
+        let task = dataSource.tasks[0]
+        // WHEN (act)
+        dataSource.delete(taskAtIndex: 0)
+        // THEN (asser)
+        XCTAssert(!dataSource.tasks.contains(where: { $0.name == task.name }))
     }
     
     func testPerformanceExample() {

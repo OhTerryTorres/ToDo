@@ -38,6 +38,7 @@ extension APIResponseHandler {
             
             dataSource.tasks += newSortedTasks
             dataSource.tasks.maintainOrder()
+            print("printing Tasks in order")
             for task in dataSource.tasks {
                 print(task.name)
                 print(task.order)
