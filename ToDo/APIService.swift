@@ -119,7 +119,6 @@ struct APIService {
         }
         dataTask.resume()
     }
-
     
     
 }

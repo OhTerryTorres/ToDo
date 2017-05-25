@@ -79,6 +79,22 @@ class DataSourceTests: XCTestCase {
         dataSource.networkCoordinator.handleAPIResponse(jsonArray: [MockTaskJSON])
         XCTAssert(dataSource.tasks[3].order == 3)
     }
+
+    func testDeletedTaskByIndexShouldRemoveItFromArrayAndAPI() {
+        // GIVEN (arrange)
+        let task = dataSource.tasks[0]
+        let apiService = APIService(responseHandler: networkCoordinator)
+        apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
+        // WHEN (act)
+        apiService.getTasks(forUser: networkCoordinator.currentUser!)
+        dataSource.delete(taskAtIndex: 0)
+        // THEN (assert)
+        XCTAssert(!dataSource.tasks.contains(where: { $0.uniqueID == task.uniqueID }))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            XCTAssert(self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+        })
+    }
+    
     
     // CORE DATA
     
@@ -104,45 +120,62 @@ class DataSourceTests: XCTestCase {
     }
     
     // NETWORKING
-    func testTaskShouldBeAccessibleFromAPI() {
-        print("FUCK!\r\n")
-        for task in dataSource.tasks {
-            print(task.name)
-        }
-        print("\r\nFUCK!")
+    func testNewTaskShouldBeAccessibleFromAPI() {
+        let exp = expectation(description: "testOldTaskShouldBeChangedInAPI")
         
-        // May need to build in a NAME paramete for the API functions.
+        let task = dataSource.tasks[0]
+        
         let apiService = APIService(responseHandler: networkCoordinator)
-        apiService.insert(task: MockTask, forUser: "test")
-        apiService.getTasks(forUser: "test")
-        
-        print("SHIT!\r\n")
-        for task in dataSource.tasks {
-            print(task.name)
-        }
-        print("\r\nSHIT!")
-        
-        
-        
-        // IS multithreading causing a problem here?
-        // The test is being resolved before the API finishes working maybe?
-        // Let's delay the test.
+        apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
+        apiService.getTasks(forUser: networkCoordinator.currentUser!)
+
+        // The test needs to be delayed so that the data task in getTasks()
+        // has time to ping the API and get a response
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(self.dataSource.tasks[0].name == "DO DISHES")
+            XCTAssert(self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+            exp.fulfill()
         })
+        wait(for: [exp], timeout: 15.0)
+    }
+    func testOldTaskShouldBeChangedInAPI() {
+        let exp = expectation(description: "testOldTaskShouldBeChangedInAPI")
         
-    }
- 
-    
-    func testDeletedTaskByIndexShouldRemoveItFromArray() {
-        // GIVEN (arrange)
         let task = dataSource.tasks[0]
-        // WHEN (act)
-        dataSource.delete(taskAtIndex: 0)
-        // THEN (asser)
-        XCTAssert(!dataSource.tasks.contains(where: { $0.name == task.name }))
+        task.userCompleted = "billy"
+        
+        let apiService = APIService(responseHandler: networkCoordinator)
+        apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
+        task.userCompleted = "Sven"
+        apiService.set(task: task, forUser: networkCoordinator.currentUser!)
+        apiService.getTasks(forUser: networkCoordinator.currentUser!)
+        
+        // The test needs to be delayed so that the data task in getTasks()
+        // has time to ping the API and get a response
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            XCTAssert(self.dataSource.tasks.contains(where: {$0.userCompleted != nil}))
+            exp.fulfill()
+        })
+        wait(for: [exp], timeout: 15.0)
     }
+    
+    
+    // test if the delete function works on multiple devices.
+    
+    // Create a second composition root matching the one in setUp()
+    // Have root 1 make a completed task and set it in the API.
+    // Have root 2 get all tasks from the API.
+    // Have root 1 delete all completed tasks in the API.
+    // Have root 2's dataSource saveData()
+    // Test to make sure that root 2's tasks do NOT contain the completed task.
+    
+    /*
+     This will probably fail.
+     Core Data is synced with the displayed task, but NOT with the API.
+     The APIService should have a method that receives an array of tasks, and removes the ones that are NOT in the API.
+     This should be called when the app launches, AFTER loading tasks from Core Data.
+    */
     
     func testPerformanceExample() {
         // This is an example of a performance test case.

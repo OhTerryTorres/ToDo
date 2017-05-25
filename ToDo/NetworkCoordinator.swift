@@ -35,6 +35,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
         if let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String {
             currentUser = username
             getDataFromAPI() {
+                
             }
         } else {
             authenticationAlertHandler.present()

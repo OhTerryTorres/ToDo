@@ -18,36 +18,42 @@ extension APIResponseHandler {
     // Called from a URL Session data task, so can be assumed to
     // alway run on a background thread.
     func handleAPIResponse(jsonArray: [[String : Any]], completion:(()->())? = nil) {
-        /* -----
-         let coreService = CoreService()
-         coreService.integrateTasks(tasks: dataSource.tasks, withJSONArray: jsonArray)
-         */
+        var remoteTasks : [Task] = []
         var newTasks : [Task] = []
+        
         for json in jsonArray {
             guard let uniqueID = json["uniqueID"] as? String else { return }
+            let task = Task(withJSON: json)
+            remoteTasks += [task]
             if let index = dataSource.tasks.index(where: {$0.uniqueID == uniqueID} ) {
-                dataSource.tasks[index] = Task(withJSON: json)
+                // Update task
+                dataSource.tasks[index] = task
             } else {
                 // Add new task
-                newTasks += [Task(withJSON: json)]
+                newTasks += [task]
             }
         }
         
+        // Remove tasks that are no longer found in the API
+        if remoteTasks.count > 0 {
+            for index in 0..<dataSource.tasks.count {
+                if !remoteTasks.contains(where: { $0.uniqueID == dataSource.tasks[index].uniqueID }) {
+                    dataSource.tasks.remove(at: index)
+                }
+            }
+        }
+        
+        // Sort tasks and assign the correct order to them.
         if newTasks.count > 0 {
             let newSortedTasks = newTasks.sorted(by: {$1.dateCreated > $0.dateCreated})
             
             dataSource.tasks += newSortedTasks
             dataSource.tasks.maintainOrder()
-            print("printing Tasks in order")
-            for task in dataSource.tasks {
-                print(task.name)
-                print(task.order)
-            }
         }
         
         DispatchQueue.main.async {
-            self.dataSource.update()
             completion?()
+            self.dataSource.update()
         }
     }
     
