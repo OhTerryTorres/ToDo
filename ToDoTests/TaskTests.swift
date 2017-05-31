@@ -76,23 +76,35 @@ class DataSourceTests: XCTestCase {
     }
     
     func testTaskOrderShouldEqualItsIndexInArray() {
-        dataSource.networkCoordinator.handleAPIResponse(jsonArray: [MockTaskJSON])
+        let array = [MockTaskJSON, dataSource.tasks[0].json, dataSource.tasks[1].json, dataSource.tasks[2].json]
+        dataSource.networkCoordinator.handleAPIResponse(jsonArray: array)
         XCTAssert(dataSource.tasks[3].order == 3)
     }
 
     func testDeletedTaskByIndexShouldRemoveItFromArrayAndAPI() {
+        let exp0 = expectation(description: "1testDeletedTaskByIndexShouldRemoveItFromArrayAndAPI")
+        let exp1 = expectation(description: "2testDeletedTaskByIndexShouldRemoveItFromArrayAndAPI")
+        
         // GIVEN (arrange)
-        let task = dataSource.tasks[0]
+        let task = Task(name: "Pray")
+        dataSource.tasks += [task]
         let apiService = APIService(responseHandler: networkCoordinator)
         apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
+
         // WHEN (act)
         apiService.getTasks(forUser: networkCoordinator.currentUser!)
-        dataSource.delete(taskAtIndex: 0)
-        // THEN (assert)
-        XCTAssert(!dataSource.tasks.contains(where: { $0.uniqueID == task.uniqueID }))
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+            self.dataSource.delete(taskAtIndex: self.dataSource.tasks.count-1)
+            exp0.fulfill()
         })
+
+        // THEN (assert)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            XCTAssert(!self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+            exp1.fulfill()
+        })
+        wait(for: [exp0, exp1], timeout: 15.0)
     }
     
     
@@ -121,9 +133,9 @@ class DataSourceTests: XCTestCase {
     
     // NETWORKING
     func testNewTaskShouldBeAccessibleFromAPI() {
-        let exp = expectation(description: "testOldTaskShouldBeChangedInAPI")
+        let exp = expectation(description: "testNewTaskShouldBeAccessibleFromAPI")
         
-        let task = dataSource.tasks[0]
+        let task = Task(name: "Shave butt")
         
         let apiService = APIService(responseHandler: networkCoordinator)
         apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
@@ -133,7 +145,7 @@ class DataSourceTests: XCTestCase {
         // has time to ping the API and get a response
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+            XCTAssert(self.dataSource.tasks.contains(where: {$0.name == task.name}))
             exp.fulfill()
         })
         wait(for: [exp], timeout: 15.0)
@@ -161,21 +173,42 @@ class DataSourceTests: XCTestCase {
     }
     
     
-    // test if the delete function works on multiple devices.
+    // test if the delete function works across multiple devices.
+
+    func testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh() {
+        let exp0 = expectation(description: "1testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
+        let exp1 = expectation(description: "2testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
+        let exp2 = expectation(description: "3testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
+
+        // Task is created on home device and sent to API
+        let task = Task(name: "Smoke a bowl")
+        dataSource.tasks += [task]
+        print("Smoke a bowl ID is \(task.uniqueID)")
+        
+        let apiService = APIService(responseHandler: networkCoordinator)
+        apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            // Other device deletes task from API
+            apiService.delete(task: task)
+            exp0.fulfill()
+        })
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            // Home device gets tasks from API
+            self.dataSource.refresh()
+            exp1.fulfill()
+        })
+        
+        // Since task is gone from API, home device should remove task from local array
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            XCTAssert(!self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+            exp2.fulfill()
+        })
+        wait(for: [exp0, exp1, exp2], timeout: 15.0)
+    }
+
     
-    // Create a second composition root matching the one in setUp()
-    // Have root 1 make a completed task and set it in the API.
-    // Have root 2 get all tasks from the API.
-    // Have root 1 delete all completed tasks in the API.
-    // Have root 2's dataSource saveData()
-    // Test to make sure that root 2's tasks do NOT contain the completed task.
-    
-    /*
-     This will probably fail.
-     Core Data is synced with the displayed task, but NOT with the API.
-     The APIService should have a method that receives an array of tasks, and removes the ones that are NOT in the API.
-     This should be called when the app launches, AFTER loading tasks from Core Data.
-    */
     
     func testPerformanceExample() {
         // This is an example of a performance test case.

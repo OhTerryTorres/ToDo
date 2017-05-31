@@ -36,8 +36,8 @@ extension APIResponseHandler {
         
         // Remove tasks that are no longer found in the API
         if remoteTasks.count > 0 {
-            for index in 0..<dataSource.tasks.count {
-                if !remoteTasks.contains(where: { $0.uniqueID == dataSource.tasks[index].uniqueID }) {
+            for (index,task) in dataSource.tasks.enumerated().reversed() {
+                if !remoteTasks.contains(where: { $0.uniqueID == task.uniqueID }) {
                     dataSource.tasks.remove(at: index)
                 }
             }
