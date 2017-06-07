@@ -17,11 +17,7 @@ struct CoreService {
         persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
     }
     
-    enum StoreType {
-        case local, remote
-    }
-    
-    // Fetch all tasks for local store and sort them by data
+    // Fetch all tasks for local store and sort them by date
     // When app is first launched.
     func getTasks(withPredicate predicate: NSPredicate? = nil) -> [Task] {
         var taskModels : [TaskModel] = []
@@ -99,7 +95,7 @@ struct CoreService {
         
     }
     
-    // If tasks have been deleted from list, delete them from the local store
+    // If tasks have been deleted from display list, delete them from the local store
     func deleteExtraneousTasks(tasks: [Task], withContext context: NSManagedObjectContext) {
         var taskByIdDict : [String:Task] = [:]
         

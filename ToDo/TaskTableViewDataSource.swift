@@ -51,6 +51,11 @@ class TaskTableViewDataSource {
     @objc func refresh() {
         networkCoordinator.getDataFromAPI() {
             self.controller.refreshControl?.endRefreshing()
+            
+            // Acknowledge notifications and prepare to receive new ones
+            guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String, let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
+            let apiService = APIService()
+            apiService.acknowledgeNotification(username: username, token: deviceToken)
         }
     }
     

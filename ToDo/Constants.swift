@@ -42,6 +42,7 @@ enum TaskPropertyKeys : String {
 enum UserKeys : String {
     case username = "username"
     case numberOfTasks = "numberOfTasks"
+    case deviceToken = "deviceToken"
 }
 
 extension String {

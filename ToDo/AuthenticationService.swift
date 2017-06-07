@@ -61,8 +61,31 @@ struct AuthenticationService {
             } catch {
                 print("\(methodType) JSONSerialization error:  \(error.localizedDescription)")
             }
+        }   
+        dataTask.resume()
+    }
+    
+    func uploadDeviceToken(token: String, forUser username: String) {
+        let urlString = "http://www.terry-torres.com/todo/api/uploadDeviceToken.php"
+        let postString = "username=\(username)&token=\(token)"
+        guard let url = URL(string: urlString) else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = postString.data(using: .utf8)
+        
+        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard error == nil else {
+                print("Connection error uploading device token")
+                return
+            }
+            print(response ?? "no response")
+            guard let data = data else { print("no data"); return }
+            if let dataString = String.init(data: data, encoding: .utf8)  {
+                print("data from login request is\n\(dataString)")
+            }
         }
         dataTask.resume()
+
     }
 
     
