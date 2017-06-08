@@ -50,47 +50,15 @@ struct APIService {
                 print("data from post request is\n\(dataString)")
                 if dataString.range(of: "success") != nil {
                     // *****
-                    self.pushNotification(username: username, passphrase: "1000noKotob@")
+                    let pns = PushNotificationService()
+                    pns.pushNotification(username: username, passphrase: "1000noKotob@")
                 }
             }
         }
         dataTask.resume()
     }
     
-    func pushNotification(username: String, passphrase: String)  {
-        let urlString = "http://www.terry-torres.com/todo/api/pushNotification.php"
-        let postString = "username=\(username)&passphrase=\(passphrase)"
-        guard let url = URL(string: urlString) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = postString.data(using: .utf8)
-        
-        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print("push notification error \(error.debugDescription)"); return }
-            guard let data = data else { print("no data"); return }
-            if let dataString = String.init(data: data, encoding: .utf8)  {
-                print("data from push notification request is\n\(dataString)")
-            }
-        }
-        dataTask.resume()
-    }
-    func acknowledgeNotification(username: String, token: String)  {
-        let urlString = "http://www.terry-torres.com/todo/api/acknowledgeNotification.php"
-        let postString = "username=\(username)&token=\(token)"
-        guard let url = URL(string: urlString) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = postString.data(using: .utf8)
-        
-        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print("push notification error \(error.debugDescription)"); return }
-            guard let data = data else { print("no data"); return }
-            if let dataString = String.init(data: data, encoding: .utf8)  {
-                print("data from acknowledge notification request is\n\(dataString)")
-            }
-        }
-        dataTask.resume()
-    }
+   
     
     func getTasks(forUser username: String) {
         print("getTasks started")

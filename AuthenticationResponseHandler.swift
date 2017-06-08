@@ -39,8 +39,8 @@ extension AuthenticationResponseHandler {
             
             // If user agreed to receive notifications, add their device token to user table.
             if let token = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String {
-                let authenticationService = AuthenticationService(responseHandler: self)
-                authenticationService.uploadDeviceToken(token: token, forUser: username)
+                let pns = PushNotificationService()
+                pns.uploadDeviceToken(token: token, forUser: username)
             }
             
             getDataFromAPI(completion: nil)

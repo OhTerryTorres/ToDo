@@ -70,7 +70,7 @@ class TaskTableViewController: UITableViewController {
         }
         return true
     }
-    
+ 
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         if tableView.isEditing {
             return .none
@@ -83,17 +83,21 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete  && indexPath.row != lastRow {
+        if editingStyle == .delete && indexPath.row != lastRow {
             dataSource.delete(taskAtIndex: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
         }
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        guard destinationIndexPath.row != lastRow else { reload(); return }
+        //guard destinationIndexPath.row != lastRow else { reload(); return }
         let movedTask = dataSource.tasks[sourceIndexPath.row]
         dataSource.tasks.remove(at: sourceIndexPath.row)
-        dataSource.tasks.insert(movedTask, at: destinationIndexPath.row)
+        var newRow = destinationIndexPath.row
+        if newRow > lastRow {
+            newRow = lastRow
+        }
+        dataSource.tasks.insert(movedTask, at: newRow)
         dataSource.tasks.maintainOrder()
         reload()
     }

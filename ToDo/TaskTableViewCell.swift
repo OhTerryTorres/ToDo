@@ -8,13 +8,13 @@
 
 import UIKit
 
-class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
+class TaskTableViewCell: UITableViewCell {
 
     @IBOutlet var completedButton: UIButton!
     @IBOutlet var textField: UITextField!
     var task : Task? {
         didSet {
-            drawButtonForCompletionStatus()
+            updateAppearanceForCompletionStatus()
         }
     }
     var shapeLayer : CAShapeLayer?
@@ -36,17 +36,18 @@ class TaskTableViewCell: UITableViewCell, UITextFieldDelegate {
 
         task.userCompleted = task.userCompleted == nil ? USER_ID : nil  // Add your ID if you completed it
         task.dateCompleted = task.userCompleted == nil ? nil : Date() // Add current date if completed
-        drawButtonForCompletionStatus()
+        updateAppearanceForCompletionStatus()
         
         // Update task's completed status in database
         let apiService = APIService()
         apiService.set(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
     }
     
-    func drawButtonForCompletionStatus() {
+    func updateAppearanceForCompletionStatus() {
         // Set default colors for a blank task
         var strokeColor : UIColor = .lightGray
         var fillColor : UIColor = .clear
+        textField.textColor = .black
         
         // Change colors based on task completion status
         if let task = self.task {

@@ -54,8 +54,8 @@ class TaskTableViewDataSource {
             
             // Acknowledge notifications and prepare to receive new ones
             guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String, let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
-            let apiService = APIService()
-            apiService.acknowledgeNotification(username: username, token: deviceToken)
+            let pns = PushNotificationService()
+            pns.acknowledgeNotification(username: username, token: deviceToken)
         }
     }
     

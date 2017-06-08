@@ -17,6 +17,7 @@
 		CE7D60ED1E857E8D008CA26E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60EB1E857E8D008CA26E /* LaunchScreen.storyboard */; };
 		CE7D61031E857E8E008CA26E /* ToDoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61021E857E8E008CA26E /* ToDoUITests.swift */; };
 		CE7D61111E858610008CA26E /* TaskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D61101E858610008CA26E /* TaskTableViewController.swift */; };
+		CEA7C7A01EE89E95008C2799 /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7C79F1EE89E94008C2799 /* PushNotificationService.swift */; };
 		CECC4BC51E9532CB00A4585C /* TaskTextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */; };
 		CECC4BC71E95373600A4585C /* CoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC4BC61E95373600A4585C /* CoreService.swift */; };
 		CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */; };
@@ -66,6 +67,7 @@
 		CE7D61041E857E8E008CA26E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE7D61101E858610008CA26E /* TaskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskTableViewController.swift; path = ../TaskTableViewController.swift; sourceTree = "<group>"; };
 		CEA7C79E1EDF5FF7008C2799 /* ToDo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ToDo.entitlements; sourceTree = "<group>"; };
+		CEA7C79F1EE89E94008C2799 /* PushNotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
 		CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTextFieldDelegate.swift; sourceTree = "<group>"; };
 		CECC4BC61E95373600A4585C /* CoreService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreService.swift; sourceTree = "<group>"; };
 		CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 			children = (
 				CECC4BC61E95373600A4585C /* CoreService.swift */,
 				CE39F5D31E97E02900876ED7 /* APIService.swift */,
+				CEA7C79F1EE89E94008C2799 /* PushNotificationService.swift */,
 				CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */,
 			);
 			name = Services;
@@ -369,6 +372,7 @@
 				CE7D61111E858610008CA26E /* TaskTableViewController.swift in Sources */,
 				CECC4BC71E95373600A4585C /* CoreService.swift in Sources */,
 				CEFE573D1EA28E0C00539A49 /* AuthenticationResponseHandler.swift in Sources */,
+				CEA7C7A01EE89E95008C2799 /* PushNotificationService.swift in Sources */,
 				CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */,
 				CEFE57431EA6752100539A49 /* TaskTableViewDataSource.swift in Sources */,
 				CECC4BC51E9532CB00A4585C /* TaskTextFieldDelegate.swift in Sources */,
