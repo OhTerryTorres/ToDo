@@ -10,6 +10,8 @@ import Foundation
 
 struct APIService {
     
+    // Functionally the same as far as the API is concerned,
+    // but only posting a new task (insert) results in a push notification.
     enum PostMethod : String {
         case insert = "insert"
         case set = "set"
@@ -31,7 +33,7 @@ struct APIService {
         postRequest(task: task, method: .set, username: username)
     }
     func postRequest(task: Task, method: PostMethod, username: String) {
-        let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=\(method.rawValue)"
+        let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=set"
         
         guard let jsonData = try? JSONSerialization.data(withJSONObject: task.json) else {
             print("outgoing JSONSerialization error")
@@ -48,10 +50,14 @@ struct APIService {
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
                 print("data from post request is\n\(dataString)")
-                if dataString.range(of: "success") != nil {
+                if dataString.range(of: "success") != nil && method == .insert {
                     // *****
                     let pns = PushNotificationService()
-                    pns.pushNotification(username: username, passphrase: "1000noKotob@")
+                    if let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String {
+                        pns.pushNotification(username: username, passphrase: "1000noKotob@", token: deviceToken)
+                    } else {
+                        pns.pushNotification(username: username, passphrase: "1000noKotob@")
+                    }
                 }
             }
         }

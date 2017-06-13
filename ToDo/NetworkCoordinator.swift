@@ -35,7 +35,9 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
         if let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String {
             currentUser = username
             getDataFromAPI() {
-                
+                guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
+                let pns = PushNotificationService()
+                pns.acknowledgeNotification(username: username, token: deviceToken)
             }
         } else {
             authenticationAlertHandler.present()

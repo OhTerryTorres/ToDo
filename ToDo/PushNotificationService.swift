@@ -20,14 +20,18 @@ struct PushNotificationService {
         
     }
     
-    func postRequest(method: PostMethod, username: String, deviceToken: String? = nil, passphrase: String? = nil) {
+    func postRequest(method: PostMethod, username: String, passphrase: String? = nil, deviceToken: String? = nil) {
         var urlString = "http://www.terry-torres.com/todo/api/"
         var endpoint = ""
         var postString = ""
         switch method {
         case .push:
             guard let pass = passphrase else { print("no passphrase!"); return }
-            postString = "username=\(username)&passphrase=\(pass)"
+            if let token = deviceToken {
+                postString = "username=\(username)&passphrase=\(pass)&sourceTokenString=\(token)"
+            } else {
+                postString = "username=\(username)&passphrase=\(pass)&sourceTokenString="
+            }
             endpoint = "pushNotification.php"
         case .upload:
             guard let token = deviceToken else { print("no token!"); return }
@@ -55,8 +59,8 @@ struct PushNotificationService {
         dataTask.resume()
     }
     
-    func pushNotification(username: String, passphrase: String)  {
-        postRequest(method: .push, username: username, passphrase: passphrase)
+    func pushNotification(username: String, passphrase: String, token: String? = nil)  {
+        postRequest(method: .push, username: username, passphrase: passphrase, deviceToken: token)
     }
     func acknowledgeNotification(username: String, token: String)  {
         postRequest(method: .acknowledge, username: username, deviceToken: token)
