@@ -19,11 +19,12 @@ import Foundation
  
 */
 
-class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler {
+class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, FailedRequestCatcher {
     
     var currentUser : String? = nil
     var dataSource : TaskTableViewDataSource
     var authenticationAlertHandler : AuthenticationAlertHandler!
+    var failedRequestPackages : [(urlRequest: URLRequest, username: String, method: APIService.PostMethod)] = []
         
     init(dataSource: TaskTableViewDataSource) {
         self.dataSource = dataSource

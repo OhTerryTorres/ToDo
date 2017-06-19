@@ -53,7 +53,7 @@ struct PushNotificationService {
             guard error == nil else { print("push service error \(error.debugDescription)"); return }
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
-                print("data from push service request is\n\(dataString)")
+                print("data from push service (\(method.rawValue)) request is\n\(dataString)")
             }
         }
         dataTask.resume()

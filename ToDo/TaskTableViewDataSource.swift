@@ -44,19 +44,29 @@ class TaskTableViewDataSource {
     
     func delete(taskAtIndex index: Int) {
         let task = tasks.remove(at: index)
-        let apiService = APIService()
+        let apiService = APIService(responseHandler: nil, catcher: networkCoordinator)
         apiService.delete(task: task)
     }
     
+    // Called on entering foreground OR on pulling down on the tableview
     @objc func refresh() {
-        networkCoordinator.getDataFromAPI() {
-            self.controller.refreshControl?.endRefreshing()
+        // Try submitting previously failed task insert and set requests
+        self.networkCoordinator.retryFailedRequests() {
             
-            // Acknowledge notifications and prepare to receive new ones
-            guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String, let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
-            let pns = PushNotificationService()
-            pns.acknowledgeNotification(username: username, token: deviceToken)
+            // Synchronize local tasks with remote tasks
+            self.networkCoordinator.getDataFromAPI() {
+                
+                // Remove refresh indicator
+                self.controller.refreshControl?.endRefreshing()
+                
+                // Acknowledge push notifications for this device and prepare to receive new ones
+                guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String, let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
+                let pns = PushNotificationService()
+                pns.acknowledgeNotification(username: username, token: deviceToken)
+            }
         }
+        
+        
     }
     
     @objc func saveData() {
@@ -144,7 +154,7 @@ class TaskTableViewDataSource {
                 let coreService = CoreService()
                 coreService.deleteAllTasks(withPredicate: predicate)
                 
-                let apiService = APIService()
+                let apiService = APIService(responseHandler: nil, catcher: self.networkCoordinator)
                 apiService.deleteCompleted()
             }            
         })

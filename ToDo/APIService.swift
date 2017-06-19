@@ -15,12 +15,15 @@ struct APIService {
     enum PostMethod : String {
         case insert = "insert"
         case set = "set"
+        case delete = "delete"
     }
     
     var responseHandler : APIResponseHandler!
+    var catcher : FailedRequestCatcher!
     
-    init(responseHandler: APIResponseHandler? = nil) {
+    init(responseHandler: APIResponseHandler? = nil, catcher: FailedRequestCatcher? = nil) {
         self.responseHandler = responseHandler
+        self.catcher = catcher
     }
     
     
@@ -44,9 +47,12 @@ struct APIService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = jsonData
-        
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print("error \(error.debugDescription)"); return }
+            guard error == nil else {
+                print("error \(error.debugDescription)");
+                self.catcher.failedRequestPackages.insert((urlRequest: request, username: username, method: method), at: 0)
+                return
+            }
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
                 print("data from post request is\n\(dataString)")
@@ -105,7 +111,11 @@ struct APIService {
         request.httpBody = idData
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print("error \(error.debugDescription)"); return }
+            guard error == nil else {
+                print("error \(error.debugDescription)")
+                self.catcher.failedRequestPackages.insert((urlRequest: request, username: username, method: .delete), at: 0)
+                return
+            }
             print("no error")
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {
@@ -122,7 +132,11 @@ struct APIService {
         let request = URLRequest(url: url)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else { print("error \(error.debugDescription)"); return }
+            guard error == nil else {
+                print("error \(error.debugDescription)")
+                self.catcher.failedRequestPackages.insert((urlRequest: request, username: username, method: .delete), at: 0)
+                return
+            }
             print("no error")
             guard let data = data else { print("no data"); return }
             if let dataString = String.init(data: data, encoding: .utf8)  {

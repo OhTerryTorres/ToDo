@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE0B47B91EB7778100763DC7 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B47B81EB7778100763DC7 /* Mocks.swift */; };
+		CE120C251EF1CA6C00386846 /* FailedDataTaskCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE120C241EF1CA6C00386846 /* FailedDataTaskCatcher.swift */; };
 		CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIService.swift */; };
 		CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */; };
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		CE0B47B81EB7778100763DC7 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		CE120C241EF1CA6C00386846 /* FailedDataTaskCatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailedDataTaskCatcher.swift; sourceTree = "<group>"; };
 		CE39F5D31E97E02900876ED7 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponseHandler.swift; sourceTree = "<group>"; };
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,7 +67,7 @@
 		CE7D60FE1E857E8E008CA26E /* ToDoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7D61021E857E8E008CA26E /* ToDoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoUITests.swift; sourceTree = "<group>"; };
 		CE7D61041E857E8E008CA26E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CE7D61101E858610008CA26E /* TaskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskTableViewController.swift; path = ../TaskTableViewController.swift; sourceTree = "<group>"; };
+		CE7D61101E858610008CA26E /* TaskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewController.swift; sourceTree = "<group>"; };
 		CEA7C79E1EDF5FF7008C2799 /* ToDo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ToDo.entitlements; sourceTree = "<group>"; };
 		CEA7C79F1EE89E94008C2799 /* PushNotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
 		CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTextFieldDelegate.swift; sourceTree = "<group>"; };
@@ -75,7 +77,7 @@
 		CEEBADE31E93E9CB000E586D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CEFE57321E9D1C2900539A49 /* TaskTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTests.swift; sourceTree = "<group>"; };
 		CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationAlertHandler.swift; sourceTree = "<group>"; };
-		CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthenticationResponseHandler.swift; path = ../AuthenticationResponseHandler.swift; sourceTree = "<group>"; };
+		CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationResponseHandler.swift; sourceTree = "<group>"; };
 		CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		CEFE57401EA501C600539A49 /* NetworkCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCoordinator.swift; sourceTree = "<group>"; };
 		CEFE57421EA6752100539A49 /* TaskTableViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 		CEFE57371E9E86C600539A49 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				CE120C241EF1CA6C00386846 /* FailedDataTaskCatcher.swift */,
 				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
 				CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */,
 			);
@@ -379,6 +382,7 @@
 				CEFE57451EA7B35600539A49 /* KeyboardManager.swift in Sources */,
 				CEEBADE21E93E4E8000E586D /* Task.swift in Sources */,
 				CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */,
+				CE120C251EF1CA6C00386846 /* FailedDataTaskCatcher.swift in Sources */,
 				CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

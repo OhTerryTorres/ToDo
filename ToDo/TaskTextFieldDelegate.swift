@@ -67,7 +67,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return nil}
         // The tag should be set properly in the controller's cellForRow %%
         let tag = textField.tag
-        let apiService = APIService()
+        let apiService = APIService(responseHandler: nil, catcher: controller.dataSource.networkCoordinator)
         
         guard let text = textField.text  else { return nil }
         
