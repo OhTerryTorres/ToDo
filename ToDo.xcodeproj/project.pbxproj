@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE0B47B91EB7778100763DC7 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0B47B81EB7778100763DC7 /* Mocks.swift */; };
-		CE120C251EF1CA6C00386846 /* FailedDataTaskCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE120C241EF1CA6C00386846 /* FailedDataTaskCatcher.swift */; };
+		CE120C251EF1CA6C00386846 /* FailedRequestCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */; };
 		CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIService.swift */; };
 		CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */; };
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
@@ -52,7 +52,7 @@
 
 /* Begin PBXFileReference section */
 		CE0B47B81EB7778100763DC7 /* Mocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
-		CE120C241EF1CA6C00386846 /* FailedDataTaskCatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailedDataTaskCatcher.swift; sourceTree = "<group>"; };
+		CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailedRequestCatcher.swift; sourceTree = "<group>"; };
 		CE39F5D31E97E02900876ED7 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponseHandler.swift; sourceTree = "<group>"; };
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -200,7 +200,7 @@
 		CEFE57371E9E86C600539A49 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				CE120C241EF1CA6C00386846 /* FailedDataTaskCatcher.swift */,
+				CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */,
 				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
 				CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */,
 			);
@@ -382,7 +382,7 @@
 				CEFE57451EA7B35600539A49 /* KeyboardManager.swift in Sources */,
 				CEEBADE21E93E4E8000E586D /* Task.swift in Sources */,
 				CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */,
-				CE120C251EF1CA6C00386846 /* FailedDataTaskCatcher.swift in Sources */,
+				CE120C251EF1CA6C00386846 /* FailedRequestCatcher.swift in Sources */,
 				CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

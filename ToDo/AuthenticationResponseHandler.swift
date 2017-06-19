@@ -18,7 +18,6 @@ protocol AuthenticationResponseHandler: class {
     func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())?)
     func presentAlertOnMainQueue(message: String)
     func getDataFromAPI(completion:(()->())?)
-    
 }
 
 extension AuthenticationResponseHandler {
