@@ -38,9 +38,9 @@ extension FailedRequestCatcher {
                         // *****
                         let pns = PushNotificationService()
                         if let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String {
-                            pns.pushNotification(username: requestPackage.username, passphrase: "1000noKotob@", token: deviceToken)
+                            pns.pushNotification(username: requestPackage.username, passphrase: PUSH_PASSPHRASE, token: deviceToken)
                         } else {
-                            pns.pushNotification(username: requestPackage.username, passphrase: "1000noKotob@")
+                            pns.pushNotification(username: requestPackage.username, passphrase: PUSH_PASSPHRASE)
                         }
                     }
                 }

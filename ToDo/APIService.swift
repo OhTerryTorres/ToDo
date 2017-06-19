@@ -60,9 +60,9 @@ struct APIService {
                     // *****
                     let pns = PushNotificationService()
                     if let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String {
-                        pns.pushNotification(username: username, passphrase: "1000noKotob@", token: deviceToken)
+                        pns.pushNotification(username: username, passphrase: PUSH_PASSPHRASE, token: deviceToken)
                     } else {
-                        pns.pushNotification(username: username, passphrase: "1000noKotob@")
+                        pns.pushNotification(username: username, passphrase: PUSH_PASSPHRASE)
                     }
                 }
             }
