@@ -26,8 +26,11 @@ extension APIResponseHandler {
             let task = Task(withJSON: json)
             remoteTasks += [task]
             if let index = dataSource.tasks.index(where: {$0.uniqueID == uniqueID} ) {
-                // Update task
-                dataSource.tasks[index] = task
+                // Check if remote task has more recent update than local task
+                if task.lastUpdate > dataSource.tasks[index].lastUpdate {
+                    // Update task
+                    dataSource.tasks[index] = task
+                }
             } else {
                 // Add new task
                 newTasks += [task]

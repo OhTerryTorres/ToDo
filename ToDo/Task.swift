@@ -16,6 +16,7 @@ Task: Ordered {
     var userCreated: String
     var userCompleted: String?
     var dateCreated: Date
+    var lastUpdate: Date
     var dateCompleted: Date?
     var order: Int = 0
     
@@ -26,6 +27,7 @@ Task: Ordered {
         self.userCreated = userCreated
         self.userCompleted = userCompleted
         self.dateCreated = dateCreated
+        self.lastUpdate = dateCreated
         self.dateCompleted = dateCompleted
     }
     
@@ -49,7 +51,7 @@ Task: Ordered {
     }
     
     
-    // Called pulling new tasks from the API
+    // Called when pulling new tasks from the API
     convenience init(withJSON json: [String:Any]) {
         self.init(uniqueID: "", name: "", userCreated: "", dateCreated: Date(timeIntervalSince1970: 0) )
         if let uniqueID = json[TaskPropertyKeys.uniqueID.rawValue] as? String {
@@ -71,7 +73,14 @@ Task: Ordered {
             }
         }
         if let dateCompleted = json[TaskPropertyKeys.dateCompleted.rawValue] as? String {
-            self.dateCompleted = MySQLDateFormatter.date(from: dateCompleted)
+            if let date = MySQLDateFormatter.date(from: dateCompleted) {
+                self.dateCompleted = date
+            }
+        }
+        if let lastUpdate = json[TaskPropertyKeys.lastUpdate.rawValue] as? String {
+            if let date = MySQLDateFormatter.date(from: lastUpdate) {
+                self.lastUpdate = date
+            }
         }
     }
     
@@ -83,6 +92,7 @@ Task: Ordered {
         json[TaskPropertyKeys.name.rawValue] = name
         json[TaskPropertyKeys.userCreated.rawValue] = userCreated
         json[TaskPropertyKeys.dateCreated.rawValue] = MySQLDateFormatter.string(from: dateCreated)
+        json[TaskPropertyKeys.lastUpdate.rawValue] = MySQLDateFormatter.string(from: lastUpdate)
         if let userCompleted = userCompleted { json[TaskPropertyKeys.userCompleted.rawValue] = userCompleted }
         if let dateCompleted = dateCompleted { json[TaskPropertyKeys.dateCompleted.rawValue] = MySQLDateFormatter.string(from: dateCompleted as Date) }
         
@@ -96,6 +106,7 @@ Task: Ordered {
         self.userCreated = taskModel.userCreated ?? ""
         self.userCompleted = taskModel.userCompleted
         self.dateCreated = taskModel.dateCreated! as Date
+        self.lastUpdate = taskModel.lastUpdate! as Date
         self.dateCompleted = taskModel.dateCompleted as Date?
         self.order = Int(taskModel.order)
     }
@@ -115,6 +126,7 @@ extension TaskModel {
         self.userCreated = task.userCreated
         self.userCompleted = task.userCompleted
         self.dateCreated = task.dateCreated as NSDate
+        self.lastUpdate = task.lastUpdate as NSDate
         self.dateCompleted = task.dateCompleted as NSDate?
         self.order = Int16(task.order)
     }

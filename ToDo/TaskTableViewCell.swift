@@ -18,8 +18,9 @@ class TaskTableViewCell: UITableViewCell {
         }
     }
     var shapeLayer : CAShapeLayer?
+    var networkCoordinator : NetworkCoordinator? // Used to catch failed set requests
     
-    func configure(task: Task?, tag: Int, delegate: TaskTextFieldDelegate) {
+    func configure(task: Task?, tag: Int, delegate: TaskTextFieldDelegate, networkCoordinator: NetworkCoordinator?) {
         textField.delegate = delegate
         textField.tag = tag
         if let t = task {
@@ -28,6 +29,9 @@ class TaskTableViewCell: UITableViewCell {
         } else {
             self.task = nil
             textField.text = nil // zero out reused cells
+        }
+        if let nc = networkCoordinator {
+            self.networkCoordinator = nc
         }
     }
 
@@ -39,7 +43,7 @@ class TaskTableViewCell: UITableViewCell {
         updateAppearanceForCompletionStatus()
         
         // Update task's completed status in database
-        let apiService = APIService()
+        let apiService = APIService(responseHandler: nil, catcher: networkCoordinator)
         apiService.set(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
     }
     

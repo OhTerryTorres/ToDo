@@ -33,6 +33,7 @@ struct APIService {
         postRequest(task: task, method: .insert, username: username)
     }
     func set(task: Task, forUser username: String) {
+        task.lastUpdate = Date()
         postRequest(task: task, method: .set, username: username)
     }
     func postRequest(task: Task, method: PostMethod, username: String) {

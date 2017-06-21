@@ -52,11 +52,11 @@ class TaskTableViewController: UITableViewController {
         
         // Last row has no task by default
         guard indexPath.row != lastRow else {
-            cell.configure(task: nil, tag: indexPath.row, delegate: taskTextFieldDelegate)
+            cell.configure(task: nil, tag: indexPath.row, delegate: taskTextFieldDelegate, networkCoordinator: nil)
             return cell
         }
         let task = dataSource.tasks[indexPath.row]
-        cell.configure(task: task, tag: indexPath.row, delegate: taskTextFieldDelegate)
+        cell.configure(task: task, tag: indexPath.row, delegate: taskTextFieldDelegate, networkCoordinator: dataSource.networkCoordinator)
         
         return cell
     }

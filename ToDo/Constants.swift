@@ -37,6 +37,7 @@ enum TaskPropertyKeys : String {
     case userCompleted = "userCompleted"
     case dateCreated = "dateCreated"
     case dateCompleted = "dateCompleted"
+    case lastUpdate = "lastUpdate"
     case order = "order"
 }
 

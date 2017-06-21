@@ -35,11 +35,11 @@ struct PushNotificationService {
             endpoint = "pushNotification.php"
         case .upload:
             guard let token = deviceToken else { print("no token!"); return }
-            postString = "username=\(username)&token=\(token)"
+            postString = "username=\(username)&deviceTokenString=\(token)"
             endpoint = "uploadDeviceToken.php"
         case .acknowledge:
             guard let token = deviceToken else { print("no token!"); return }
-            postString = "username=\(username)&token=\(token)"
+            postString = "username=\(username)&deviceTokenString=\(token)"
             endpoint = "acknowledgeNotification.php"
         }
         urlString += endpoint
