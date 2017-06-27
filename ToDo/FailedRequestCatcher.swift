@@ -24,6 +24,7 @@ extension FailedRequestCatcher {
      So: refresh() first calls this function to retry failed requests, THEN get remote data via the API.
     */
     func retryFailedRequests(completion:(()->())? = nil) {
+        guard failedRequestPackages.count > 0 else { completion?(); return }
         for (index, requestPackage) in failedRequestPackages.enumerated().reversed() {
             failedRequestPackages.remove(at: index)
             let dataTask = URLSession.shared.dataTask(with: requestPackage.urlRequest) { (data, response, error) in
@@ -45,9 +46,12 @@ extension FailedRequestCatcher {
                     }
                 }
             }
+            if index == 0 { // Once we've finished the last failed request
+                // Run the compleition handler
+                completion?()
+            }
             dataTask.resume()
         }
-        completion?()
         
     }
     

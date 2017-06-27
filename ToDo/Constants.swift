@@ -12,15 +12,11 @@ import UIKit
 var USER_ID = UIDevice.current.identifierForVendor!.uuidString
 let USER_COLOR = UIColor(colorLiteralRed: 208.0/255.0, green: 135.0/255.0, blue: 154.0/255.0, alpha: 1.0)
 let GUEST_COLOR = UIColor(colorLiteralRed: 98.0/255.0, green: 146.0/255.0, blue: 150.0/255.0, alpha: 1.0)
-let PUSH_PASSPHRASE = "REDACTED"
+let PUSH_PASSPHRASE = "1000noKotob@"
 
 enum ReloadMethod {
     case full // Reloads entire tableview
     case partial // Reloads last two rows, if a new task is added by the user.
-}
-enum AuthenticationMethod {
-    case login
-    case register
 }
 
 var MySQLDateFormatter : DateFormatter = {

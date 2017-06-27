@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class TaskTableViewCell: UITableViewCell {
 
     @IBOutlet var completedButton: UIButton!
@@ -17,7 +18,7 @@ class TaskTableViewCell: UITableViewCell {
             updateAppearanceForCompletionStatus()
         }
     }
-    var shapeLayer : CAShapeLayer?
+    var shapeLayer : CAShapeLayer? // Used to draw on top of the completedButton
     var networkCoordinator : NetworkCoordinator? // Used to catch failed set requests
     
     func configure(task: Task?, tag: Int, delegate: TaskTextFieldDelegate, networkCoordinator: NetworkCoordinator?) {

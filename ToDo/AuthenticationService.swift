@@ -12,6 +12,16 @@ import Foundation
 // and speaking to the remote API specifically for those reasons.
 struct AuthenticationService {
     
+    enum AuthenticationMethod : String {
+        case login = "login"
+        case register = "register"
+        var endpoint: String {
+            switch self {
+            case .login: return "userLogin.php"
+            case .register: return "userRegister.php"
+            }
+        }
+    }
     
     var responseHandler : AuthenticationResponseHandler!
     
@@ -23,18 +33,14 @@ struct AuthenticationService {
     func authenticate(username: String, email: String? = nil, password: String, method: AuthenticationMethod) {
         var urlString = "http://www.terry-torres.com/todo/api/"
         var postString = ""
-        var methodType = ""
         switch method {
         case .login:
-            urlString += "userLogin.php"
             postString = "username=\(username)&password=\(password)"
-            methodType = "login"
         case .register:
             guard let mail = email else { return }
-            urlString += "userRegister.php"
             postString = "username=\(username)&email=\(mail)&password=\(password)"
-            methodType = "register"
         }
+        urlString += method.endpoint
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -59,7 +65,7 @@ struct AuthenticationService {
                 // ******
                 // if something goes wrong in the PHP that is neither an explicit success or error, nothing will happen
             } catch {
-                print("\(methodType) JSONSerialization error:  \(error.localizedDescription)")
+                print("\(method.rawValue) JSONSerialization error:  \(error.localizedDescription)")
             }
         }   
         dataTask.resume()

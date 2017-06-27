@@ -14,6 +14,14 @@ struct PushNotificationService {
         case upload = "upload"
         case push = "push"
         case acknowledge = "acknowledge"
+        
+        var endpoint: String {
+            switch self {
+            case .push: return "pushNotification.php"
+            case .upload: return "uploadDeviceToken.php"
+            case .acknowledge: return "acknowledgeNotification.php"
+            }
+        }
     }
     
     init() {
@@ -22,7 +30,6 @@ struct PushNotificationService {
     
     func postRequest(method: PostMethod, username: String, passphrase: String? = nil, deviceToken: String? = nil) {
         var urlString = "http://www.terry-torres.com/todo/api/"
-        var endpoint = ""
         var postString = ""
         switch method {
         case .push:
@@ -32,17 +39,14 @@ struct PushNotificationService {
             } else {
                 postString = "username=\(username)&passphrase=\(pass)&sourceTokenString="
             }
-            endpoint = "pushNotification.php"
         case .upload:
             guard let token = deviceToken else { print("no token!"); return }
             postString = "username=\(username)&deviceTokenString=\(token)"
-            endpoint = "uploadDeviceToken.php"
         case .acknowledge:
             guard let token = deviceToken else { print("no token!"); return }
             postString = "username=\(username)&deviceTokenString=\(token)"
-            endpoint = "acknowledgeNotification.php"
         }
-        urlString += endpoint
+        urlString += method.endpoint
         
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
