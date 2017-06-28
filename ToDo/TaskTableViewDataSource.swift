@@ -28,9 +28,11 @@ class TaskTableViewDataSource {
         controller.refreshControl?.tintColor = GUEST_COLOR
         
         // Add observer, notified in App Delegate's applicationDidBecomeActive
-        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: Notification.Name("refresh"), object: nil)
         // Add observer, notified in App Delegate's applicationDidEnterBackground
-        NotificationCenter.default.addObserver(self, selector: #selector(saveData), name: NSNotification.Name(rawValue: "saveData"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveData), name: Notification.Name("saveData"), object: nil)
+        // Add observer, notified in TaskTableVieCell's completedButtonAction
+        NotificationCenter.default.addObserver(self, selector: #selector(toggleTaskCompletion), name: Notification.Name("toggleTaskCompletion"), object: nil)
         
         // Add login bar button to cotroller
         setUpTitleButton()
@@ -67,6 +69,22 @@ class TaskTableViewDataSource {
         }
         
         
+    }
+    @objc func toggleTaskCompletion(_ notification: Notification) {
+        guard let tag = notification.userInfo?["tag"] as? Int else { return }
+        let task = self.tasks[tag]
+        task.userCompleted = task.userCompleted == nil ? USER_ID : nil  // Add your ID if you completed it
+        task.dateCompleted = task.userCompleted == nil ? nil : Date() // Add current date if completed
+        
+        // Update cell appearance
+        if let completion = notification.userInfo?["completion"] as? (TaskTableViewCellStyle) -> Void {
+            let style = TaskTableViewCellStyle(task: task)
+            completion(style)
+        }
+        
+        // Update task's completed status in database
+        let apiService = APIService(responseHandler: nil, catcher: networkCoordinator)
+        apiService.set(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
     }
     
     @objc func saveData() {

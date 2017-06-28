@@ -45,19 +45,5 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
         }
     }
     
-    func getDataFromAPI(completion:(()->())? = nil) {
-        guard let username = currentUser else { completion?(); return }
-        
-        // Look for new tasks in database
-        let apiService = APIService(responseHandler: self)
-        apiService.getTasks(forUser: username)
-        
-        DispatchQueue.main.async {
-            self.dataSource.setUpTitleButton()
-        }
-        
-        completion?()
-    }
-    
     
 }
