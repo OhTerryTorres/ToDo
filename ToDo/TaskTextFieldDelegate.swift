@@ -53,7 +53,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     }
     
     // Modify current tasks, and update tableview controller
-    func commitChangesInTextField(textField: UITextField) {
+    private func commitChangesInTextField(textField: UITextField) {
         // If a new task was created
         if let _ = resolveTaskForTextField(textField: textField) {
             // Reload bottom two rows: the most recently added task, and the new blank task
@@ -66,9 +66,9 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     
     // Add or update Task
     // Return nil unless adding new task
-    func resolveTaskForTextField(textField : UITextField) -> Task? {
+    private func resolveTaskForTextField(textField : UITextField) -> Task? {
         guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return nil}
-        // The tag should be set properly in the controller's cellForRow %%
+        // The tag should be set properly in the controller's cellForRow
         let tag = textField.tag
         let apiService = APIService(responseHandler: nil, catcher: controller.dataSource.networkCoordinator)
         
@@ -86,6 +86,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
         }
         
         // Update task
+        // Ignore update if there is not change to the task's name
         guard controller.dataSource.tasks[tag].name != textField.text else { return nil }
         controller.dataSource.tasks[tag].name = text
         

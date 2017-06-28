@@ -16,6 +16,9 @@ class TaskTableViewDataSource {
     var tasks : [Task] = []
     var completedTasksHidden = false
     
+    
+    // MARK: - Init and setup
+    
     init(controller: TaskTableViewController) {
         self.controller = controller
         let coreService = CoreService()
@@ -38,6 +41,9 @@ class TaskTableViewDataSource {
         // Add observer, notified in TaskTableVieCell's completedButtonAction
         NotificationCenter.default.addObserver(self, selector: #selector(toggleTaskCompletion), name: Notification.Name("toggleTaskCompletion"), object: nil)
     }
+    
+    
+    // MARK: - Data altering methods
     
     func update(method: ReloadMethod = .full) {
         controller.reload(method: method)
@@ -66,6 +72,9 @@ class TaskTableViewDataSource {
         let apiService = APIService(responseHandler: nil, catcher: networkCoordinator)
         apiService.set(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
     }
+    
+    
+    // MARK: - Data persistence
     
     // Called on entering foreground OR on pulling down on the tableview
     @objc func refresh() {

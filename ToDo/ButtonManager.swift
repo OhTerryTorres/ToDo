@@ -14,7 +14,6 @@ class ButtonManager {
     let dataSource : TaskTableViewDataSource
     var deleteToolbar : UIToolbar?
     
-    
     init(controller: TaskTableViewController, dataSource: TaskTableViewDataSource) {
         self.controller = controller
         self.dataSource = dataSource
@@ -23,7 +22,13 @@ class ButtonManager {
         setUpBarButtons()
         setUpDeleteToolbar()
     }
+    func setUpBarButtons() {
+        controller.navigationItem.leftBarButtonItem = hideCompletedBarButton
+        controller.navigationItem.rightBarButtonItem = editBarButton
+    }
     
+    
+    // MARK: - Login button
     
     func setUpTitleButton(forUser username: String? = nil) {
         let loginButton = UIButton(type: .custom)
@@ -36,24 +41,12 @@ class ButtonManager {
         loginButton.addTarget(self, action: #selector(showLoginAlert), for: .touchUpInside)
         controller.navigationItem.titleView = loginButton
     }
-    
-    func setUpBarButtons() {
-        controller.navigationItem.rightBarButtonItem = editBarButton
-        controller.navigationItem.leftBarButtonItem = hideCompletedBarButton
+    @objc func showLoginAlert() {
+        dataSource.networkCoordinator.authenticationAlertHandler.present(alertType: .login)
     }
     
-    func setUpDeleteToolbar() {
-        let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(deleteCompletedTasks))
-        self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height, width: controller.view.frame.width, height: 44))
-        self.deleteToolbar?.items = [button]
-        self.deleteToolbar?.isHidden = true
-        self.deleteToolbar?.tintColor = USER_COLOR
-        if let superview = self.controller.view.superview {
-            superview.addSubview(deleteToolbar!)
-        } else {
-            self.controller.view.addSubview(deleteToolbar!)
-        }
-    }
+    
+    // MARK: - Hide completed tasks button
     
     var hideCompletedBarButton : UIBarButtonItem {
         let button = UIBarButtonItem(customView: hideCompletedCustomView(image: #imageLiteral(resourceName: "completionTrue")))
@@ -68,16 +61,6 @@ class ButtonManager {
         view.addGestureRecognizer(longGesture)
         return view
     }
-    
-    var editBarButton : UIBarButtonItem {
-        let button = UIBarButtonItem(image: #imageLiteral(resourceName: "editFalse"), style: .plain, target: self, action: #selector(setEditing))
-        return button
-    }
-    
-    @objc func showLoginAlert() {
-        dataSource.networkCoordinator.authenticationAlertHandler.present(alertType: .login)
-    }
-    
     @objc func hideCompletedTasks() {
         dataSource.completedTasksHidden = dataSource.completedTasksHidden ? false : true
         let image : UIImage = dataSource.completedTasksHidden ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
@@ -85,10 +68,51 @@ class ButtonManager {
         self.dataSource.update()
     }
     
+    
+    // MARK: - Editing mode button
+    
+    var editBarButton : UIBarButtonItem {
+        let button = UIBarButtonItem(image: #imageLiteral(resourceName: "editFalse"), style: .plain, target: self, action: #selector(setEditing))
+        return button
+    }
+    
+    @objc func setEditing() {
+        let editing = controller.tableView.isEditing ? false : true
+        let image : UIImage = editing ? #imageLiteral(resourceName: "editFalse") : #imageLiteral(resourceName: "editTrue")
+        
+        controller.navigationItem.rightBarButtonItem?.image = image
+        controller.tableView.setEditing(editing, animated: true)
+        
+        if let delete = deleteToolbar {
+            let hidden = editing ? false : true
+            let yOffset = editing ? delete.frame.height : -1 * delete.frame.height
+            var frame = delete.frame
+            frame.origin.y -= yOffset
+            UIView.transition(with: delete, duration: 0.5, options: .curveEaseOut, animations: { _ in
+                delete.frame = frame
+            }, completion: nil)
+            delete.isHidden = hidden
+        }
+    }
+    
+    
+    // MARK: - Delete completed tasks button
+    
+    func setUpDeleteToolbar() {
+        let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(deleteCompletedTasks))
+        self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height, width: controller.view.frame.width, height: 44))
+        self.deleteToolbar?.items = [button]
+        self.deleteToolbar?.isHidden = true
+        self.deleteToolbar?.tintColor = USER_COLOR
+        if let superview = self.controller.view.superview {
+            superview.addSubview(deleteToolbar!)
+        } else {
+            self.controller.view.addSubview(deleteToolbar!)
+        }
+    }
     @objc func deleteCompletedTasks() {
         controller.present(deleteAlert, animated: true)
     }
-    
     var deleteAlert: UIAlertController {
         let alertController = UIAlertController(title: nil, message: "Delete all completed tasks?", preferredStyle: .alert)
         
@@ -112,25 +136,6 @@ class ButtonManager {
         alertController.addAction(cancelAction)
         
         return alertController
-    }
-    
-    @objc func setEditing() {
-        let editing = controller.tableView.isEditing ? false : true
-        let image : UIImage = editing ? #imageLiteral(resourceName: "editFalse") : #imageLiteral(resourceName: "editTrue")
-        
-        controller.navigationItem.rightBarButtonItem?.image = image
-        controller.tableView.setEditing(editing, animated: true)
-        
-        if let delete = deleteToolbar {
-            let hidden = editing ? false : true
-            let yOffset = editing ? delete.frame.height : -1 * delete.frame.height
-            var frame = delete.frame
-            frame.origin.y -= yOffset
-            UIView.transition(with: delete, duration: 0.5, options: .curveEaseOut, animations: { _ in
-                delete.frame = frame
-            }, completion: nil)
-            delete.isHidden = hidden
-        }
     }
     
     

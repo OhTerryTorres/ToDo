@@ -32,6 +32,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
         checkSession()
     }
     
+    // On launch, log in automatically or ask user for credentials
     private func checkSession() {
         if let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String {
             currentUser = username
@@ -45,6 +46,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
         }
     }
     
+    // Used to get remote tasks on 1) a successful login or 2) a succesful refresh
     func getDataFromAPI(forUser username: String, completion:(()->())? = nil) {
         // Look for new tasks in database
         let apiService = APIService(responseHandler: self)
@@ -56,6 +58,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
         
     }
     
+    // Used to acknowlege any push notification for this device on 1) a successful login or 2) a succesful refresh
     func acknowledgeNotification(forUser username: String) {
         guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
         let pns = PushNotificationService()

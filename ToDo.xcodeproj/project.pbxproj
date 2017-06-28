@@ -137,9 +137,9 @@
 				CEA7C79E1EDF5FF7008C2799 /* ToDo.entitlements */,
 				CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */,
 				CEEBADE31E93E9CB000E586D /* Constants.swift */,
-				CEFE57351E9E869D00539A49 /* Controllers */,
+				CEFE57351E9E869D00539A49 /* Main Stack */,
+				CEFE57371E9E86C600539A49 /* Network Protocols */,
 				CEFE57381E9E86DF00539A49 /* Services */,
-				CEFE57371E9E86C600539A49 /* Protocols */,
 				CEFE57361E9E86AC00539A49 /* Views */,
 				CEFE57341E9E868600539A49 /* Models */,
 				CE7D60E31E857E8D008CA26E /* Main.storyboard */,
@@ -178,7 +178,7 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
-		CEFE57351E9E869D00539A49 /* Controllers */ = {
+		CEFE57351E9E869D00539A49 /* Main Stack */ = {
 			isa = PBXGroup;
 			children = (
 				CE7D61101E858610008CA26E /* TaskTableViewController.swift */,
@@ -189,7 +189,7 @@
 				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
 				CEFE57441EA7B35600539A49 /* KeyboardManager.swift */,
 			);
-			name = Controllers;
+			name = "Main Stack";
 			sourceTree = "<group>";
 		};
 		CEFE57361E9E86AC00539A49 /* Views */ = {
@@ -200,14 +200,14 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		CEFE57371E9E86C600539A49 /* Protocols */ = {
+		CEFE57371E9E86C600539A49 /* Network Protocols */ = {
 			isa = PBXGroup;
 			children = (
 				CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */,
 				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
 				CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */,
 			);
-			name = Protocols;
+			name = "Network Protocols";
 			sourceTree = "<group>";
 		};
 		CEFE57381E9E86DF00539A49 /* Services */ = {
