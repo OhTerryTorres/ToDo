@@ -17,7 +17,7 @@ protocol AuthenticationResponseHandler: class {
     // Handle JSON dict from AuthenticationService
     func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())?)
     func presentAlertOnMainQueue(message: String)
-    func getDataFromAPI(completion:(()->())?)
+    func getDataFromAPI(forUser username: String, completion:(()->())?)
 }
 
 extension AuthenticationResponseHandler {
@@ -42,7 +42,7 @@ extension AuthenticationResponseHandler {
                 pns.uploadDeviceToken(token: token, forUser: username)
             }
             
-            getDataFromAPI(completion: nil)
+            getDataFromAPI(forUser: username, completion: nil)
         case "error":
             self.presentAlertOnMainQueue(message: message)
         default:

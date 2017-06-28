@@ -11,6 +11,7 @@
 		CE120C251EF1CA6C00386846 /* FailedRequestCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */; };
 		CE39F5D41E97E02900876ED7 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D31E97E02900876ED7 /* APIService.swift */; };
 		CE39F5D61E97E06000876ED7 /* APIResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */; };
+		CE51A34A1F0402EE00135FA7 /* ButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE51A3491F0402EE00135FA7 /* ButtonManager.swift */; };
 		CE7D60E01E857E8D008CA26E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */; };
 		CE7D60E51E857E8D008CA26E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE7D60E31E857E8D008CA26E /* Main.storyboard */; };
 		CE7D60E81E857E8D008CA26E /* ToDo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE7D60E61E857E8D008CA26E /* ToDo.xcdatamodeld */; };
@@ -55,6 +56,7 @@
 		CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailedRequestCatcher.swift; sourceTree = "<group>"; };
 		CE39F5D31E97E02900876ED7 /* APIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponseHandler.swift; sourceTree = "<group>"; };
+		CE51A3491F0402EE00135FA7 /* ButtonManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonManager.swift; sourceTree = "<group>"; };
 		CE7D60DC1E857E8D008CA26E /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7D60DF1E857E8D008CA26E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE7D60E41E857E8D008CA26E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -181,10 +183,11 @@
 			children = (
 				CE7D61101E858610008CA26E /* TaskTableViewController.swift */,
 				CEFE57421EA6752100539A49 /* TaskTableViewDataSource.swift */,
-				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
-				CEFE57441EA7B35600539A49 /* KeyboardManager.swift */,
+				CE51A3491F0402EE00135FA7 /* ButtonManager.swift */,
 				CEFE57401EA501C600539A49 /* NetworkCoordinator.swift */,
 				CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */,
+				CECC4BC41E9532CB00A4585C /* TaskTextFieldDelegate.swift */,
+				CEFE57441EA7B35600539A49 /* KeyboardManager.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 				CEFE57431EA6752100539A49 /* TaskTableViewDataSource.swift in Sources */,
 				CECC4BC51E9532CB00A4585C /* TaskTextFieldDelegate.swift in Sources */,
 				CEFE57451EA7B35600539A49 /* KeyboardManager.swift in Sources */,
+				CE51A34A1F0402EE00135FA7 /* ButtonManager.swift in Sources */,
 				CEEBADE21E93E4E8000E586D /* Task.swift in Sources */,
 				CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */,
 				CE120C251EF1CA6C00386846 /* FailedRequestCatcher.swift in Sources */,

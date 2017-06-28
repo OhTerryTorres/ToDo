@@ -54,9 +54,12 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     
     // Modify current tasks, and update tableview controller
     func commitChangesInTextField(textField: UITextField) {
+        // If a new task was created
         if let _ = resolveTaskForTextField(textField: textField) {
+            // Reload bottom two rows: the most recently added task, and the new blank task
             controller.dataSource.update(method: .partial)
         } else {
+            // Reload entire table
             controller.dataSource.update(method: .full)
         }
     }
