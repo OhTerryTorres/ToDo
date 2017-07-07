@@ -38,8 +38,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
             currentUser = username
             // Get online, baby!
             getDataFromAPI(forUser: username) {
-                self.dataSource.buttonManager.setUpTitleButton(forUser: username)
-                self.acknowledgeNotification(forUser: username)
+                self.acknowledgeConnection(forUser: username)
             }
         } else {
             authenticationAlertHandler.present()
@@ -56,6 +55,11 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
             completion?()
         }
         
+    }
+    
+    func acknowledgeConnection(forUser username: String) {
+        self.dataSource.buttonManager.setUpTitleButton(forUser: username)
+        self.acknowledgeNotification(forUser: username)
     }
     
     // Used to acknowlege any push notification for this device on 1) a successful login or 2) a succesful refresh

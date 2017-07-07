@@ -46,13 +46,15 @@ class TaskTableViewDataSource {
     // MARK: - Data altering methods
     
     func update(method: ReloadMethod = .full) {
-        controller.reload(method: method)
+        DispatchQueue.main.async {
+            self.controller.reload(method: method)
+        }
     }
     
     func delete(taskAtIndex index: Int) {
         let task = tasks.remove(at: index)
         let apiService = APIService(responseHandler: nil, catcher: networkCoordinator)
-        apiService.delete(task: task)
+        apiService.delete(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
     }
     
     // Called from TaskTableViewCell when a user marks a task as completed
@@ -90,9 +92,9 @@ class TaskTableViewDataSource {
                 
                 // Acknowledge push notifications for this device and prepare to receive new ones
                 self.networkCoordinator.acknowledgeNotification(forUser: username)
+                
             }
         }
-        
     }
     
     // Called on entering background or termination

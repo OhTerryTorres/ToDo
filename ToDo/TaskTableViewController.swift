@@ -14,17 +14,17 @@ import UIKit
 class TaskTableViewController: UITableViewController {
     
     var dataSource : TaskTableViewDataSource!
-    var taskTextFieldDelegate : TaskTextFieldDelegate!
+    var taskTextFieldManager : TaskTextFieldManager!
     
     var lastRow : Int {
         return self.dataSource.tasks.count
     }
     
-    // MARK: - View Lifecycle
+    // MARK: - View Lifecycle and Control
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
-        taskTextFieldDelegate = TaskTextFieldDelegate(controller: self)
+        taskTextFieldManager = TaskTextFieldManager(controller: self)
         dataSource = TaskTableViewDataSource(controller: self)
         dataSource.update()
         navigationController?.navigationBar.tintColor = GUEST_COLOR
@@ -51,11 +51,11 @@ class TaskTableViewController: UITableViewController {
         
         // Last row has no task by default
         guard indexPath.row != lastRow else {
-            cell.configure(task: nil, tag: indexPath.row, delegate: taskTextFieldDelegate)
+            cell.configure(task: nil, tag: indexPath.row, delegate: taskTextFieldManager)
             return cell
         }
         let task = dataSource.tasks[indexPath.row]
-        cell.configure(task: task, tag: indexPath.row, delegate: taskTextFieldDelegate)
+        cell.configure(task: task, tag: indexPath.row, delegate: taskTextFieldManager)
         
         return cell
     }
@@ -89,7 +89,8 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        //guard destinationIndexPath.row != lastRow else { reload(); return }
+
+        // This process ensures that tasks can't be moved below the blank task cell
         let movedTask = dataSource.tasks[sourceIndexPath.row]
         dataSource.tasks.remove(at: sourceIndexPath.row)
         var newRow = destinationIndexPath.row

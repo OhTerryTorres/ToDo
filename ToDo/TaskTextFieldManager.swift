@@ -1,5 +1,5 @@
 //
-//  TaskTextFieldDelegate.swift
+//  TaskTextFieldManager.swift
 //  ToDo
 //
 //  Created by TerryTorres on 4/5/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
+class TaskTextFieldManager : NSObject, UITextFieldDelegate {
 
     
     let controller : TaskTableViewController
@@ -18,7 +18,7 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
     init(controller: TaskTableViewController) {
         self.controller = controller
         super.init()
-        self.keyboardManager = KeyboardManager(controller: controller, textFieldDelegate: self)
+        self.keyboardManager = KeyboardManager(controller: controller, textFieldManager: self)
         
         // Touching anywhere but a textfield will dismiss the keyboard
         if let nc = self.controller.navigationController {
@@ -104,7 +104,5 @@ class TaskTextFieldDelegate: NSObject, UITextFieldDelegate {
             commitChangesInTextField(textField: textField)
         }
     }
-
-    
     
 }

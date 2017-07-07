@@ -20,6 +20,8 @@ protocol AuthenticationResponseHandler: class {
     func presentAlertOnMainQueue(message: String)
     // Get tasks on success (defined in NetworkCoordinator)
     func getDataFromAPI(forUser username: String, completion:(()->())?)
+    // Updates title to username and acknowledge notifcations (defined in NetworkCoordinator)
+    func acknowledgeConnection(forUser: String)
 }
 
 extension AuthenticationResponseHandler {
@@ -44,7 +46,9 @@ extension AuthenticationResponseHandler {
                 pns.uploadDeviceToken(token: token, forUser: username)
             }
             
-            getDataFromAPI(forUser: username, completion: nil)
+            getDataFromAPI(forUser: username) {
+                self.acknowledgeConnection(forUser: username)
+            }
         case "error":
             self.presentAlertOnMainQueue(message: message)
         default:

@@ -32,7 +32,7 @@ class TaskTableViewCell: UITableViewCell {
     @IBOutlet var textField: UITextField!
     var shapeLayer : CAShapeLayer? // Used to draw on top of the completedButton
     
-    func configure(task: Task? = nil, tag: Int, delegate: TaskTextFieldDelegate) {
+    func configure(task: Task? = nil, tag: Int, delegate: UITextFieldDelegate) {
         let style = TaskTableViewCellStyle(task: task)
         updateAppearanceWithStyle(style)
         updateTextField(task: task, tag: tag, delegate: delegate)
@@ -53,7 +53,7 @@ class TaskTableViewCell: UITableViewCell {
         updateShapeLayer(style: style)
     }
     
-    private func updateTextField(task: Task? = nil, tag: Int, delegate: TaskTextFieldDelegate) {
+    private func updateTextField(task: Task? = nil, tag: Int, delegate: UITextFieldDelegate) {
         textField.delegate = delegate
         textField.tag = tag
         textField.text = nil

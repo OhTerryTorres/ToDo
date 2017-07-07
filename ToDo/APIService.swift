@@ -101,8 +101,7 @@ struct APIService {
         print("getTasks done")
     }
     
-    func delete(task: Task) {
-        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
+    func delete(task: Task, forUser username: String) {
         let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=delete"
         guard let url = URL(string: urlString) else { return }
         var request = URLRequest(url: url)
@@ -126,7 +125,7 @@ struct APIService {
         dataTask.resume()
     }
     
-    func deleteCompleted() {
+    func deleteCompleted(forUser username: String) {
         guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return }
         let urlString = "http://www.terry-torres.com/todo/api/api.php?username=\(username)&method=deleteCompleted"
         guard let url = URL(string: urlString) else { return }

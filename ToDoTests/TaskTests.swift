@@ -1,4 +1,4 @@
-//
+    //
 //  TaskTests.swift
 //  ToDo
 //
@@ -38,7 +38,7 @@ class TaskTests: XCTestCase {
 class DataSourceTests: XCTestCase {
     var controller : TaskTableViewController!
     var dataSource : TaskTableViewDataSource!
-    var textFieldDelegate : TaskTextFieldDelegate!
+    var textFieldManager : TaskTextFieldManager!
     var keyboardManager : KeyboardManager!
     var networkCoordinator : NetworkCoordinator!
     var authenticationAlertHandler : AuthenticationAlertHandler!
@@ -55,9 +55,9 @@ class DataSourceTests: XCTestCase {
         authenticationAlertHandler = networkCoordinator.authenticationAlertHandler
         
         controller.taskTextFieldDelegate = TaskTextFieldDelegate(controller: controller)
-        textFieldDelegate = controller.taskTextFieldDelegate
-        textFieldDelegate.keyboardManager = KeyboardManager(controller: controller, textFieldDelegate: textFieldDelegate)
-        keyboardManager = textFieldDelegate.keyboardManager
+        textFieldManager = controller.taskTextFieldDelegate
+        textFieldDelegate.keyboardManager = KeyboardManager(controller: controller, textFieldManager: textFieldManager)
+        keyboardManager = textFieldManager.keyboardManager
         
         dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
 
@@ -178,7 +178,7 @@ class DataSourceTests: XCTestCase {
     func testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh() {
         let exp0 = expectation(description: "1testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
         let exp1 = expectation(description: "2testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
-        let exp2 = expectation(description: "3testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
+        let exp2 = expectation(description: "2testTaskDeletedFromAPIRemovedFromDataSourceAfterRefresh")
 
         // Task is created on home device and sent to API
         let task = Task(name: "Smoke a bowl")
@@ -186,26 +186,29 @@ class DataSourceTests: XCTestCase {
         print("Smoke a bowl ID is \(task.uniqueID)")
         
         let apiService = APIService(responseHandler: networkCoordinator)
-        apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
+        // One device inserts task
+        apiService.insert(task: task, forUser: self.networkCoordinator.currentUser!)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6.0, execute: {
             // Other device deletes task from API
-            apiService.delete(task: task)
+            apiService.delete(task: task, forUser: self.networkCoordinator.currentUser!)
             exp0.fulfill()
         })
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7.0, execute: {
             // Home device gets tasks from API
             self.dataSource.refresh()
             exp1.fulfill()
         })
         
-        // Since task is gone from API, home device should remove task from local array
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(!self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8.0, execute: {
+            // Just wait for previous requests to process
             exp2.fulfill()
         })
+        
         wait(for: [exp0, exp1, exp2], timeout: 15.0)
+        XCTAssert(!self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
     }
 
     

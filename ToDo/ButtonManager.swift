@@ -55,10 +55,8 @@ class ButtonManager {
     func hideCompletedCustomView(image: UIImage) -> UIImageView {
         let view = UIImageView(image: image)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideCompletedTasks))
-        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(deleteCompletedTasks))
         tapGesture.numberOfTapsRequired = 1
         view.addGestureRecognizer(tapGesture)
-        view.addGestureRecognizer(longGesture)
         return view
     }
     @objc func hideCompletedTasks() {
@@ -126,7 +124,7 @@ class ButtonManager {
                 coreService.deleteAllTasks(withPredicate: predicate)
                 
                 let apiService = APIService(responseHandler: nil, catcher: self.dataSource.networkCoordinator)
-                apiService.deleteCompleted()
+                apiService.deleteCompleted(forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
             }
         })
         

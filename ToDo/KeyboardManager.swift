@@ -11,12 +11,12 @@ import UIKit
 class KeyboardManager {
     
     let controller : TaskTableViewController
-    let textFieldDelegate : TaskTextFieldDelegate
+    let textFieldManager : TaskTextFieldManager
     var oldInsets : (contentInset: UIEdgeInsets, scrollIndicatorInsets: UIEdgeInsets)? = nil
     
-    init(controller: TaskTableViewController, textFieldDelegate: TaskTextFieldDelegate) {
+    init(controller: TaskTableViewController, textFieldManager: TaskTextFieldManager) {
         self.controller = controller
-        self.textFieldDelegate = textFieldDelegate
+        self.textFieldManager = textFieldManager
         // Know when to move the tableview out from behind the keyboard
         registerForKeyboardNotifications()
     }
@@ -44,7 +44,7 @@ class KeyboardManager {
         controller.tableView.scrollIndicatorInsets = contentInsets
         
         // Move active text field to a visible area if its blocked by the keyboard
-        guard let activeField = textFieldDelegate.activeTextField else { return }
+        guard let activeField = textFieldManager.activeTextField else { return }
         guard let activePoint = activeField.superview?.superview?.convert(activeField.frame.origin, to: controller.view) else { return }
         let keyRect = CGRect(x: controller.view.frame.origin.x, y: (controller.view.frame.size.height - keyboardSize.height), width: controller.view.frame.size.width, height: keyboardSize.height)
         if (keyRect.contains(activePoint)){
