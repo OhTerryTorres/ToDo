@@ -54,9 +54,9 @@ class DataSourceTests: XCTestCase {
         networkCoordinator.currentUser = "test"
         authenticationAlertHandler = networkCoordinator.authenticationAlertHandler
         
-        controller.taskTextFieldDelegate = TaskTextFieldDelegate(controller: controller)
-        textFieldManager = controller.taskTextFieldDelegate
-        textFieldDelegate.keyboardManager = KeyboardManager(controller: controller, textFieldManager: textFieldManager)
+        controller.taskTextFieldManager = TaskTextFieldManager(controller: controller)
+        textFieldManager = controller.taskTextFieldManager
+        textFieldManager.keyboardManager = KeyboardManager(controller: controller, textFieldManager: textFieldManager)
         keyboardManager = textFieldManager.keyboardManager
         
         dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]

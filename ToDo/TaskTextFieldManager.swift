@@ -10,7 +10,6 @@ import UIKit
 
 class TaskTextFieldManager : NSObject, UITextFieldDelegate {
 
-    
     let controller : TaskTableViewController
     var keyboardManager : KeyboardManager!
     var activeTextField : UITextField?

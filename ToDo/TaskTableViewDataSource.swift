@@ -46,9 +46,7 @@ class TaskTableViewDataSource {
     // MARK: - Data altering methods
     
     func update(method: ReloadMethod = .full) {
-        DispatchQueue.main.async {
-            self.controller.reload(method: method)
-        }
+        controller.reload(method: method)
     }
     
     func delete(taskAtIndex index: Int) {

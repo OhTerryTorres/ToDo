@@ -52,8 +52,9 @@ extension APIResponseHandler {
             
             dataSource.tasks += newSortedTasks
             dataSource.tasks.maintainOrder()
-            
-            self.dataSource.update()
+            DispatchQueue.main.async {
+                self.dataSource.update()
+            }
         }
         
         DispatchQueue.main.async {
