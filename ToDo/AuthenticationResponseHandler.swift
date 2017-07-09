@@ -16,10 +16,13 @@ protocol AuthenticationResponseHandler: class {
     
     // Handle JSON dict from AuthenticationService
     func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())?)
+    
     // Redisplay alert in case of error
     func presentAlertOnMainQueue(message: String)
+    
     // Get tasks on success (defined in NetworkCoordinator)
     func getDataFromAPI(forUser username: String, completion:(()->())?)
+    
     // Updates title to username and acknowledge notifcations (defined in NetworkCoordinator)
     func acknowledgeConnection(forUser: String)
 }

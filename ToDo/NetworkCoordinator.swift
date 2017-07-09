@@ -45,6 +45,16 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
         }
     }
     
+    // Used to acknowlege any push notification for this device on 1) a successful login or 2) a succesful refresh
+    func acknowledgeNotification(forUser username: String) {
+        guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
+        let pns = PushNotificationService()
+        pns.acknowledgeNotification(username: username, token: deviceToken)
+    }
+    
+    
+    // MARK: - AuthenticationResponseHandler Protocol 
+    
     // Used to get remote tasks on 1) a successful login or 2) a succesful refresh
     func getDataFromAPI(forUser username: String, completion:(()->())? = nil) {
         // Look for new tasks in database
@@ -54,19 +64,11 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationResponseHandler, Fai
         DispatchQueue.main.async {
             completion?()
         }
-        
     }
     
     func acknowledgeConnection(forUser username: String) {
         self.dataSource.buttonManager.setUpTitleButton(forUser: username)
         self.acknowledgeNotification(forUser: username)
-    }
-    
-    // Used to acknowlege any push notification for this device on 1) a successful login or 2) a succesful refresh
-    func acknowledgeNotification(forUser username: String) {
-        guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
-        let pns = PushNotificationService()
-        pns.acknowledgeNotification(username: username, token: deviceToken)
     }
     
     

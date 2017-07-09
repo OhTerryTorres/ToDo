@@ -28,9 +28,6 @@ class TaskTableViewDataSource {
         self.networkCoordinator = NetworkCoordinator(dataSource: self)
         
         setUpNotifications()
-        // Pull down tableview to refresh from remote store
-        controller.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged )
-        controller.refreshControl?.tintColor = USER_COLOR
     }
     
     private func setUpNotifications() {

@@ -17,20 +17,25 @@ class ButtonManager {
     init(controller: TaskTableViewController, dataSource: TaskTableViewDataSource) {
         self.controller = controller
         self.dataSource = dataSource
+        
         // Add login bar button to cotroller
         setUpTitleButton()
         setUpBarButtons()
         setUpDeleteToolbar()
     }
-    func setUpBarButtons() {
+    private func setUpRefreshControl() {
+        // Pull down tableview to refresh from remote store
+        controller.refreshControl?.addTarget(self, action: #selector(dataSource.refresh), for: UIControlEvents.valueChanged )
+        controller.refreshControl?.tintColor = USER_COLOR
+    }
+    private func setUpBarButtons() {
         controller.navigationItem.leftBarButtonItem = hideCompletedBarButton
         controller.navigationItem.rightBarButtonItem = editBarButton
     }
     
-    
     // MARK: - Login button
     
-    func setUpTitleButton(forUser username: String? = nil) {
+    public func setUpTitleButton(forUser username: String? = nil) {
         let loginButton = UIButton(type: .custom)
         loginButton.setTitleColor(GUEST_COLOR, for: .normal)
         loginButton.setTitleColor(.clear, for: .highlighted)
@@ -96,7 +101,7 @@ class ButtonManager {
     
     // MARK: - Delete completed tasks button
     
-    func setUpDeleteToolbar() {
+    private func setUpDeleteToolbar() {
         let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(deleteCompletedTasks))
         self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height, width: controller.view.frame.width, height: 44))
         self.deleteToolbar?.items = [button]

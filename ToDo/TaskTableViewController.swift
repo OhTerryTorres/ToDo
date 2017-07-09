@@ -89,7 +89,6 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-
         // This process ensures that tasks can't be moved below the blank task cell
         let movedTask = dataSource.tasks[sourceIndexPath.row]
         dataSource.tasks.remove(at: sourceIndexPath.row)
@@ -103,6 +102,7 @@ class TaskTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // If the hidden option is chosen, completed tasks are given a height of 0
         guard dataSource.completedTasksHidden && indexPath.row != lastRow else { return UITableViewAutomaticDimension }
         let task = dataSource.tasks[indexPath.row]
         guard let _ = task.userCompleted else { return UITableViewAutomaticDimension }

@@ -203,9 +203,9 @@
 		CEFE57371E9E86C600539A49 /* Network Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */,
-				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
 				CEFE573C1EA28E0C00539A49 /* AuthenticationResponseHandler.swift */,
+				CE39F5D51E97E06000876ED7 /* APIResponseHandler.swift */,
+				CE120C241EF1CA6C00386846 /* FailedRequestCatcher.swift */,
 			);
 			name = "Network Protocols";
 			sourceTree = "<group>";
