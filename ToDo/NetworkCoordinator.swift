@@ -44,10 +44,5 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationHandler, FailedReque
             completion?()
         }
     }
-    
-    func acknowledgeConnection(forUser username: String) {
-        self.dataSource.controller.buttonManager.setUpTitleButton(forUser: username)
-        self.acknowledgeNotification(forUser: username)
-    }
 
 }

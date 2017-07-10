@@ -82,6 +82,11 @@ extension AuthenticationHandler {
         }
     }
     
+    func acknowledgeConnection(forUser username: String) {
+        self.dataSource.acknowledgeConnection(forUser: username)
+        self.acknowledgeNotification(forUser: username)
+    }
+    
     func acknowledgeNotification(forUser username: String) {
         guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
         let pns = PushNotificationService()

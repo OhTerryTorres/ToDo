@@ -29,6 +29,18 @@ class TaskDataManager : TaskDataSource, TaskDataSynchronizer {
                 
     }
     
+    func deleteCompletedTasks() {
+        tasks = tasks.filter { $0.userCompleted == nil }
+        update()
+        DispatchQueue.global(qos: .background).async {
+            let predicate = NSPredicate(format: "userCompleted != nil")
+            let coreService = CoreService()
+            coreService.deleteAllTasks(withPredicate: predicate)
+            
+            let apiService = APIService(responseHandler: nil, catcher: self.failedRequestCatcher)
+            apiService.deleteCompleted(forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
+        }
+    }
     
     @objc func refreshWrapper() {
         refresh()

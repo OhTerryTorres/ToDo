@@ -15,6 +15,8 @@ class AuthenticationAlertHandler {
 
     enum AlertType {
         case login, register
+        
+        
     }
     
     lazy var loginAlertController : UIAlertController = {

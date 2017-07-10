@@ -37,7 +37,7 @@ class TaskTests: XCTestCase {
 
 class DataSourceTests: XCTestCase {
     var controller : TaskTableViewController!
-    var dataSource : TaskDataSource!
+    var dataManager : TaskDataManager!
     var textFieldManager : TaskTextFieldManager!
     var keyboardManager : KeyboardManager!
     var networkCoordinator : NetworkCoordinator!
@@ -47,10 +47,10 @@ class DataSourceTests: XCTestCase {
         super.setUp()
         controller = TaskTableViewController()
         
-        controller.dataSource = TaskDataManager(controller: controller)
-        dataSource = controller.dataSource
-        dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
-        networkCoordinator = dataSource.networkCoordinator
+        controller.dataManager = TaskDataManager(controller: controller)
+        dataManager = controller.dataManager
+        dataManager.networkCoordinator = NetworkCoordinator(dataSource: dataManager)
+        networkCoordinator = dataManager.networkCoordinator
         networkCoordinator.currentUser = "test"
         authenticationAlertHandler = networkCoordinator.authenticationAlertHandler
         
@@ -59,7 +59,7 @@ class DataSourceTests: XCTestCase {
         textFieldManager.keyboardManager = KeyboardManager(controller: controller, textFieldManager: textFieldManager)
         keyboardManager = textFieldManager.keyboardManager
         
-        dataSource.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
+        dataManager.tasks = [Task(name: "Suck dicks"), Task(name: "Eat butts"), Task(name: "Kick nuts")]
 
     }
     
@@ -71,14 +71,14 @@ class DataSourceTests: XCTestCase {
     
     // MANAGING TASKS
     func testLastRowShouldBeEqualToNumberOfTasks() {
-        dataSource.tasks += [Task(name: "Eat eggs")]
-        XCTAssert(dataSource.controller.lastRow == 4)
+        dataManager.tasks += [Task(name: "Eat eggs")]
+        XCTAssert(dataManager.controller.lastRow == 4)
     }
     
     func testTaskOrderShouldEqualItsIndexInArray() {
-        let array = [MockTaskJSON, dataSource.tasks[0].json, dataSource.tasks[1].json, dataSource.tasks[2].json]
-        dataSource.networkCoordinator.handleAPIResponse(jsonArray: array)
-        XCTAssert(dataSource.tasks[3].order == 3)
+        let array = [MockTaskJSON, dataManager.tasks[0].json, dataManager.tasks[1].json, dataManager.tasks[2].json]
+        dataManager.networkCoordinator.handleAPIResponse(jsonArray: array)
+        XCTAssert(dataManager.tasks[3].order == 3)
     }
 
     func testDeletedTaskByIndexShouldRemoveItFromArrayAndAPI() {
@@ -87,7 +87,7 @@ class DataSourceTests: XCTestCase {
         
         // GIVEN (arrange)
         let task = Task(name: "Pray")
-        dataSource.tasks += [task]
+        dataManager.tasks += [task]
         let apiService = APIService(responseHandler: networkCoordinator)
         apiService.insert(task: task, forUser: networkCoordinator.currentUser!)
 
@@ -95,13 +95,13 @@ class DataSourceTests: XCTestCase {
         apiService.getTasks(forUser: networkCoordinator.currentUser!)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            self.dataSource.delete(taskAtIndex: self.dataSource.tasks.count-1)
+            self.dataManager.delete(taskAtIndex: self.dataSource.tasks.count-1)
             exp0.fulfill()
         })
 
         // THEN (assert)
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(!self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+            XCTAssert(!self.dataManager.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
             exp1.fulfill()
         })
         wait(for: [exp0, exp1], timeout: 15.0)

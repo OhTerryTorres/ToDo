@@ -46,6 +46,10 @@ class TaskTableViewController: UITableViewController {
         }
     }
     
+    func acknowledgeConnection(forUser username: String) {
+        buttonManager.setUpTitleButton(forUser: username)
+    }
+    
     // Tableview Delegate
     // MARK: - Displaying data
     

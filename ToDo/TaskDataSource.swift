@@ -16,6 +16,8 @@ protocol TaskDataSource: class {
     func update(method: ReloadMethod)
     func delete(taskAtIndex index: Int)
     func toggleTaskCompletion(index: Int, completion: (TaskTableViewCellStyle)->()?)
+    
+    func acknowledgeConnection(forUser username: String)
 }
 
 extension TaskDataSource {
@@ -47,5 +49,9 @@ extension TaskDataSource {
         // Update task's completed status in database
         let apiService = APIService(responseHandler: nil, catcher: failedRequestCatcher)
         apiService.set(task: task, forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
+    }
+    
+    func acknowledgeConnection(forUser username: String) {
+        controller.acknowledgeConnection(forUser: username)
     }
 }

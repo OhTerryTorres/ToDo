@@ -36,15 +36,17 @@ class ButtonManager {
     
     // MARK: - Login button
     
-    public func setUpTitleButton(forUser username: String? = nil) {
+    var loginButton : UIButton {
         let loginButton = UIButton(type: .custom)
         loginButton.setTitleColor(GUEST_COLOR, for: .normal)
         loginButton.setTitleColor(.clear, for: .highlighted)
-        let user = username ?? "To Do"
-        loginButton.setTitle(user, for: .normal)
         loginButton.showsTouchWhenHighlighted = true
         loginButton.frame = controller.navigationItem.titleView?.frame ?? CGRect(x: 0, y: 0, width: 100, height: 40)
         loginButton.addTarget(self, action: #selector(showLoginAlert), for: .touchUpInside)
+        return loginButton
+    }
+    public func setUpTitleButton(forUser username: String? = "To Do") {
+        loginButton.setTitle(username, for: .normal)
         controller.navigationItem.titleView = loginButton
     }
     @objc func showLoginAlert() {
@@ -122,16 +124,7 @@ class ButtonManager {
         
         let okAction = UIAlertAction(title: "Delete", style: .default, handler: {
             alert -> Void in
-            self.dataManager.tasks = self.dataManager.tasks.filter { $0.userCompleted == nil }
-            self.dataManager.update()
-            DispatchQueue.global(qos: .background).async {
-                let predicate = NSPredicate(format: "userCompleted != nil")
-                let coreService = CoreService()
-                coreService.deleteAllTasks(withPredicate: predicate)
-                
-                let apiService = APIService(responseHandler: nil, catcher: self.dataManager.failedRequestCatcher)
-                apiService.deleteCompleted(forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
-            }
+            self.dataManager.deleteCompletedTasks()
         })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
