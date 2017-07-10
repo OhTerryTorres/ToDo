@@ -11,10 +11,11 @@ import UIKit
 class ButtonManager {
     
     let controller : TaskTableViewController
-    let dataSource : TaskTableViewDataSource
+    let dataSource : TaskDataManager
     var deleteToolbar : UIToolbar?
+    var completedTasksHidden = false
     
-    init(controller: TaskTableViewController, dataSource: TaskTableViewDataSource) {
+    init(controller: TaskTableViewController, dataSource: TaskDataManager) {
         self.controller = controller
         self.dataSource = dataSource
         
@@ -47,7 +48,7 @@ class ButtonManager {
         controller.navigationItem.titleView = loginButton
     }
     @objc func showLoginAlert() {
-        dataSource.networkCoordinator.authenticationAlertHandler.present(alertType: .login)
+        dataSource.authenticationHandler.authenticationAlertHandler.present(alertType: .login)
     }
     
     
@@ -65,8 +66,8 @@ class ButtonManager {
         return view
     }
     @objc func hideCompletedTasks() {
-        dataSource.completedTasksHidden = dataSource.completedTasksHidden ? false : true
-        let image : UIImage = dataSource.completedTasksHidden ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
+        completedTasksHidden = completedTasksHidden ? false : true
+        let image : UIImage = completedTasksHidden ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
         controller.navigationItem.leftBarButtonItem?.customView = hideCompletedCustomView(image: image)
         self.dataSource.update()
     }
@@ -128,7 +129,7 @@ class ButtonManager {
                 let coreService = CoreService()
                 coreService.deleteAllTasks(withPredicate: predicate)
                 
-                let apiService = APIService(responseHandler: nil, catcher: self.dataSource.networkCoordinator)
+                let apiService = APIService(responseHandler: nil, catcher: self.dataSource.failedRequestCatcher)
                 apiService.deleteCompleted(forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
             }
         })

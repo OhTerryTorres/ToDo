@@ -37,7 +37,7 @@ class TaskTests: XCTestCase {
 
 class DataSourceTests: XCTestCase {
     var controller : TaskTableViewController!
-    var dataSource : TaskTableViewDataSource!
+    var dataSource : TaskDataSource!
     var textFieldManager : TaskTextFieldManager!
     var keyboardManager : KeyboardManager!
     var networkCoordinator : NetworkCoordinator!
@@ -47,7 +47,7 @@ class DataSourceTests: XCTestCase {
         super.setUp()
         controller = TaskTableViewController()
         
-        controller.dataSource = TaskTableViewDataSource(controller: controller)
+        controller.dataSource = TaskDataManager(controller: controller)
         dataSource = controller.dataSource
         dataSource.networkCoordinator = NetworkCoordinator(dataSource: dataSource)
         networkCoordinator = dataSource.networkCoordinator

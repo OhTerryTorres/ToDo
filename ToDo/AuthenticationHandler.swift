@@ -9,8 +9,8 @@
 import Foundation
 
 
-protocol AuthenticationResponseHandler: class {
-    var dataSource : TaskTableViewDataSource { get set }
+protocol AuthenticationHandler: class {
+    var dataSource : TaskDataSource { get set }
     var currentUser : String? { get set }
     var authenticationAlertHandler : AuthenticationAlertHandler! { get set }
     
@@ -25,10 +25,11 @@ protocol AuthenticationResponseHandler: class {
     
     // Updates title to username and acknowledge notifcations (defined in NetworkCoordinator)
     func acknowledgeConnection(forUser: String)
+    // Used to acknowlege any push notification for this device on 1) a successful login or 2) a succesful refresh
+    func acknowledgeNotification(forUser username: String)
 }
 
-extension AuthenticationResponseHandler {
-    
+extension AuthenticationHandler {
     
      func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())? = nil) {
         switch status {

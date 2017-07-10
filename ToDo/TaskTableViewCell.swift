@@ -28,22 +28,24 @@ struct TaskTableViewCellStyle {
 
 class TaskTableViewCell: UITableViewCell {
 
+    var dataSource : TaskDataSource!
+    
     @IBOutlet var completedButton: UIButton!
     @IBOutlet var textField: UITextField!
     var shapeLayer : CAShapeLayer? // Used to draw on top of the completedButton
     
-    func configure(task: Task? = nil, tag: Int, delegate: UITextFieldDelegate) {
+    func configure(task: Task? = nil, tag: Int, dataSource: TaskDataSource, delegate: UITextFieldDelegate) {
         let style = TaskTableViewCellStyle(task: task)
         updateAppearanceWithStyle(style)
         updateTextField(task: task, tag: tag, delegate: delegate)
         self.tag = tag
+        self.dataSource = dataSource
     }
 
     
     // Notification is used to alert the Data Source
     @IBAction func completedButtonAction(_ sender: Any) {
-        let dict : [String : Any] = ["tag" : self.tag, "completion": updateAppearanceWithStyle]
-        NotificationCenter.default.post(name: Notification.Name("toggleTaskCompletion"), object: nil, userInfo: dict)
+        dataSource.toggleTaskCompletion(index: self.tag, completion: updateAppearanceWithStyle)
     }
     
     func updateAppearanceWithStyle(_ style: TaskTableViewCellStyle) {

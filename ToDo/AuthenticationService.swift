@@ -23,9 +23,9 @@ struct AuthenticationService {
         }
     }
     
-    var responseHandler : AuthenticationResponseHandler!
+    var responseHandler : AuthenticationHandler!
     
-    init(responseHandler: AuthenticationResponseHandler?) {
+    init(responseHandler: AuthenticationHandler?) {
         self.responseHandler = responseHandler
     }
     

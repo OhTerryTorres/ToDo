@@ -13,7 +13,9 @@ import UIKit
 // Updates rows based data
 class TaskTableViewController: UITableViewController {
     
-    var dataSource : TaskTableViewDataSource!
+    var dataSource : TaskDataSource!
+    var dataManager : TaskDataManager!
+    var buttonManager : ButtonManager!
     var taskTextFieldManager : TaskTextFieldManager!
     
     var lastRow : Int {
@@ -25,8 +27,10 @@ class TaskTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
         taskTextFieldManager = TaskTextFieldManager(controller: self)
-        dataSource = TaskTableViewDataSource(controller: self)
-        dataSource.update()
+        let dataManager = TaskDataManager(controller: self)
+        dataSource = dataManager
+        buttonManager = ButtonManager(controller: self, dataSource: dataManager)
+        reload()
         navigationController?.navigationBar.tintColor = GUEST_COLOR
     }
     
@@ -51,11 +55,11 @@ class TaskTableViewController: UITableViewController {
         
         // Last row has no task by default
         guard indexPath.row != lastRow else {
-            cell.configure(task: nil, tag: indexPath.row, delegate: taskTextFieldManager)
+            cell.configure(task: nil, tag: indexPath.row, dataSource: dataSource, delegate: taskTextFieldManager)
             return cell
         }
         let task = dataSource.tasks[indexPath.row]
-        cell.configure(task: task, tag: indexPath.row, delegate: taskTextFieldManager)
+        cell.configure(task: task, tag: indexPath.row, dataSource: dataSource, delegate: taskTextFieldManager)
         
         return cell
     }
@@ -103,7 +107,7 @@ class TaskTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // If the hidden option is chosen, completed tasks are given a height of 0
-        guard dataSource.completedTasksHidden && indexPath.row != lastRow else { return UITableViewAutomaticDimension }
+        guard buttonManager.completedTasksHidden && indexPath.row != lastRow else { return UITableViewAutomaticDimension }
         let task = dataSource.tasks[indexPath.row]
         guard let _ = task.userCompleted else { return UITableViewAutomaticDimension }
         return 0

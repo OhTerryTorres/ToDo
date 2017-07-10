@@ -8,7 +8,7 @@
 import Foundation
 
 protocol APIResponseHandler {
-    var dataSource : TaskTableViewDataSource { get set }
+    var dataSource : TaskDataSource { get set }
     
     // Handle JSON dict from APIRequestService
     func handleAPIResponse(jsonArray : [[String:Any]], completion:(()->())?)
