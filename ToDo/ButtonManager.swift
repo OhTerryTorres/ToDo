@@ -11,13 +11,13 @@ import UIKit
 class ButtonManager {
     
     let controller : TaskTableViewController
-    let dataSource : TaskDataManager
+    let dataManager : TaskDataManager
     var deleteToolbar : UIToolbar?
     var completedTasksHidden = false
     
-    init(controller: TaskTableViewController, dataSource: TaskDataManager) {
+    init(controller: TaskTableViewController, dataManager: TaskDataManager) {
         self.controller = controller
-        self.dataSource = dataSource
+        self.dataManager = dataManager
         
         // Add login bar button to cotroller
         setUpTitleButton()
@@ -26,7 +26,7 @@ class ButtonManager {
     }
     private func setUpRefreshControl() {
         // Pull down tableview to refresh from remote store
-        controller.refreshControl?.addTarget(self, action: #selector(dataSource.refresh), for: UIControlEvents.valueChanged )
+        controller.refreshControl?.addTarget(self, action: #selector(dataManager.refreshWrapper), for: UIControlEvents.valueChanged )
         controller.refreshControl?.tintColor = USER_COLOR
     }
     private func setUpBarButtons() {
@@ -48,7 +48,7 @@ class ButtonManager {
         controller.navigationItem.titleView = loginButton
     }
     @objc func showLoginAlert() {
-        dataSource.authenticationHandler.authenticationAlertHandler.present(alertType: .login)
+        dataManager.authenticationHandler.authenticationAlertHandler.present(alertType: .login)
     }
     
     
@@ -69,7 +69,7 @@ class ButtonManager {
         completedTasksHidden = completedTasksHidden ? false : true
         let image : UIImage = completedTasksHidden ? #imageLiteral(resourceName: "completionFalse") : #imageLiteral(resourceName: "completionTrue")
         controller.navigationItem.leftBarButtonItem?.customView = hideCompletedCustomView(image: image)
-        self.dataSource.update()
+        dataManager.update()
     }
     
     
@@ -122,14 +122,14 @@ class ButtonManager {
         
         let okAction = UIAlertAction(title: "Delete", style: .default, handler: {
             alert -> Void in
-            self.dataSource.tasks = self.dataSource.tasks.filter { $0.userCompleted == nil }
-            self.dataSource.update()
+            self.dataManager.tasks = self.dataManager.tasks.filter { $0.userCompleted == nil }
+            self.dataManager.update()
             DispatchQueue.global(qos: .background).async {
                 let predicate = NSPredicate(format: "userCompleted != nil")
                 let coreService = CoreService()
                 coreService.deleteAllTasks(withPredicate: predicate)
                 
-                let apiService = APIService(responseHandler: nil, catcher: self.dataSource.failedRequestCatcher)
+                let apiService = APIService(responseHandler: nil, catcher: self.dataManager.failedRequestCatcher)
                 apiService.deleteCompleted(forUser: UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as! String)
             }
         })

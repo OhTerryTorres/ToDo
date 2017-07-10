@@ -197,8 +197,8 @@
 			children = (
 				CE7D61101E858610008CA26E /* TaskTableViewController.swift */,
 				CEFE57421EA6752100539A49 /* TaskDataManager.swift */,
-				CE51A3491F0402EE00135FA7 /* ButtonManager.swift */,
 				CEFE57401EA501C600539A49 /* NetworkCoordinator.swift */,
+				CE51A3491F0402EE00135FA7 /* ButtonManager.swift */,
 				CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */,
 				CECC4BC41E9532CB00A4585C /* TaskTextFieldManager.swift */,
 				CEFE57441EA7B35600539A49 /* KeyboardManager.swift */,

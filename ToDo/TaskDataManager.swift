@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TaskDataManager : TaskDataSource {
+class TaskDataManager : TaskDataSource, TaskDataSynchronizer {
     
     let controller : TaskTableViewController
     var failedRequestCatcher : FailedRequestCatcher!
@@ -23,25 +23,21 @@ class TaskDataManager : TaskDataSource {
         let coreService = CoreService()
         self.tasks = coreService.getTasks()
 
-        let networkCoordinator = NetworkCoordinator(dataManager: self)
+        let networkCoordinator = NetworkCoordinator(dataSource: self)
         self.failedRequestCatcher = networkCoordinator
         self.authenticationHandler = networkCoordinator
                 
-        setUpNotifications()
-    }
-    
-    private func setUpNotifications() {
-        // Add observer, notified in App Delegate's applicationDidBecomeActive
-        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: Notification.Name("refresh"), object: nil)
-        // Add observer, notified in App Delegate's applicationDidEnterBackground
-        NotificationCenter.default.addObserver(self, selector: #selector(saveData), name: Notification.Name("saveData"), object: nil)
     }
     
     
-    // MARK: - Data persistence
+    @objc func refreshWrapper() {
+        refresh()
+    }
+    
+    // MARK: - TaskDataSynchronizer Protocol
     
     // Called on entering foreground OR on pulling down on the tableview
-    @objc func refresh() {
+    func refresh() {
         // Try submitting previously failed task insert and set requests
         self.failedRequestCatcher.retryFailedRequests() {
             
@@ -59,11 +55,7 @@ class TaskDataManager : TaskDataSource {
         }
     }
     
-    // Called on entering background or termination
-    @objc func saveData() {
-        let coreService = CoreService()
-        coreService.syncTasksToCoreData(tasks: tasks)
-    }
+    
     
     
 }

@@ -14,6 +14,9 @@ protocol AuthenticationHandler: class {
     var currentUser : String? { get set }
     var authenticationAlertHandler : AuthenticationAlertHandler! { get set }
     
+    // On launch, log in automatically or ask user for credentials
+    func checkSession()
+    
     // Handle JSON dict from AuthenticationService
     func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())?)
     
@@ -30,6 +33,18 @@ protocol AuthenticationHandler: class {
 }
 
 extension AuthenticationHandler {
+    
+    func checkSession() {
+        if let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String {
+            currentUser = username
+            // Get online, baby!
+            getDataFromAPI(forUser: username) {
+                self.acknowledgeConnection(forUser: username)
+            }
+        } else {
+            authenticationAlertHandler.present()
+        }
+    }
     
      func handleAuthenticationResponse(username: String, status: String, message: String, completion:(()->())? = nil) {
         switch status {
@@ -65,7 +80,12 @@ extension AuthenticationHandler {
         DispatchQueue.main.async {
             self.authenticationAlertHandler.present(message: message)
         }
-        
+    }
+    
+    func acknowledgeNotification(forUser username: String) {
+        guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
+        let pns = PushNotificationService()
+        pns.acknowledgeNotification(username: username, token: deviceToken)
     }
     
 }

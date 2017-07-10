@@ -23,31 +23,16 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationHandler, FailedReque
     
     var currentUser : String? = nil
     var dataSource : TaskDataSource
-    var dataManager : TaskDataManager
     var authenticationAlertHandler : AuthenticationAlertHandler!
     var failedRequestPackages : [(urlRequest: URLRequest, username: String, method: APIService.PostMethod)] = []
         
-    init(dataManager: TaskDataManager) {
-        self.dataManager = dataManager
-        self.dataSource = dataManager
+    init(dataSource: TaskDataSource) {
+        self.dataSource = dataSource
         self.authenticationAlertHandler = AuthenticationAlertHandler(coordinator: self)
         checkSession()
     }
     
-    // On launch, log in automatically or ask user for credentials
-    private func checkSession() {
-        if let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String {
-            currentUser = username
-            // Get online, baby!
-            getDataFromAPI(forUser: username) {
-                self.acknowledgeConnection(forUser: username)
-            }
-        } else {
-            authenticationAlertHandler.present()
-        }
-    }
-    
-    // MARK: - AuthenticationResponseHandler Protocol 
+    // MARK: - AuthenticationHandler Protocol
     
     // Used to get remote tasks on 1) a successful login or 2) a succesful refresh
     func getDataFromAPI(forUser username: String, completion:(()->())? = nil) {
@@ -61,13 +46,8 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationHandler, FailedReque
     }
     
     func acknowledgeConnection(forUser username: String) {
-        self.dataManager.controller.buttonManager.setUpTitleButton(forUser: username)
+        self.dataSource.controller.buttonManager.setUpTitleButton(forUser: username)
         self.acknowledgeNotification(forUser: username)
     }
-    
-    func acknowledgeNotification(forUser username: String) {
-        guard let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String else { return }
-        let pns = PushNotificationService()
-        pns.acknowledgeNotification(username: username, token: deviceToken)
-    }
+
 }

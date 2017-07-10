@@ -7,3 +7,20 @@
 //
 
 import Foundation
+
+protocol TaskDataSynchronizer: class {
+    var tasks : [Task] { get set }
+    
+    func refresh()
+    func saveData()
+}
+
+extension TaskDataSynchronizer {
+    
+    // Called when app enters background or is terminated
+    func saveData() {
+        let coreService = CoreService()
+        coreService.syncTasksToCoreData(tasks: tasks)
+    }
+    
+}
