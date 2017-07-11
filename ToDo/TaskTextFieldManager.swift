@@ -8,14 +8,16 @@
 
 import UIKit
 
-class TaskTextFieldManager : NSObject, UITextFieldDelegate {
+class TaskTextFieldManager : NSObject, UITextFieldDelegate, TaskCreator {
 
     let controller : TaskTableViewController
+    let dataSource : TaskDataSource
     var keyboardManager : KeyboardManager!
     var activeTextField : UITextField?
     
     init(controller: TaskTableViewController) {
         self.controller = controller
+        self.dataSource = controller.dataSource
         super.init()
         self.keyboardManager = KeyboardManager(controller: controller, textFieldManager: self)
         
@@ -54,46 +56,13 @@ class TaskTextFieldManager : NSObject, UITextFieldDelegate {
     // Modify current tasks, and update tableview controller
     private func commitChangesInTextField(textField: UITextField) {
         // If a new task was created
-        if let _ = resolveTaskForTextField(textField: textField) {
+        if let _ = setTask(name: textField.text, index: textField.tag) {
             // Reload bottom two rows: the most recently added task, and the new blank task
-            controller.dataSource.update(method: .partial)
+            controller.reload(method: .partial)
         } else {
             // Reload entire table
-            controller.dataSource.update(method: .full)
+            controller.reload(method: .full)
         }
-    }
-    
-    // Add or update Task
-    // Return nil unless adding new task
-    private func resolveTaskForTextField(textField : UITextField) -> Task? {
-        guard let username = UserDefaults.standard.object(forKey: UserKeys.username.rawValue) as? String else { return nil}
-        // The tag should be set properly in the controller's cellForRow
-        let tag = textField.tag
-        let apiService = APIService(responseHandler: nil, catcher: controller.dataSource.failedRequestCatcher)
-        
-        guard let text = textField.text  else { return nil }
-        
-        // New task
-        guard tag != self.controller.lastRow else {
-            let task = Task(name: text, order: tag)
-            controller.dataSource.tasks += [task]
-            
-            // Send task to database
-            apiService.insert(task: task, forUser: username)
-            
-            return task
-        }
-        
-        // Update task
-        // Ignore update if there is not change to the task's name
-        guard controller.dataSource.tasks[tag].name != textField.text else { return nil }
-        controller.dataSource.tasks[tag].name = text
-        
-        // Update task to database
-        apiService.set(task: controller.dataSource.tasks[tag], forUser: username)
-        
-        return nil
-        
     }
     
     // Keyboard dismissal works like hitting Return:

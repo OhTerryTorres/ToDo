@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ButtonManager {
+class ButtonManager: LoginButtonHandler, HideCompleteTasksButtonHandler, EditingButtonHandler, DeleteCompletedButtonHandler {
     
     let controller : TaskTableViewController
     let dataManager : TaskDataManager
@@ -105,7 +105,7 @@ class ButtonManager {
     // MARK: - Delete completed tasks button
     
     private func setUpDeleteToolbar() {
-        let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(deleteCompletedTasks))
+        let button = UIBarButtonItem(title: "Delete Completed Tasks", style: .plain, target: self, action: #selector(presentDeleteCompletedTasksAlert))
         self.deleteToolbar = UIToolbar(frame: CGRect(x: 0, y: controller.view.frame.height, width: controller.view.frame.width, height: 44))
         self.deleteToolbar?.items = [button]
         self.deleteToolbar?.isHidden = true
@@ -116,7 +116,7 @@ class ButtonManager {
             self.controller.view.addSubview(deleteToolbar!)
         }
     }
-    @objc func deleteCompletedTasks() {
+    @objc func presentDeleteCompletedTasksAlert() {
         controller.present(deleteAlert, animated: true)
     }
     var deleteAlert: UIAlertController {

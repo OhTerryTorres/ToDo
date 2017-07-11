@@ -59,10 +59,8 @@ class TaskTableViewCell: UITableViewCell {
         textField.delegate = delegate
         textField.tag = tag
         textField.text = nil
-        print(tag)
         guard let task = task else { return }
         textField.text = task.name
-        print(task.name)
     }
     
     private func updateShapeLayer(style: TaskTableViewCellStyle) {
