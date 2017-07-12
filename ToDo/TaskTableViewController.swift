@@ -14,7 +14,6 @@ import UIKit
 class TaskTableViewController: UITableViewController {
     
     var dataSource : TaskDataSource!
-    var dataManager : TaskDataManager!
     var buttonManager : ButtonManager!
     var taskTextFieldManager : TaskTextFieldManager!
     
@@ -26,11 +25,11 @@ class TaskTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
-        taskTextFieldManager = TaskTextFieldManager(controller: self)
         
         let dataManager = TaskDataManager(controller: self)
-        (UIApplication.shared.delegate as! AppDelegate).taskDataSynchronizer = dataManager
         dataSource = dataManager
+        
+        taskTextFieldManager = TaskTextFieldManager(controller: self, dataSource: dataSource)
         
         buttonManager = ButtonManager(controller: self, dataManager: dataManager)
         reload()
@@ -47,7 +46,7 @@ class TaskTableViewController: UITableViewController {
     }
     
     func acknowledgeConnection(forUser username: String) {
-        buttonManager.setUpTitleButton(forUser: username)
+        buttonManager.setUpLoginButton(forUser: username)
     }
     
     // Tableview Delegate

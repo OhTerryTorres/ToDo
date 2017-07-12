@@ -15,7 +15,7 @@ class TaskTextFieldManager : NSObject, UITextFieldDelegate, TaskCreator {
     var keyboardManager : KeyboardManager!
     var activeTextField : UITextField?
     
-    init(controller: TaskTableViewController) {
+    init(controller: TaskTableViewController, dataSource: TaskDataSource) {
         self.controller = controller
         self.dataSource = controller.dataSource
         super.init()

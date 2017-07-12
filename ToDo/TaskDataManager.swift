@@ -26,7 +26,16 @@ class TaskDataManager : TaskDataSource, TaskDataSynchronizer {
         let networkCoordinator = NetworkCoordinator(dataSource: self)
         self.failedRequestCatcher = networkCoordinator
         self.authenticationHandler = networkCoordinator
-                
+        
+        // Pass self to app delegate for persistence methods
+        (UIApplication.shared.delegate as! AppDelegate).taskDataSynchronizer = self
+        setUpRefreshControl()
+    }
+    
+    private func setUpRefreshControl() {
+        // Pull down tableview to refresh from remote store
+        controller.refreshControl?.addTarget(self, action: #selector(refreshWrapper), for: UIControlEvents.valueChanged )
+        controller.refreshControl?.tintColor = USER_COLOR
     }
     
     func deleteCompletedTasks() {
