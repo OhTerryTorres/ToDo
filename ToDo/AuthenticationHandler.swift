@@ -26,7 +26,7 @@ protocol AuthenticationHandler: class {
     // Get tasks on success (defined in NetworkCoordinator)
     func getDataFromAPI(forUser username: String, completion:(()->())?)
     
-    // Updates title to username and acknowledge notifcations (defined in NetworkCoordinator)
+    // Updates title to username and acknowledge notifcations
     func acknowledgeConnection(forUser: String)
     // Used to acknowlege any push notification for this device on 1) a successful login or 2) a succesful refresh
     func acknowledgeNotification(forUser username: String)

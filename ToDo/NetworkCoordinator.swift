@@ -28,7 +28,7 @@ class NetworkCoordinator: APIResponseHandler, AuthenticationHandler, FailedReque
         
     init(dataSource: TaskDataSource) {
         self.dataSource = dataSource
-        self.authenticationAlertHandler = AuthenticationAlertHandler(coordinator: self)
+        self.authenticationAlertHandler = AuthenticationAlertHandler(authenticationHandler: self)
         checkSession()
     }
     

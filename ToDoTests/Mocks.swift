@@ -16,6 +16,7 @@ class MockTaskDataSource: TaskDataSource {
     
     init(controller: TaskTableViewController) {
         self.controller = controller
+        tasks = MockTaskArray
     }
 }
 
@@ -62,10 +63,6 @@ class MockAuthenticationHandler: AuthenticationHandler {
             completion?()
         }
     }
-    
-    func acknowledgeConnection(forUser: String) {
-        
-    }
 }
 
 class MockAPIResponseHandler: APIResponseHandler {
@@ -92,5 +89,10 @@ var MockTask : Task {
     task.dateCompleted = nil
     task.order = 0
     return task
+}
+
+var MockTaskArray : [Task] {
+    let tasks : [Task] = [Task(name: "Mow the hedges", order: 0), Task(name: "Shave the chickens", order: 1), Task(name: "Take out the trash", order: 2)]
+    return tasks
 }
 

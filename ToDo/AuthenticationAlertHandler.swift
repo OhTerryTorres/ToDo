@@ -10,7 +10,7 @@ import UIKit
 
 class AuthenticationAlertHandler {
     
-    var coordinator : NetworkCoordinator!
+    var authenticationHandler : AuthenticationHandler!
     var currentAlertController : UIAlertController!
 
     enum AlertType {
@@ -39,7 +39,7 @@ class AuthenticationAlertHandler {
                 if username == "" || password == "" {
                     self.present(alertType: .login, message: "Fields are missing!")
                 } else {
-                    let authenticator = AuthenticationService(responseHandler: self.coordinator)
+                    let authenticator = AuthenticationService(responseHandler: self.authenticationHandler)
                     authenticator.authenticate(username: username, password: password, method: .login)
                 }
             }
@@ -92,7 +92,7 @@ class AuthenticationAlertHandler {
             guard let confirmPassword = alertController.textFields?[3].text else { return }
             
             if password == confirmPassword && username.isAlphanumeric {
-                let authenticator = AuthenticationService(responseHandler: self.coordinator)
+                let authenticator = AuthenticationService(responseHandler: self.authenticationHandler)
                 authenticator.authenticate(username: username, email: email, password: password, method: .register)
             } else if password != confirmPassword {
                 self.present(alertType: .register, message: "Passwords don't match!")
@@ -117,8 +117,8 @@ class AuthenticationAlertHandler {
     }()
     
     
-    init(coordinator: NetworkCoordinator) {
-        self.coordinator = coordinator
+    init(authenticationHandler: AuthenticationHandler) {
+        self.authenticationHandler = authenticationHandler
         self.currentAlertController = loginAlertController
     }
     
@@ -133,7 +133,7 @@ class AuthenticationAlertHandler {
             }
             self.currentAlertController = alertController
         }
-        coordinator.dataSource.controller.present(alertController, animated: true)
+        authenticationHandler.dataSource.controller.present(alertController, animated: true)
         alertController.message = message
     }
 

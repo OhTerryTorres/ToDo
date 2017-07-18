@@ -47,14 +47,19 @@ class DataSourceTests: XCTestCase {
         super.setUp()
         controller = TaskTableViewController()
         
-        controller.dataManager = TaskDataManager(controller: controller)
-        dataManager = controller.dataManager
-        dataManager.networkCoordinator = NetworkCoordinator(dataSource: dataManager)
-        networkCoordinator = dataManager.networkCoordinator
+        dataManager = TaskDataManager(controller: controller)
+        controller.dataSource = dataManager
+        textFieldManager = TaskTextFieldManager(controller: controller, dataSource: dataManager)
+        controller.taskTextFieldManager = textFieldManager
+        controller.buttonManager = ButtonManager(controller: controller, dataManager: dataManager)
+        
+        networkCoordinator = NetworkCoordinator(dataSource: dataManager)
+        dataManager.authenticationHandler = networkCoordinator
+        dataManager.failedRequestCatcher = networkCoordinator
+        
         networkCoordinator.currentUser = "test"
         authenticationAlertHandler = networkCoordinator.authenticationAlertHandler
         
-        controller.taskTextFieldManager = TaskTextFieldManager(controller: controller)
         textFieldManager = controller.taskTextFieldManager
         textFieldManager.keyboardManager = KeyboardManager(controller: controller, textFieldManager: textFieldManager)
         keyboardManager = textFieldManager.keyboardManager
@@ -76,8 +81,8 @@ class DataSourceTests: XCTestCase {
     }
     
     func testTaskOrderShouldEqualItsIndexInArray() {
-        let array = [MockTaskJSON, dataManager.tasks[0].json, dataManager.tasks[1].json, dataManager.tasks[2].json]
-        dataManager.networkCoordinator.handleAPIResponse(jsonArray: array)
+        let array = [MockTask.json, dataManager.tasks[0].json, dataManager.tasks[1].json, dataManager.tasks[2].json]
+        networkCoordinator.handleAPIResponse(jsonArray: array)
         XCTAssert(dataManager.tasks[3].order == 3)
     }
 
@@ -95,7 +100,7 @@ class DataSourceTests: XCTestCase {
         apiService.getTasks(forUser: networkCoordinator.currentUser!)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            self.dataManager.delete(taskAtIndex: self.dataSource.tasks.count-1)
+            self.dataManager.delete(taskAtIndex: self.dataManager.tasks.count-1)
             exp0.fulfill()
         })
 
@@ -111,13 +116,13 @@ class DataSourceTests: XCTestCase {
     // CORE DATA
     
     func testShouldDeleteAllCompletedTasks() {
-        let task = dataSource.tasks[0]
+        let task = dataManager.tasks[0]
         task.userCompleted = "billy"
-        let otherTask = dataSource.tasks[1]
+        let otherTask = dataManager.tasks[1]
         
         let predicate = NSPredicate(format: "userCompleted != nil")
         let coreService = CoreService()
-        coreService.syncTasksToCoreData(tasks: dataSource.tasks)
+        coreService.syncTasksToCoreData(tasks: dataManager.tasks)
         coreService.deleteAllTasks(withPredicate: predicate)
         
         let fetch = NSFetchRequest<TaskModel>(entityName: "TaskModel")
@@ -145,7 +150,7 @@ class DataSourceTests: XCTestCase {
         // has time to ping the API and get a response
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(self.dataSource.tasks.contains(where: {$0.name == task.name}))
+            XCTAssert(self.dataManager.tasks.contains(where: {$0.name == task.name}))
             exp.fulfill()
         })
         wait(for: [exp], timeout: 15.0)
@@ -153,7 +158,7 @@ class DataSourceTests: XCTestCase {
     func testOldTaskShouldBeChangedInAPI() {
         let exp = expectation(description: "testOldTaskShouldBeChangedInAPI")
         
-        let task = dataSource.tasks[0]
+        let task = dataManager.tasks[0]
         task.userCompleted = "billy"
         
         let apiService = APIService(responseHandler: networkCoordinator)
@@ -166,7 +171,7 @@ class DataSourceTests: XCTestCase {
         // has time to ping the API and get a response
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-            XCTAssert(self.dataSource.tasks.contains(where: {$0.userCompleted != nil}))
+            XCTAssert(self.dataManager.tasks.contains(where: {$0.userCompleted != nil}))
             exp.fulfill()
         })
         wait(for: [exp], timeout: 15.0)
@@ -182,7 +187,7 @@ class DataSourceTests: XCTestCase {
 
         // Task is created on home device and sent to API
         let task = Task(name: "Smoke a bowl")
-        dataSource.tasks += [task]
+        dataManager.tasks += [task]
         print("Smoke a bowl ID is \(task.uniqueID)")
         
         let apiService = APIService(responseHandler: networkCoordinator)
@@ -198,7 +203,7 @@ class DataSourceTests: XCTestCase {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 7.0, execute: {
             // Home device gets tasks from API
-            self.dataSource.refresh()
+            self.dataManager.refresh()
             exp1.fulfill()
         })
         
@@ -208,7 +213,7 @@ class DataSourceTests: XCTestCase {
         })
         
         wait(for: [exp0, exp1, exp2], timeout: 15.0)
-        XCTAssert(!self.dataSource.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
+        XCTAssert(!self.dataManager.tasks.contains(where: {$0.uniqueID == task.uniqueID}))
     }
 
     
