@@ -32,7 +32,7 @@
 		CEEBADE01E93D994000E586D /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */; };
 		CEEBADE21E93E4E8000E586D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE11E93E4E8000E586D /* Task.swift */; };
 		CEEBADE41E93E9CB000E586D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEBADE31E93E9CB000E586D /* Constants.swift */; };
-		CEFE57331E9D1C2900539A49 /* TaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57321E9D1C2900539A49 /* TaskTests.swift */; };
+		CEFE57331E9D1C2900539A49 /* OldTaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57321E9D1C2900539A49 /* OldTaskTests.swift */; };
 		CEFE573A1EA27AC100539A49 /* AuthenticationAlertHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */; };
 		CEFE573D1EA28E0C00539A49 /* AuthenticationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE573C1EA28E0C00539A49 /* AuthenticationHandler.swift */; };
 		CEFE573F1EA28E3600539A49 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */; };
@@ -91,7 +91,7 @@
 		CEEBADDF1E93D994000E586D /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		CEEBADE11E93E4E8000E586D /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		CEEBADE31E93E9CB000E586D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		CEFE57321E9D1C2900539A49 /* TaskTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTests.swift; sourceTree = "<group>"; };
+		CEFE57321E9D1C2900539A49 /* OldTaskTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldTaskTests.swift; sourceTree = "<group>"; };
 		CEFE57391EA27AC100539A49 /* AuthenticationAlertHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationAlertHandler.swift; sourceTree = "<group>"; };
 		CEFE573C1EA28E0C00539A49 /* AuthenticationHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationHandler.swift; sourceTree = "<group>"; };
 		CEFE573E1EA28E3600539A49 /* AuthenticationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
@@ -192,7 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				CE0B47B81EB7778100763DC7 /* Mocks.swift */,
-				CEFE57321E9D1C2900539A49 /* TaskTests.swift */,
+				CEFE57321E9D1C2900539A49 /* OldTaskTests.swift */,
 				CE7D60F91E857E8E008CA26E /* Info.plist */,
 			);
 			path = ToDoTests;
@@ -439,7 +439,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEFE57331E9D1C2900539A49 /* TaskTests.swift in Sources */,
+				CEFE57331E9D1C2900539A49 /* OldTaskTests.swift in Sources */,
 				CE0B47B91EB7778100763DC7 /* Mocks.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

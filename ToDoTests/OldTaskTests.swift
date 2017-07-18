@@ -27,7 +27,7 @@ class TaskTests: XCTestCase {
     
     func testTaskModelJSONIntegration() {
         //create JSON
-        let task = Task(withJSON: MockTaskJSON)
+        let task = Task(withJSON: MockTask.json)
         XCTAssertEqual(task.name, "DO DISHES")
         XCTAssertNil(task.userCompleted)
         XCTAssertNil(task.dateCompleted)

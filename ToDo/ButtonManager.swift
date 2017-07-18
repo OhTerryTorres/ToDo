@@ -31,6 +31,7 @@ class ButtonManager: LoginButtonHandler, HideCompletedTasksButtonHandler, Editin
     }
     
     // MARK: - LoginButtonHandler Protocol
+    
     func showLoginAlert() {
         dataManager.authenticationHandler.authenticationAlertHandler.present(alertType: .login)
     }    
@@ -43,7 +44,6 @@ class ButtonManager: LoginButtonHandler, HideCompletedTasksButtonHandler, Editin
         controller.navigationItem.leftBarButtonItem?.customView = hideCompletedCustomView(image: image)
         dataManager.update()
     }
-    
     
     // MARK: - EditingButtonHandler Protocol
     
@@ -63,8 +63,6 @@ class ButtonManager: LoginButtonHandler, HideCompletedTasksButtonHandler, Editin
         }, completion: nil)
         deleteToolbar.isHidden = hidden
     }
-    
-    
     
     // MARK: - DeleteCompletedButtonHandler Protocol
     

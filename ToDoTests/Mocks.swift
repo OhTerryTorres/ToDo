@@ -9,6 +9,79 @@
 import Foundation
 @testable import ToDo
 
+class MockTaskDataSource: TaskDataSource {
+    var tasks: [Task] = []
+    var controller: TaskTableViewController
+    var failedRequestCatcher: FailedRequestCatcher!
+    
+    init(controller: TaskTableViewController) {
+        self.controller = controller
+    }
+}
+
+class MockTaskDataSynchronizer: TaskDataSynchronizer {
+    var tasks: [Task] = []
+    var authenticationHandler : AuthenticationHandler!
+    
+    func refresh() {
+        // Synchronize local tasks with remote tasks
+        guard let username = self.authenticationHandler.currentUser else { return }
+        self.authenticationHandler.getDataFromAPI(forUser: username) {
+            
+            // Acknowledge push notifications for this device and prepare to receive new ones
+            self.authenticationHandler.acknowledgeNotification(forUser: username)
+        }
+    }
+}
+
+class MockTaskCreator: TaskCreator {
+    var controller: TaskTableViewController
+    var dataSource : TaskDataSource
+    
+    init(controller: TaskTableViewController, dataSource: TaskDataSource) {
+        self.controller = controller
+        self.dataSource = dataSource
+    }
+}
+
+class MockAuthenticationHandler: AuthenticationHandler {
+    var dataSource : TaskDataSource
+    var currentUser : String? = "test"
+    var authenticationAlertHandler : AuthenticationAlertHandler!
+    
+    init(dataSource: TaskDataSource) {
+        self.dataSource = dataSource
+    }
+    
+    func getDataFromAPI(forUser username: String, completion:(()->())?) {
+        let mockAPI = MockAPIResponseHandler(dataSource: self.dataSource)
+        let apiService = APIService(responseHandler: mockAPI)
+        apiService.getTasks(forUser: username)
+        
+        DispatchQueue.main.async {
+            completion?()
+        }
+    }
+    
+    func acknowledgeConnection(forUser: String) {
+        
+    }
+}
+
+class MockAPIResponseHandler: APIResponseHandler {
+    var dataSource : TaskDataSource
+    
+    init(dataSource: TaskDataSource) {
+        self.dataSource = dataSource
+    }
+}
+
+class MockFailedRequestCatcher: FailedRequestCatcher {
+    
+    var failedRequestPackages : [(urlRequest: URLRequest, username: String, method: APIService.PostMethod)] = []
+    
+}
+
 
 var MockTask : Task {
     let task = Task(name: "DO DISHES")
@@ -21,14 +94,3 @@ var MockTask : Task {
     return task
 }
 
-
-var MockTaskJSON : [String : Any] {
-    var json : [String : Any] = [:]
-    json[TaskPropertyKeys.uniqueID.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C640000"
-    json[TaskPropertyKeys.name.rawValue] = "DO DISHES"
-    json[TaskPropertyKeys.userCreated.rawValue] = "BB7B4816-6AF0-48DC-96DF-7B1629C50C64"
-    json[TaskPropertyKeys.userCompleted.rawValue] = nil
-    json[TaskPropertyKeys.dateCreated.rawValue] = "2017-04-17 20:45:21"
-    json[TaskPropertyKeys.dateCompleted.rawValue] = ""
-    return json
-}

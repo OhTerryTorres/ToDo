@@ -10,6 +10,7 @@ import Foundation
 
 protocol TaskDataSynchronizer: class {
     var tasks : [Task] { get set }
+    var authenticationHandler : AuthenticationHandler! { get set }
     
     func refresh()
     func saveData()
