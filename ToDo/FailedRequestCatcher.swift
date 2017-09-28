@@ -36,13 +36,9 @@ extension FailedRequestCatcher {
                 if let dataString = String.init(data: data, encoding: .utf8)  {
                     print("data from post request is\n\(dataString)")
                     if dataString.range(of: "success") != nil && requestPackage.method == .insert {
-                        // *****
                         let pns = PushNotificationService()
-                        if let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String {
-                            pns.pushNotification(username: requestPackage.username, passphrase: PUSH_PASSPHRASE, token: deviceToken)
-                        } else {
-                            pns.pushNotification(username: requestPackage.username, passphrase: PUSH_PASSPHRASE)
-                        }
+                        let deviceToken = UserDefaults.standard.object(forKey: UserKeys.deviceToken.rawValue) as? String ?? nil
+                        pns.pushNotification(username: requestPackage.username, passphrase: PUSH_PASSPHRASE, token: deviceToken)
                     }
                 }
             }

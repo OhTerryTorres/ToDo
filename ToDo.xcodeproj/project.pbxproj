@@ -338,6 +338,9 @@
 							com.apple.SafariKeychain = {
 								enabled = 0;
 							};
+							com.apple.Siri = {
+								enabled = 0;
+							};
 						};
 					};
 					CE7D60F21E857E8E008CA26E = {
@@ -585,12 +588,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ToDo/ToDo.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 4Q996R58Y9;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Terry Torres (98GP2FZ9DQ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ToDo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Frameworks @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.terry-torres.ToDo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -600,12 +607,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ToDo/ToDo.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 4Q996R58Y9;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Terence Torres (4Q996R58Y9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ToDo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Frameworks @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.terry-torres.ToDo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

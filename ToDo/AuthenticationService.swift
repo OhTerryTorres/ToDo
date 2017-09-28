@@ -62,8 +62,6 @@ struct AuthenticationService {
                     print(message)
                     self.responseHandler.handleAuthenticationResponse(username: username, status: status, message: message)
                 }
-                // ******
-                // if something goes wrong in the PHP that is neither an explicit success or error, nothing will happen
             } catch {
                 print("\(method.rawValue) JSONSerialization error:  \(error.localizedDescription)")
             }

@@ -20,7 +20,6 @@ Task: Ordered {
     var dateCompleted: Date?
     var order: Int = 0
     
-    
     init(uniqueID: String, name: String, userCreated: String, userCompleted: String? = nil, dateCreated: Date, dateCompleted: Date? = nil, order: Int = 0) {
         self.uniqueID = uniqueID
         self.name = name
